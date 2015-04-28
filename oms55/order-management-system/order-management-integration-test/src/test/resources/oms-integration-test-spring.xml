@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:util="http://www.springframework.org/schema/util"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd">
+
+	<import resource="classpath:/META-INF/oms-rest-client-spring.xml" />
+	<import resource="classpath:/META-INF/oms-export-rest-client-spring.xml" />
+	<import resource="classpath:/META-INF/oms-ui-rest-client-spring.xml" />
+
+    <import resource="classpath:/META-INF/hybris-commons-rest-client-spring.xml" />
+    <import resource="classpath:/META-INF/hybris-commons-configuration-spring.xml"/>
+
+	<bean id="omsSingleTenantDecorator" class="com.hybris.commons.client.StaticHeaderValueRestCallDecorator">
+		<property name="headerName" value="X-tenantId" />
+		<property name="staticValue" value="single"/>
+	</bean>
+
+	<!-- add tenant "single" to oms rest clients -->
+	<util:list id="omsRestCallDecorators">
+		<ref bean="omsSingleTenantDecorator"/>
+	</util:list>
+	
+	<alias name="defaultHttpClientConfig" alias="httpClientConfig"/>
+    <bean id="defaultHttpClientConfig" class="com.hybris.commons.client.ClientConfigFactoryBean">
+        <property name="readTimeout" value="30000"/>
+    </bean>
+	
+</beans>

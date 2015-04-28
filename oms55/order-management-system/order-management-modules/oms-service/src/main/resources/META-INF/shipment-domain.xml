@@ -1,0 +1,208 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<types xmlns="http://www.hybris.com/schema/ondemand/domain"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.hybris.com/schema/onpremise/domain http://www.hybris.com/schema/onpremise/domain-5.3.xsd"
+	package="com.hybris.oms.service.managedobjects.shipment">
+
+	<enumerations>
+		<enumeration code="OrderlinesFulfillmentType">
+			<values>
+				<value code="REGULAR"/>
+				<value code="PRE_ORDERLINE"/>
+				<value code="BACK_ORDERLINE"/>
+			</values>
+		</enumeration>
+	</enumerations>
+	
+	<managedobjects>
+	<!-- https://wiki.hybris.com/display/dra/shipping+tables -->
+		<managedobject code="ShipmentData" properties="true">
+			<description>Contains data on the Shipment</description>
+			<persistence name="shipments" />
+			<versionattribute name="version" />
+			<attributes>
+				<attribute name="state" type="String">
+					<description>Current state of the shipment</description>
+				</attribute>
+				<attribute name="amountCapturedCurrencyCode" type="String">
+					<description>Shipping Insurance Value Amount</description>
+				</attribute>
+				<attribute name="amountCapturedValue" type="double">
+					<description>Shipping Insurance Value Amount</description>
+				</attribute>
+				<attribute name="authUrls" type="List(String)">
+					<description>Authorization URLs</description>
+				</attribute>
+				<attribute name="currencyCode" type="String">
+					<description>Currency code</description>
+				</attribute>
+				<attribute name="delivery" type="DeliveryData">
+					<modifiers partof="true" />
+					<description>Shipping delivery</description>
+				</attribute>
+				<attribute name="firstArrivalStockroomLocationId" type="String">
+					<!-- ORA-00972: identifier is too long, Action: Specify at most 30 characters.-->
+					<persistence name="faStockroomLocationId" />
+					<description>Shipping firstArrivalLocation</description>
+				</attribute>
+				<attribute name="grossVolumeUnitCode" type="String">
+					<description>Shipping Gross Volume</description>
+				</attribute>
+				<attribute name="grossVolumeValue" type="float">
+					<description>Shipping Gross Volume</description>
+				</attribute>
+				<attribute name="grossWeightUnitCode" type="String">
+					<description>Shipping Gross Weight</description>
+				</attribute>
+				<attribute name="grossWeightValue" type="float">
+					<description>Shipping Gross Weight</description>
+				</attribute>
+				<attribute name="heightUnitCode" type="String">
+					<description>Package height</description>
+				</attribute>
+				<attribute name="heightValue" type="float">
+					<description>Package height</description>
+				</attribute>
+				<attribute name="insuranceValueAmountCurrencyCode" type="String">
+					<!-- ORA-00972: identifier is too long, Action: Specify at most 30 characters.-->
+					<description>Shipping Insurance Value Amount</description>
+					<persistence name="insValAmtCrCd"/>
+				</attribute>
+				<attribute name="insuranceValueAmountValue" type="double">
+					<description>Shipping Insurance Value Amount</description>
+				</attribute>
+				<attribute name="lastExitStockroomLocationId" type="String">
+					<description>Shipping lastExitLocation</description>
+				</attribute>
+				<attribute name="lengthUnitCode" type="String">
+					<description>Package length</description>
+				</attribute>
+				<attribute name="lengthValue" type="float">
+					<description>Package length</description>
+				</attribute>
+				<attribute name="stockroomLocationId" type="String">
+					<description>Stockroom Location Id</description>
+					<modifiers indexed="true"/>
+				</attribute>
+				<attribute name="merchandisePrice" type="PriceVT">
+					<description>Shipping MerchandisePrice</description>
+					<persistence name="mrPr"/>
+				</attribute>
+				<attribute name="netWeightUnitCode" type="String">
+					<description>Shipping Net Weight</description>
+				</attribute>
+				<attribute name="netWeightValue" type="float">
+					<description>Shipping Net Weight</description>
+				</attribute>
+				<attribute name="olqsStatus" type="String">
+					<description>status of the olqs</description>
+				</attribute>
+				<attribute name="orderFk" type="OrderData">
+					<description>Order</description>
+					<modifiers mandatory="true" />
+				</attribute>
+				<attribute name="priorityLevelCode" type="String">
+					<description>Shipping Priority Level Code</description>
+				</attribute>
+				<attribute name="shipFrom" type="AddressVT">
+					<description>Shipping from</description>
+					<persistence name="shFr"/>
+				</attribute>
+				<attribute name="shipmentId" type="long">
+					<description>Shipment Id</description>
+					<modifiers generated="true" mandatory="true" final="true" unique="true" tracked="true"/>
+				</attribute>
+				<attribute name="originalShipmentId" type="long">
+					<description>Id of the shipment that this shipment was split from</description>
+				</attribute>
+				<attribute name="shippingAndHandling" type="ShippingAndHandlingData">
+					<description>Shipping and handling costs</description>
+				</attribute>
+				<attribute name="shippingMethod" type="String">
+					<description>Shipping Method</description>
+					<modifiers mandatory="true" />
+				</attribute>
+				<attribute name="taxCategory" type="String">
+					<description>Shipping Tax Category</description>
+				</attribute>
+				<attribute name="totalGoodsItemQuantityUnitCode" type="String">
+					<!-- ORA-00972: identifier is too long, Action: Specify at most 30 characters.-->
+					<description>Total quantity of all OLQs in this shipment</description>
+					<persistence name="totgdsItmQtyUtCd"/>
+				</attribute>
+				<attribute name="totalGoodsItemQuantityValue" type="int">
+					<description>Total quantity of all OLQs in this shipment</description>
+					<persistence name="totGoodsItmQtyVal"/>
+				</attribute>
+				<attribute name="widthUnitCode" type="String">
+					<description>Package width</description>
+				</attribute>
+				<attribute name="widthValue" type="float">
+					<description>Package width</description>
+				</attribute>
+				<attribute name="pickupInStore" type="boolean">
+					<description>BOPIS</description>
+					<modifiers indexed="true"/>
+				</attribute>
+				<attribute name="packageDescription" type="String">
+					<description>Package description</description>
+				</attribute>
+				<attribute name="location" type="String">
+					<description>Location URI coming from Tax Invoice</description>
+				</attribute>
+				<attribute type="OrderlinesFulfillmentType" name="orderLinesFulfillmentType">
+					<description>Fulfillment type for orderlines contained in the Shipment(REGULAR, PRE_ORDERLINE, BACK_ORDERLINE)</description>
+				</attribute>
+			</attributes>
+		</managedobject>
+
+		<managedobject code="ShippingAndHandlingData" properties="true">
+			<description>Contains data on shipping and handling costs</description>
+			<persistence name="shippingAndHandling" />
+			<versionattribute name="version" />
+			<attributes>
+				<attribute type="String" name="orderId">
+					<description>The id of the order related to this shipment</description>
+					<modifiers unique="true" mandatory="true" final="true" />
+				</attribute>
+				<attribute type="String" name="firstShipmentId">
+					<description>Id of an order's first shipment</description>
+				</attribute>
+				<attribute type="PriceVT" name="shippingPrice">
+					<description>Contains the shipment's shipping price and tax price</description>
+					<persistence name="shPr"/>
+				</attribute>
+			</attributes>
+		</managedobject>
+
+		<managedobject code="DeliveryData" properties="true">
+			<description>Contains data on the Delivery</description>
+			<persistence name="deliveries" />
+			<versionattribute name="version" />
+			<attributes>
+				<attribute type="long" name="deliveryId">
+					<description>Delivery Id</description>
+					<modifiers generated="true" mandatory="true" final="true" unique="true"/>
+				</attribute>
+				<attribute type="Date" name="actualDeliveryDate">
+					<description>actual delivery date</description>
+				</attribute>
+				<attribute type="String" name="trackingID">
+					<description>tracking id</description>
+				</attribute>
+				<attribute type="String" name="labelUrl">
+					<description>label URL</description>
+				</attribute>
+				<attribute type="String" name="trackingUrl">
+					<description>tracking URL</description>
+				</attribute>
+				<attribute type="AddressVT" name="deliveryAddress">
+					<description>delivery address</description>
+					<persistence name="dlAd"/>
+				</attribute>
+			</attributes>
+		</managedobject>
+
+	</managedobjects>
+</types>

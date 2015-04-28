@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	   xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+	<!-- Inventory rollover scheduled job -->
+	<alias name="defaultInventoryRolloverWorker" alias="inventoryRolloverWorker" />
+	<bean id="defaultInventoryRolloverWorker" class="com.hybris.oms.service.inventory.jobs.InventoryRolloverJob">
+		<property name="initializationService" ref="initializationService" />
+		<property name="inventoryService" ref="inventoryService" />
+		<property name="persistenceManager" ref="persistenceManager" />
+		<property name="tenantContextService" ref="tenantContextService" />
+		<property name="transactionManager" ref="transactionManager" />
+	</bean>
+
+	<bean id="inventoryRolloverJob" class="com.hybris.kernel.api.JobDetailsBean">
+		<property name="cronExpression" value="${jobs.cronExpression}" />
+		<property name="worker" ref="inventoryRolloverWorker" />
+		<property name="registerOnStartup" value="true" />
+		<property name="scope" value="SINGLE_TENANT" />
+		<property name="tenant" value="single" />
+	</bean>
+
+</beans>

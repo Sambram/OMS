@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:util="http://www.springframework.org/schema/util"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+
+		http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd">
+
+	<import resource="classpath:/META-INF/oms-core-rest-client-spring.xml"/>
+
+	<context:annotation-config />
+	
+	<alias name="omsAtsRestClientFactory" alias="omsAtsRestClient" />	
+    <bean id="omsAtsRestClientFactory" parent="abstractOmsMockFactory">
+        <property name="mockInterface" value="com.hybris.oms.api.ats.AtsFacade"/>
+        <lookup-method name="getDefaultObject" bean="defaultOmsAtsRestClient" />
+     </bean>
+	<bean id="defaultOmsAtsRestClient" parent="abstractOmsRestClient" class="com.hybris.oms.rest.client.ats.AtsRestClient" autowire-candidate="false" lazy-init="true"/>
+
+	<alias name="omsBaseStoreRestClientFactory" alias="omsBaseStoreRestClient" />	
+    <bean id="omsBaseStoreRestClientFactory" parent="abstractOmsMockFactory">
+        <property name="mockInterface" value="com.hybris.oms.api.basestore.BaseStoreFacade"/>
+        <lookup-method name="getDefaultObject" bean="defaultOmsBaseStoreRestClient" />
+     </bean>
+	<bean id="defaultOmsBaseStoreRestClient" parent="abstractOmsRestClient" class="com.hybris.oms.rest.client.basestore.BaseStoreRestClient" autowire-candidate="false" lazy-init="true">
+		<property name="queryObjectRestCallPopulator" ref="omsQueryObjectRestCallPopulator"/>
+	</bean>
+
+	<alias name="omsSourceSimulationRestClientFactory" alias="omsSourceSimulationRestClient" />	
+    <bean id="omsSourceSimulationRestClientFactory" parent="abstractOmsMockFactory">
+        <property name="mockInterface" value="com.hybris.oms.api.fulfillment.SourceSimulationFacade"/>
+        <lookup-method name="getDefaultObject" bean="defaultOmsSourceSimulationRestClient" />
+     </bean>
+	<bean id="defaultOmsSourceSimulationRestClient" parent="abstractOmsRestClient" class="com.hybris.oms.rest.client.fulfillment.simulation.FulfillmentSimulationRestClient" autowire-candidate="false" lazy-init="true"/>
+
+	<alias name="omsInventoryRestClientFactory" alias="omsInventoryRestClient" />	
+    <bean id="omsInventoryRestClientFactory" parent="abstractOmsMockFactory">
+        <property name="mockInterface" value="com.hybris.oms.api.inventory.InventoryFacade"/>
+        <lookup-method name="getDefaultObject" bean="defaultOmsInventoryRestClient" />
+     </bean>
+	<bean id="defaultOmsInventoryRestClient" parent="abstractOmsRestClient" class="com.hybris.oms.rest.client.inventory.InventoryRestClient" autowire-candidate="false" lazy-init="true">
+		<property name="queryObjectRestCallPopulator" ref="omsQueryObjectRestCallPopulator"/>
+	</bean>
+
+	<alias name="omsOrderRestClientFactory" alias="omsOrderRestClient" />	
+    <bean id="omsOrderRestClientFactory" parent="abstractOmsMockFactory">
+        <property name="mockInterface" value="com.hybris.oms.api.order.OrderFacade"/>
+        <lookup-method name="getDefaultObject" bean="defaultOmsOrderRestClient" />
+     </bean>
+	<bean id="defaultOmsOrderRestClient" parent="abstractOmsRestClient" class="com.hybris.oms.rest.client.order.OrderRestClient" autowire-candidate="false" lazy-init="true"/>
+
+	<alias name="omsRuleRestClientFactory" alias="omsRuleRestClient" />	
+    <bean id="omsRuleRestClientFactory" parent="abstractOmsMockFactory">
+        <property name="mockInterface" value="com.hybris.oms.api.rule.RuleFacade"/>
+        <lookup-method name="getDefaultObject" bean="defaultOmsRuleRestClient" />
+     </bean>
+	<bean id="defaultOmsRuleRestClient" parent="abstractOmsRestClient" class="com.hybris.oms.rest.client.rule.RuleRestClient" autowire-candidate="false" lazy-init="true"/>
+
+	<alias name="omsShipmentRestClientFactory" alias="omsShipmentRestClient" />	
+    <bean id="omsShipmentRestClientFactory" parent="abstractOmsMockFactory">
+        <property name="mockInterface" value="com.hybris.oms.api.shipment.ShipmentFacade"/>
+        <lookup-method name="getDefaultObject" bean="defaultOmsShipmentRestClient" />
+     </bean>
+	<bean id="defaultOmsShipmentRestClient" parent="abstractOmsRestClient" class="com.hybris.oms.rest.client.shipment.ShipmentRestClient" autowire-candidate="false" lazy-init="true">
+		<property name="queryObjectRestCallPopulator" ref="omsQueryObjectRestCallPopulator"/>
+	</bean>
+
+	<!-- common beans used in ondemand and onpremise -->
+	<bean id="omsStaticTenantDecorator" class="com.hybris.commons.client.StaticHeaderValueRestCallDecorator">
+		<property name="headerName" value="X-tenantId"/>
+		<property name="staticValue" value="${oms.defaultTenant}"/>
+	</bean>
+
+
+	<alias name="omsReturnRestClientFactory" alias="omsReturnRestClient"/>
+	<bean id="omsReturnRestClientFactory" parent="abstractOmsMockFactory">
+		<property name="mockInterface" value="com.hybris.oms.api.returns.ReturnFacade"/>
+		<lookup-method name="getDefaultObject" bean="defaultOmsReturnRestClient"/>
+	</bean>
+
+	<bean id="defaultOmsReturnRestClient" parent="abstractOmsRestClient"
+	      class="com.hybris.oms.rest.client.returns.ReturnRestClient" autowire-candidate="false" lazy-init="true">
+		<property name="queryObjectRestCallPopulator" ref="omsQueryObjectRestCallPopulator"/>
+	</bean>
+</beans>

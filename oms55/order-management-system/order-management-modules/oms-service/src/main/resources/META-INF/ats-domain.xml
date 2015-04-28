@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<types xmlns="http://www.hybris.com/schema/ondemand/domain"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.hybris.com/schema/onpremise/domain http://www.hybris.com/schema/onpremise/domain-5.3.xsd"
+	package="com.hybris.oms.service.managedobjects.ats">
+
+	<managedobjects>
+	<!-- https://wiki.hybris.com/display/dra/ats+tables -->
+		<managedobject code="AtsFormulaData" properties="true">
+			<description>Contains ATS Formula data</description>
+			<versionattribute name="version" />
+			<attributes>
+				<attribute name="atsId" type="String">
+					<description>Formula ID</description>
+					<modifiers unique="true" mandatory="true" final="true" />
+				</attribute>
+				<attribute name="formula" type="String">
+					<description>Formula</description>
+					<modifiers mandatory="true" />
+				</attribute>
+				<attribute name="name" type="String" >
+					<description>Formula name</description>
+					<modifiers mandatory="true" />
+				</attribute>
+				<attribute name="description" type="String" />
+			</attributes>
+			<persistence name="atsFormulas" >
+			</persistence>
+		</managedobject>
+	</managedobjects>
+</types>

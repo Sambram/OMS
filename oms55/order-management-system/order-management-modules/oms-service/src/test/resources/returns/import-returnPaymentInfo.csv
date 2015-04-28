@@ -1,0 +1,4 @@
+id,returnId,returnPaymentType,version,returnPaymentInfoId
+ReturnPaymentInfoData|1,1,Visa,1,11
+ReturnPaymentInfoData|2,1,Visa,1,12
+ReturnPaymentInfoData|3,1,Visa,1,13

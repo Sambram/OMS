@@ -1,0 +1,255 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<beans xmlns="http://www.hybris.com/schema/onpremise/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.hybris.com/schema/onpremise/beans http://www.hybris.com/schema/onpremise/beans-5.3.xsd">
+
+    <package name="com.hybris.oms.domain.shipping">
+		
+		<enum name="OrderlinesFulfillmentType">
+       		<description>Defines the fulfillment type for orderlines contained in the Shipment</description>
+       		<value>REGULAR</value>
+       		<value>PRE_ORDERLINE</value>
+       		<value>BACK_ORDERLINE</value>
+       	</enum>
+       	
+		<bean name="Shipment" extend="com.hybris.commons.dto.impl.PropertyAwareEntityDto">
+       		<description>Shipment</description>
+       		<implements>
+       			<value>com.hybris.oms.domain.ActionableDto</value>
+       		</implements>
+       		<annotations>
+       			<value>@javax.xml.bind.annotation.XmlRootElement</value>
+       			<value>@javax.xml.bind.annotation.XmlAccessorType(javax.xml.bind.annotation.XmlAccessType.FIELD)</value>
+       		</annotations>
+       		<property name="amountCaptured" type="com.hybris.oms.domain.types.Amount" />
+       		<property name="currencyCode" type="String" />
+       		<property name="delivery" type="Delivery" />
+       		<property name="firstArrivalLocationId" type="String" />
+       		<property name="grossVolume" type="com.hybris.oms.domain.types.Measure" />
+       		<property name="grossWeight" type="com.hybris.oms.domain.types.Measure" />
+       		<property name="handlingCode" type="String" />
+       		<property name="handlingInstructions" type="String" />
+       		<property name="height" type="com.hybris.oms.domain.types.Measure" />
+       		<property name="information" type="String" />
+       		<property name="insuranceValueAmount" type="com.hybris.oms.domain.types.Amount" />
+       		<property name="lastExitLocationId" type="String" />
+       		<property name="length" type="com.hybris.oms.domain.types.Measure" />
+       		<property name="location" type="String" />
+       		<property name="merchandisePrice" type="com.hybris.oms.domain.types.Price" />
+       		<property name="netWeight" type="com.hybris.oms.domain.types.Measure" />
+       		<property name="olqsStatus" type="String" />
+       		<property name="orderId" type="String" />
+       		<property name="pickupInStore" type="boolean" />
+       		<property name="priorityLevelCode" type="String" />
+       		<property name="shipFrom" type="com.hybris.oms.domain.address.Address" />
+       		<property name="shipmentId" type="String">
+       			<annotations>
+       				<value>@javax.xml.bind.annotation.XmlAttribute</value>
+       			</annotations>
+       		</property>
+       		<property name="shippingAndHandling" type="ShippingAndHandling" />
+       		<property name="shippingMethod" type="String" />
+       		<property name="taxCategory" type="String" />
+       		<property name="totalGoodsItemQuantity" type="com.hybris.oms.domain.types.Quantity" />
+       		<property name="width" type="com.hybris.oms.domain.types.Measure" />
+       		<property name="packageDescription" type="String" />
+       		<property name="authUrls" type="java.util.List" generic="String" initValue="new java.util.ArrayList()">
+       			<annotations>
+       				<value>@javax.xml.bind.annotation.XmlElement</value>
+       			</annotations>
+       		</property>
+       		<property name="olqIds" type="java.util.List" generic="String" initValue="new java.util.ArrayList()">
+       			<annotations>
+       				<value>@javax.xml.bind.annotation.XmlElement(name = "olqId")</value>
+       				<value>@javax.xml.bind.annotation.XmlElementWrapper(name = "olqIds")</value>
+       			</annotations>
+       		</property>
+       		<property name="actions" type="java.util.Set" generic="String">
+       			<annotations>
+       				<value>@javax.xml.bind.annotation.XmlElement</value>
+       			</annotations>
+       		</property>
+       		<property name="state" type="String">
+       			<annotations>
+       				<value>@java.lang.Deprecated</value>
+       			</annotations>
+       		</property>
+       		<property name="orderLinesFulfillmentType" type="com.hybris.oms.domain.shipping.OrderlinesFulfillmentType" />
+       		<customCode>
+<![CDATA[
+	@Override
+	public String getId()
+	{
+		return shipmentId;
+	}
+]]>
+    		</customCode>
+		</bean>
+		
+		<bean name="ShipmentDetails" implement="com.hybris.commons.dto.PropertyAwareDto">
+       		<description>Shipment Details</description>
+			<annotations>
+				<value>@javax.xml.bind.annotation.XmlRootElement</value>
+				<value>@javax.xml.bind.annotation.XmlAccessorType(javax.xml.bind.annotation.XmlAccessType.FIELD)</value>
+			</annotations>
+       		<property name="insuranceValueAmountValue" type="double" />
+       		<property name="widthValue" type="float" />
+       		<property name="lengthValue" type="float" />
+       		<property name="heightValue" type="float" />
+       		<property name="weightValue" type="float" />
+       		<property name="heightUnitCode" type="String" />
+       		<property name="weightUnitCode" type="String" />
+       		<property name="shippingMethod" type="String" />
+       		<property name="properties" type="java.util.Map" generic="String, Serializable">
+       			<annotations>
+       				<value>@javax.xml.bind.annotation.XmlElement(required = false)</value>
+       				<value>@javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter(com.hybris.commons.dto.xml.bind.MapStringAdapter.class)</value>
+       			</annotations>
+       		</property>
+       		<customCode>
+<![CDATA[
+	@Override
+	public String getProperty(final String name)
+	{
+		return properties == null ? null : (String) properties.get(name);
+	}
+
+	@Override
+	public String getProperty(final String name, final java.util.Locale locale)
+	{
+		if (properties == null)
+		{
+			return null;
+		}
+		final java.util.Map<java.util.Locale, String> locProperty = (java.util.Map<java.util.Locale, String>) properties.get(name);
+		if (locProperty == null)
+		{
+			return null;
+		}
+		return locProperty.get(locale);
+	}
+
+	@Override
+	public void setProperty(final String name, final String value, final java.util.Locale locale)
+	{
+		if (properties == null)
+		{
+			properties = new java.util.HashMap<>();
+		}
+		java.util.Map<java.util.Locale, String> locProperty = (java.util.Map<java.util.Locale, String>) properties.get(name);
+		if (locProperty == null)
+		{
+			locProperty = new java.util.HashMap<>();
+		}
+		locProperty.put(locale, value);
+		properties.put(name, (Serializable) locProperty);
+	}
+
+	@Override
+	public void setProperty(final String name, final String value)
+	{
+		if (properties == null)
+		{
+			properties = new java.util.HashMap<>();
+		}
+		properties.put(name, value);
+	}
+]]>
+    		</customCode>
+		</bean>
+		
+		<bean name="ShippingAndHandling" extend="com.hybris.commons.dto.impl.PropertyAwareEntityDto">
+       		<description>Shipment And Handling</description>
+       		<annotations>
+       			<value>@javax.xml.bind.annotation.XmlRootElement</value>
+       			<value>@javax.xml.bind.annotation.XmlAccessorType(javax.xml.bind.annotation.XmlAccessType.FIELD)</value>
+       		</annotations>
+       		<property name="firstShipmentId" type="String" />
+       		<property name="orderId" type="String" />
+       		<property name="shippingPrice" type="com.hybris.oms.domain.types.Price" />
+       		<customCode>
+<![CDATA[
+	@Override
+	public String getId()
+	{
+		return orderId;
+	}
+]]>
+    		</customCode>
+		</bean>
+		
+		<bean name="Delivery" extend="com.hybris.commons.dto.impl.PropertyAwareEntityDto">
+       		<description>Delivery</description>
+       		<implements>
+       			<value>com.hybris.commons.dto.Dto</value>
+       		</implements>
+       		<annotations>
+       			<value>@javax.xml.bind.annotation.XmlRootElement</value>
+       			<value>@javax.xml.bind.annotation.XmlAccessorType(javax.xml.bind.annotation.XmlAccessType.FIELD)</value>
+       		</annotations>
+       		<property name="deliveryId" type="String" />
+       		<property name="quantityUnitCode" type="String" />
+       		<property name="quantityValue" type="int" />
+       		<property name="actualDeliveryDate" type="java.util.Date" />
+       		<property name="latestDeliveryDate" type="java.util.Date" />
+       		<property name="trackingID" type="String" />
+       		<property name="trackingUrl" type="String" />
+       		<property name="labelUrl" type="String" />
+       		<property name="deliveryLocationId" type="String" />
+       		<property name="deliveryAddress" type="com.hybris.oms.domain.address.Address" />
+       		<customCode>
+<![CDATA[
+	public void setQuantity(final com.hybris.oms.domain.types.Quantity quantity)
+	{
+		this.quantityUnitCode = quantity.getUnitCode();
+		this.quantityValue = quantity.getValue();
+	}
+	
+	@Override
+	public String getId()
+	{
+		return deliveryId;
+	}
+]]>
+    		</customCode>
+   		</bean>
+		
+		<bean name="ShipmentSplitResult">
+       		<description>Shipment Split Result</description>
+       		<implements>
+       			<value>com.hybris.commons.dto.Dto</value>
+       		</implements>
+       		<annotations>
+       			<value>@javax.xml.bind.annotation.XmlRootElement</value>
+       			<value>@javax.xml.bind.annotation.XmlAccessorType(javax.xml.bind.annotation.XmlAccessType.FIELD)</value>
+       		</annotations>
+       		<property name="originalShipment" type="Shipment" />
+       		<property name="newShipment" type="Shipment" />
+       		<customCode>
+<![CDATA[
+	public ShipmentSplitResult(final Shipment newShipment, final Shipment originalShipment)
+	{
+		this.newShipment = newShipment;
+		this.originalShipment = originalShipment;
+	}
+]]>
+    		</customCode>
+		</bean>
+		
+		<enum name="ShipmentQuerySupport">
+			<value>CUSTOMER_FIRSTNAME</value>
+			<value>CUSTOMER_LASTNAME</value>
+			<value>DEFAULT</value>
+			<value>ISSUE_DATE</value>
+			<value>SCHEDULED_SHIPPING_DATE</value>
+			<value>LOCATION</value>
+			<value>OLQSSTATUS</value>
+			<value>ORDER_ID</value>
+			<value>SHIPMENT_ID</value>
+			<value>SHIPPING_METHOD</value>
+			<value>LOCATION_STORENAME</value>
+		</enum>
+        
+    </package>
+
+</beans>

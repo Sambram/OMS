@@ -1,0 +1,266 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<beans xmlns="http://www.hybris.com/schema/onpremise/beans"
+	   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	   xsi:schemaLocation="http://www.hybris.com/schema/onpremise/beans
+	   http://www.hybris.com/schema/onpremise/beans-5.3.xsd">
+
+	<package name="com.hybris.oms.domain.returns">
+
+		<bean name="ReturnShipment" extend="com.hybris.commons.dto.impl.PropertyAwareEntityDto">
+			<description>Return Shipment</description>
+			<annotations>
+				<value>@javax.xml.bind.annotation.XmlRootElement</value>
+			</annotations>
+			<property name="returnShipmentId" type="String"/>
+			<property name="shippingMethod" type="String"/>
+			<property name="packageDescription" type="String"/>
+			<property name="note" type="String"/>
+			<property name="grossWeight" type="com.hybris.oms.domain.types.Measure"/>
+			<property name="height" type="com.hybris.oms.domain.types.Measure"/>
+			<property name="length" type="com.hybris.oms.domain.types.Measure"/>
+			<property name="width" type="com.hybris.oms.domain.types.Measure"/>
+			<property name="insuranceValueAmount" type="com.hybris.oms.domain.types.Amount"/>
+			<property name="labelUrl" type="String"/>
+			<property name="trackingId" type="String"/>
+			<property name="trackingUrl" type="String"/>
+
+			<customCode>
+				<![CDATA[
+                    @Override
+                    public String getId()
+                    {
+                        return returnShipmentId;
+                    }
+				]]>
+			</customCode>
+		</bean>
+
+		<bean name="ReturnPaymentInfo" extend="com.hybris.commons.dto.impl.PropertyAwareEntityDto">
+			<description>Return Payment Info</description>
+			<annotations>
+				<value>@javax.xml.bind.annotation.XmlRootElement</value>
+				<value>@javax.xml.bind.annotation.XmlAccessorType(javax.xml.bind.annotation.XmlAccessType.FIELD)</value>
+
+			</annotations>
+
+			<property name="returnPaymentAmount" type="com.hybris.oms.domain.types.Amount"/>
+
+			<property name="returnPaymentType" type="String">
+				<annotations>
+					<value>@javax.xml.bind.annotation.XmlElement</value>
+				</annotations>
+			</property>
+
+			<property name="returnPaymentInfoId" type="String">
+				<annotations>
+					<value>@javax.xml.bind.annotation.XmlElement</value>
+				</annotations>
+			</property>
+
+			<property name="taxReversed" type="com.hybris.oms.domain.types.Amount"/>
+
+			<customCode>
+				<![CDATA[
+                    @Override
+                    public String getId()
+                    {
+                        return this.returnPaymentInfoId;
+                    }
+				]]>
+			</customCode>
+		</bean>
+
+		<bean name="ReturnOrderLine" extend="com.hybris.commons.dto.impl.PropertyAwareEntityDto">
+			<description>Return Order Line</description>
+			<annotations>
+				<value>@javax.xml.bind.annotation.XmlRootElement</value>
+				<value>@javax.xml.bind.annotation.XmlAccessorType(javax.xml.bind.annotation.XmlAccessType.FIELD)</value>
+			</annotations>
+
+			<property name="orderLine" type="com.hybris.oms.domain.order.OrderLine">
+				<annotations>
+					<value>@javax.xml.bind.annotation.XmlElement</value>
+				</annotations>
+			</property>
+
+
+			<property name="returnOrderLineId" type="String">
+				<annotations>
+					<value>@javax.xml.bind.annotation.XmlElement</value>
+					<value>@javax.xml.bind.annotation.XmlID</value>
+				</annotations>
+			</property>
+
+			<property name="returnOrderLineStatus" type="String"/>
+
+			<property name="quantity" type="com.hybris.oms.domain.types.Quantity">
+				<annotations>
+					<value>@javax.xml.bind.annotation.XmlElement</value>
+				</annotations>
+			</property>
+			
+			<property name="returnLineRejections" type="java.util.List" generic="ReturnLineRejection"
+					  initValue="new java.util.ArrayList()">
+				<annotations>
+					<value>@javax.xml.bind.annotation.XmlElement</value>
+				</annotations>
+			</property>
+
+			<customCode>
+				<![CDATA[
+                    @Override
+                    public String getId()
+                    {
+                        return this.returnOrderLineId;
+                    }
+				]]>
+			</customCode>
+		</bean>
+
+		<bean name="Return" extend="com.hybris.commons.dto.impl.PropertyAwareEntityDto">
+			<description>Return</description>
+			<implements>
+				<value>com.hybris.oms.domain.ActionableDto</value>
+			</implements>
+			<annotations>
+				<value>@javax.xml.bind.annotation.XmlRootElement(name = "return")</value>
+				<value>@javax.xml.bind.annotation.XmlAccessorType(javax.xml.bind.annotation.XmlAccessType.FIELD)</value>
+			</annotations>
+
+			<property name="returnId" type="String">
+				<annotations>
+					<value>@javax.xml.bind.annotation.XmlElement</value>
+					<value>@javax.xml.bind.annotation.XmlID</value>
+				</annotations>
+			</property>
+
+			<property name="state" type="String"/>
+			<property name="orderId" type="String">
+				<annotations>
+					<value>@javax.xml.bind.annotation.XmlElement</value>
+				</annotations>
+			</property>
+
+			<property name="customTotalRefundAmount" type="com.hybris.oms.domain.types.Amount"/>
+			<property name="calculatedTotalRefundAmount" type="com.hybris.oms.domain.types.Amount"/>
+
+			<property name="returnReasonCode" type="String">
+				<annotations>
+					<value>@javax.xml.bind.annotation.XmlElement</value>
+				</annotations>
+			</property>
+
+			<property name="returnOrderLines" type="java.util.List" generic="ReturnOrderLine"
+					  initValue="new java.util.ArrayList()">
+				<annotations>
+					<value>@javax.xml.bind.annotation.XmlElement</value>
+				</annotations>
+			</property>
+
+			<property name="returnLocationId" type="String"/>
+
+			<property name="returnShipment" type="com.hybris.oms.domain.returns.ReturnShipment"/>
+
+			<property name="returnPaymentInfos" type="com.hybris.oms.domain.returns.ReturnPaymentInfo">
+				<annotations>
+					<value>@javax.xml.bind.annotation.XmlElement</value>
+				</annotations>
+			</property>
+
+			<property name="shippingRefunded" type="Boolean" initValue="Boolean.FALSE">
+				<annotations>
+					<value>@javax.xml.bind.annotation.XmlElement</value>
+				</annotations>
+			</property>
+
+			<property name="actions" type="java.util.Set" generic="String"/>
+
+			<customCode>
+				<![CDATA[
+                    @Override
+                    public String getId()
+                    {
+                        return this.returnId;
+                    }
+				]]>
+			</customCode>
+		</bean>
+
+        <bean name="ReturnReview" extend="com.hybris.commons.dto.impl.PropertyAwareEntityDto">
+            <description>ReturnReview</description>
+            <annotations>
+                <value>@javax.xml.bind.annotation.XmlRootElement</value>
+                <value>@javax.xml.bind.annotation.XmlAccessorType(javax.xml.bind.annotation.XmlAccessType.FIELD)</value>
+            </annotations>
+
+            <property name="returnId" type="String" />
+
+            <property name="returnLineRejections" type="java.util.List" generic="ReturnLineRejection"
+                      initValue="new java.util.ArrayList()">
+                <annotations>
+                    <value>@javax.xml.bind.annotation.XmlElement</value>
+                </annotations>
+            </property>
+
+            <customCode>
+                <![CDATA[
+                    @Override
+                    public String getId()
+                    {
+                        return null;
+                    }
+				]]>
+            </customCode>
+        </bean>
+
+        <bean name="ReturnLineRejection" extend="com.hybris.commons.dto.impl.PropertyAwareEntityDto">
+            <description>ReturnLineRejection</description>
+            <annotations>
+                <value>@javax.xml.bind.annotation.XmlRootElement</value>
+                <value>@javax.xml.bind.annotation.XmlAccessorType(javax.xml.bind.annotation.XmlAccessType.FIELD)</value>
+            </annotations>
+
+            <property name="rejectionId" type="String">
+                <annotations>
+                    <value>@javax.xml.bind.annotation.XmlElement</value>
+                    <value>@javax.xml.bind.annotation.XmlID</value>
+                </annotations>
+            </property>
+
+            <property name="quantity" type="Integer" />
+            <property name="responsible" type="String" />
+            <property name="reason" type="ReviewReason"/>
+            <property name="returnOrderLineId" type="String" />
+
+            <customCode>
+                <![CDATA[
+                    @Override
+                    public String getId()
+                    {
+                        return this.rejectionId;
+                    }
+				]]>
+            </customCode>
+        </bean>
+
+		<enum name="ReturnQuerySupport">
+			<value>RETURN_ID</value>
+			<value>ORDER_ID</value>
+			<value>STATE</value>
+			<value>DEFAULT</value>
+		</enum>
+		
+		<enum name="ReviewReason">
+			<value>DAMAGED</value>
+			<value>NOTRETURNED</value>
+			<value>WRONGITEM</value>
+			<value>EXPIRED</value>
+            <value>APPROVED</value>
+            <value>NOTAPPROVED</value>
+			<value>OTHER</value>
+		</enum>
+
+	</package>
+
+
+</beans>

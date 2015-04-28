@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	   xmlns:util="http://www.springframework.org/schema/util"
+	   xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+	   http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd">
+
+	<import resource="classpath:/META-INF/oms-core-service-validation-spring.xml"/>
+		
+	<alias name="defaultAtsFormulaValidator" alias="atsFormulaValidator" />
+	<bean id="defaultAtsFormulaValidator" class="com.hybris.oms.facade.validation.impl.ats.AtsFormulaValidator">
+		<property name="parser" ref="formulaParser" />
+		<property name="orderLineQuantityStatusCodeValidator" ref="orderLineQuantityStatusCodeValidator" />
+		<property name="itemStatusCodeValidator" ref="itemStatusCodeValidator" />
+	</bean>
+
+	<alias name="defaultAtsRequestValidator" alias="atsRequestValidator" />
+	<bean id="defaultAtsRequestValidator" class="com.hybris.oms.facade.validation.impl.ats.AtsRequestValidator" />
+
+	<alias name="defaultBaseStoreValidator" alias="baseStoreValidator" />
+	<bean id="defaultBaseStoreValidator" class="com.hybris.oms.facade.validation.impl.basestore.BaseStoreValidator" />
+
+	<alias name="defaultBinCodeValidator" alias="binCodeValidator" />
+	<bean id="defaultBinCodeValidator" class="com.hybris.oms.facade.validation.impl.inventory.BinCodeValidator">
+		<property name="inventoryService" ref="inventoryService" />
+	</bean>
+
+	<alias name="defaultBinValidator" alias="binValidator" />
+	<bean id="defaultBinValidator" class="com.hybris.oms.facade.validation.impl.inventory.BinValidator">
+		<property name="locationIdValidator" ref="locationIdValidator" />
+	</bean>
+
+	<alias name="defaultItemStatusCodeValidator" alias="itemStatusCodeValidator" />
+	<bean id="defaultItemStatusCodeValidator"
+		  class="com.hybris.oms.facade.validation.impl.inventory.ItemStatusCodeValidator">
+		<property name="inventoryService" ref="inventoryService" />
+	</bean>
+
+	<alias name="defaultItemStatusValidator" alias="itemStatusValidator" />
+	<bean id="defaultItemStatusValidator" class="com.hybris.oms.facade.validation.impl.inventory.ItemStatusValidator" />
+
+	<alias name="defaultLocationIdValidator" alias="locationIdValidator" />
+	<bean id="defaultLocationIdValidator" class="com.hybris.oms.facade.validation.impl.inventory.LocationIdValidator">
+		<property name="inventoryService" ref="inventoryService" />
+	</bean>
+
+	<alias name="defaultLocationValidator" alias="locationValidator" />
+	<bean id="defaultLocationValidator" class="com.hybris.oms.facade.validation.impl.inventory.LocationValidator">
+		<property name="countryValidator" ref="countryValidator" />
+	</bean>
+
+	<alias name="defaultOmsInventoryValidator" alias="omsInventoryValidator" />
+	<bean id="defaultOmsInventoryValidator"
+		  class="com.hybris.oms.facade.validation.impl.inventory.OmsInventoryValidator">
+		<property name="itemStatusCodeValidator" ref="itemStatusCodeValidator" />
+		<property name="locationIdValidator" ref="locationIdValidator" />
+		<property name="binCodeValidator" ref="binCodeValidator" />
+	</bean>
+
+	<alias name="defaultOrderLineQuantityStatusCodeValidator" alias="orderLineQuantityStatusCodeValidator" />
+	<bean id="defaultOrderLineQuantityStatusCodeValidator"
+		  class="com.hybris.oms.facade.validation.impl.order.OrderLineQuantityStatusCodeValidator">
+		<property name="orderService" ref="orderService" />
+	</bean>
+
+	<alias name="defaultOrderLineQuantityIdValidator" alias="orderLineQuantityIdValidator" />
+	<bean id="defaultOrderLineQuantityIdValidator"
+		  class="com.hybris.oms.facade.validation.impl.order.OrderLineQuantityIdValidator">
+		<property name="orderService" ref="orderService" />
+	</bean>
+
+	<alias name="defaultOrderLineQuantityStatusValidator" alias="orderLineQuantityStatusValidator" />
+	<bean id="defaultOrderLineQuantityStatusValidator"
+		  class="com.hybris.oms.facade.validation.impl.order.OrderLineQuantityStatusValidator" />
+
+	<alias name="defaultOrderLineQuantityValidator" alias="orderLineQuantityValidator" />
+	<bean id="defaultOrderLineQuantityValidator"
+		  class="com.hybris.oms.facade.validation.impl.order.OrderLineQuantityValidator">
+		<property name="orderLineQuantityStatusValidator" ref="orderLineQuantityStatusValidator" />
+		<property name="shipmentValidator" ref="shipmentValidator" />
+		<property name="inventoryService" ref="inventoryService" />
+	</bean>
+
+	<alias name="defaultOrderLineValidator" alias="orderLineValidator" />
+	<bean id="defaultOrderLineValidator" class="com.hybris.oms.facade.validation.impl.order.OrderLineValidator">
+		<property name="amountWithPositiveValueValidator" ref="amountWithPositiveValueValidator" />
+		<property name="quantityWithPositiveValueValidator" ref="quantityWithPositiveValueValidator" />
+		<property name="orderLineQuantityValidator" ref="orderLineQuantityValidator" />
+	</bean>
+
+	<alias name="defaultOrderValidator" alias="orderValidator" />
+	<bean id="defaultOrderValidator" class="com.hybris.oms.facade.validation.impl.order.OrderValidator">
+		<property name="currencyValidator" ref="currencyValidator" />
+		<property name="orderLineValidator" ref="orderLineValidator" />
+		<property name="paymentInfoValidator" ref="paymentInfoValidator" />
+		<property name="addressValidator" ref="addressValidator" />
+		<property name="inventoryService" ref="inventoryService" />
+		<property name="baseStoreService" ref="baseStoreService" />
+	</bean>
+
+	<alias name="defaultPaymentInfoValidator" alias="paymentInfoValidator" />
+	<bean id="defaultPaymentInfoValidator" class="com.hybris.oms.facade.validation.impl.order.PaymentInfoValidator">
+		<property name="defaultAddressValidator" ref="addressValidator" />
+	</bean>
+
+	<alias name="defaultRuleShortValidator" alias="ruleShortValidator" />
+	<bean id="defaultRuleShortValidator" class="com.hybris.oms.facade.validation.impl.rule.RuleShortValidator">
+		<property name="orderLineQuantityStatusCodeValidator" ref="orderLineQuantityStatusCodeValidator" />
+		<property name="itemStatusCodeValidator" ref="itemStatusCodeValidator" />
+	</bean>
+
+	<alias name="defaultShipmentValidator" alias="shipmentValidator" />
+	<bean id="defaultShipmentValidator" class="com.hybris.oms.facade.validation.impl.shipment.ShipmentValidator" />
+
+	<alias name="defaultShipmentOlqValidator" alias="shipmentOlqValidator" />
+	<bean id="defaultShipmentOlqValidator" class="com.hybris.oms.facade.validation.impl.shipment.ShipmentOlqValidator">
+		<property name="orderLineQuantityIdValidator" ref="orderLineQuantityIdValidator" />
+	</bean>
+
+
+
+	<alias name="defaultReturnValidator" alias="returnValidator" />
+	<bean id="defaultReturnValidator" class="com.hybris.oms.facade.validation.impl.returns.ReturnValidator">
+		<property name="returnOrderLineValidator" ref="returnOrderLineValidator" />
+		<property name="returnPaymentInfoValidator" ref="returnPaymentInfoValidator" />
+		<property name="orderService" ref="orderService" />
+		<property name="shipmentService" ref="shipmentService" />
+		<property name="returnService" ref="returnService" />
+	</bean>
+
+	<alias name="defaultReturnPaymentInfoValidator" alias="returnPaymentInfoValidator" />
+	<bean id="defaultReturnPaymentInfoValidator"
+		  class="com.hybris.oms.facade.validation.impl.returns.ReturnPaymentInfoValidator">
+	</bean>
+
+	<alias name="defaultReturnOrderLineValidator" alias="returnOrderLineValidator" />
+	<bean id="defaultReturnOrderLineValidator"
+		  class="com.hybris.oms.facade.validation.impl.returns.ReturnOrderLineValidator">
+	</bean>
+
+    <alias name="defaultReturnReviewValidator" alias="returnReviewValidator" />
+    <bean id="defaultReturnReviewValidator"
+          class="com.hybris.oms.facade.validation.impl.returns.ReturnReviewValidator">
+        <property name="returnLineRejectionValidator" ref="returnLineRejectionValidator" />
+        <property name="returnService" ref="returnService" />
+    </bean>
+
+    <alias name="defaultReturnLineRejectionValidator" alias="returnLineRejectionValidator" />
+    <bean id="defaultReturnLineRejectionValidator"
+          class="com.hybris.oms.facade.validation.impl.returns.ReturnLineRejectionValidator">
+    </bean>
+    
+	<alias name="defaultPositiveIntegerValidator" alias="positiveIntegerValidator"/>
+	<bean id="defaultPositiveIntegerValidator" class="com.hybris.oms.facade.validation.impl.preference.PositiveIntegerValidator" />
+	
+	<bean class="org.springframework.beans.factory.config.MethodInvokingFactoryBean">
+    <property name="targetObject" ref="tenantPreferencesValidation"/>
+    <property name="targetMethod" value="putAll"/>
+    <property name="arguments">
+    	<util:map>
+				<entry value-ref="positiveIntegerValidator">
+					<key>
+						<util:constant static-field="com.hybris.oms.domain.preference.TenantPreferenceConstants.PREF_KEY_ATS_GLOBAL_THRHOLD"/>
+					</key>
+				</entry>
+				<entry value-ref="positiveIntegerValidator">
+					<key>
+						<util:constant static-field="com.hybris.oms.domain.preference.TenantPreferenceConstants.PREF_KEY_SHIPPING_WITHIN_DAYS"/>
+					</key>
+				</entry>
+		</util:map>
+    </property>
+</bean>
+</beans>

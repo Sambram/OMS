@@ -1,0 +1,7 @@
+id,atsId,name,formula,version
+AtsFormulaData|1,SOURCING,ATS used for sourcing,I[ON_HAND]-I[NOT_AVAILABLE]-O[ALLOCATED]-O[SOURCED]-O[PICKED]-O[PACKED],1
+AtsFormulaData|2,WEB,Storefront,I[ON_HAND]-I[NOT_AVAILABLE]-O[ALLOCATED]-O[SOURCED]-O[PICKED]-O[PACKED]-T,1
+AtsFormulaData|3,ON_HAND,On hand inventory only,I[ON_HAND],1
+AtsFormulaData|4,NOT_AVAILABLE,Not available inventory only,I[NOT_AVAILABLE],1
+AtsFormulaData|5,FUTURE,future ATS,F[ON_HAND],1
+AtsFormulaData|6,FULL,current and future inventory ATS value,I[ON_HAND]-I[NOT_AVAILABLE]-O[ALLOCATED]-O[SOURCED]-O[PICKED]-O[PACKED]-T+F[ON_HAND],1

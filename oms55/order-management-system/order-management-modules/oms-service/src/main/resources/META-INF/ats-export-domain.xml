@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<types xmlns="http://www.hybris.com/schema/ondemand/domain"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.hybris.com/schema/onpremise/domain http://www.hybris.com/schema/onpremise/domain-5.3.xsd"
+	package="com.hybris.oms.export.service.managedobjects.ats">
+
+	<managedobjects>
+		<managedobject code="ExportSkus">
+			<description>Contains list of skus marked for export.</description>
+			<attributes>
+				<attribute type="String" name="sku">
+					<description>The sku marked for export.</description>
+					<modifiers mandatory="true" />
+				</attribute>
+				<attribute type="String" name="locationId">
+					<description>The location id marked for export</description>
+					<modifiers mandatory="true" />
+				</attribute>
+				<attribute type="long" name="latestChange">
+					<description>Timestamp (in long) of latest change</description>
+					<modifiers mandatory="true" indexed="true" />
+				</attribute>
+			</attributes>
+			<persistence name="exportSkus">
+				<index name="UQ_sku_locationId" unique="true">
+					<attribute name="sku" />
+					<attribute name="locationId" />
+				</index>
+			</persistence>
+		</managedobject>
+	</managedobjects>
+</types>

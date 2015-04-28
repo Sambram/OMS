@@ -1,0 +1,1173 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:util="http://www.springframework.org/schema/util"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+		http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd">
+
+	<context:annotation-config />
+
+	<import resource="oms-core-service-conversion-spring.xml" />
+
+	<!-- Populators -->
+    <alias name="compositeAtsFormulaPopulator" alias="atsFormulaPopulator" />
+	<bean id="compositeAtsFormulaPopulator" parent="compositePopulator">
+		<property name="populators" ref="compositeAtsFormulaPopulatorList" />
+	</bean>
+
+	<bean id="defaultAtsFormulaPopulator"
+		class="com.hybris.oms.facade.conversion.impl.ats.AtsFormulaPopulator" />
+	<util:list id="compositeAtsFormulaPopulatorList">
+		<ref bean="defaultAtsFormulaPopulator" />
+	</util:list>
+
+	<alias name="compositeAtsQuantityPopulator" alias="atsQuantityPopulator" />
+	<bean id="compositeAtsQuantityPopulator" parent="compositePopulator">
+		<property name="populators" ref="compositeAtsQuantityPopulatorList" />
+	</bean>
+	<bean id="defaultAtsQuantityPopulator"
+		class="com.hybris.oms.facade.conversion.impl.ats.AtsQuantityPopulator" />
+	<util:list id="compositeAtsQuantityPopulatorList">
+		<ref bean="defaultAtsQuantityPopulator" />
+	</util:list>
+
+	<alias name="compositeAtsLocalQuantitiesPopulator" alias="atsLocalQuantitiesPopulator" />
+	<bean id="compositeAtsLocalQuantitiesPopulator" parent="compositePopulator">
+		<property name="populators" ref="compositeAtsLocalQuantitiesPopulatorList" />
+	</bean>
+	<bean id="defaultAtsLocalQuantitiesPopulator"
+		class="com.hybris.oms.facade.conversion.impl.ats.AtsLocalQuantitiesPopulator">
+		<property name="atsQuantityConverter" ref="atsQuantityConverter" />
+	</bean>
+	<util:list id="compositeAtsLocalQuantitiesPopulatorList">
+		<ref bean="defaultAtsLocalQuantitiesPopulator" />
+	</util:list>
+
+
+
+	<alias name="compositeBaseStorePopulator" alias="baseStorePopulator" />
+	<bean id="compositeBaseStorePopulator" parent="compositePopulator">
+		<property name="populators" ref="compositeBaseStorePopulatorList" />
+	</bean>
+	<bean id="defaultBaseStorePopulator"
+		class="com.hybris.oms.facade.conversion.impl.basestore.BaseStorePopulator" />
+	<util:list id="compositeBaseStorePopulatorList">
+		<ref bean="defaultBaseStorePopulator" />
+	</util:list>
+
+	<alias name="compositeLocationPopulator" alias="locationPopulator" />
+	<bean id="compositeLocationPopulator" parent="compositePopulator">
+		<property name="populators" ref="compositeLocationPopulatorList" />
+	</bean>
+	<bean id="defaultLocationPopulator"
+		class="com.hybris.oms.facade.conversion.impl.inventory.LocationPopulator">
+		<property name="addressConverter" ref="addressConverter" />
+	</bean>
+	<util:list id="compositeLocationPopulatorList">
+		<ref bean="defaultLocationPopulator" />
+	</util:list>
+
+	<alias name="compositeBinPopulator" alias="binPopulator" />
+	<bean id="compositeBinPopulator" parent="compositePopulator">
+		<property name="populators" ref="compositeBinPopulatorList" />
+	</bean>
+	<bean id="defaultBinPopulator"
+		class="com.hybris.oms.facade.conversion.impl.inventory.BinPopulator" />
+	<util:list id="compositeBinPopulatorList">
+		<ref bean="defaultBinPopulator" />
+	</util:list>
+
+	<alias name="compositeCurrentItemQuantityPopulator" alias="currentItemQuantityPopulator" />
+	<bean id="compositeCurrentItemQuantityPopulator" parent="compositePopulator">
+		<property name="populators" ref="compositeCurrentItemQuantityPopulatorList" />
+	</bean>
+	<bean id="defaultCurrentItemQuantityPopulator"
+		class="com.hybris.oms.facade.conversion.impl.inventory.CurrentItemQuantityPopulator" />
+	<util:list id="compositeCurrentItemQuantityPopulatorList">
+		<ref bean="defaultCurrentItemQuantityPopulator" />
+	</util:list>
+
+	<alias name="compositeFutureItemQuantityPopulator" alias="futureItemQuantityPopulator" />
+	<bean id="compositeFutureItemQuantityPopulator" parent="compositePopulator">
+		<property name="populators" ref="compositeFutureItemQuantityPopulatorList" />
+	</bean>
+	<bean id="defaultFutureItemQuantityPopulator"
+		class="com.hybris.oms.facade.conversion.impl.inventory.FutureItemQuantityPopulator" />
+	<util:list id="compositeFutureItemQuantityPopulatorList">
+		<ref bean="defaultFutureItemQuantityPopulator" />
+	</util:list>
+
+	<alias name="compositeItemLocationCurrentPopulator" alias="itemLocationCurrentPopulator" />
+	<bean id="compositeItemLocationCurrentPopulator" parent="compositePopulator">
+		<property name="populators" ref="compositeItemLocationCurrentPopulatorList" />
+	</bean>
+	<bean id="defaultItemLocationCurrentPopulator"
+		class="com.hybris.oms.facade.conversion.impl.inventory.ItemLocationCurrentPopulator">
+		<property name="locationConverter" ref="locationConverter" />
+		<property name="currentItemQuantityConverter" ref="currentItemQuantityConverter" />
+		<property name="binConverter" ref="binConverter" />
+	</bean>
+	<util:list id="compositeItemLocationCurrentPopulatorList">
+		<ref bean="defaultItemLocationCurrentPopulator" />
+	</util:list>
+
+	<alias name="compositeItemLocationFuturePopulator" alias="itemLocationFuturePopulator" />
+	<bean id="compositeItemLocationFuturePopulator" parent="compositePopulator">
+		<property name="populators" ref="compositeItemLocationFuturePopulatorList" />
+	</bean>
+	<bean id="defaultItemLocationFuturePopulator"
+		class="com.hybris.oms.facade.conversion.impl.inventory.ItemLocationFuturePopulator">
+		<property name="locationConverter" ref="locationConverter" />
+		<property name="futureItemQuantityConverter" ref="futureItemQuantityConverter" />
+		<property name="binConverter" ref="binConverter" />
+	</bean>
+	<util:list id="compositeItemLocationFuturePopulatorList">
+		<ref bean="defaultItemLocationFuturePopulator" />
+	</util:list>
+
+	<alias name="compositeItemStatusPopulator" alias="itemStatusPopulator" />
+	<bean id="compositeItemStatusPopulator" parent="compositePopulator">
+		<property name="populators" ref="compositeItemStatusPopulatorList" />
+	</bean>
+	<bean id="defaultItemStatusPopulator"
+		class="com.hybris.oms.facade.conversion.impl.inventory.ItemStatusPopulator" />
+	<util:list id="compositeItemStatusPopulatorList">
+		<ref bean="defaultItemStatusPopulator" />
+	</util:list>
+
+	<alias name="defaultOmsInventoryPopulator" alias="omsInventoryPopulator" />
+	<bean id="defaultOmsInventoryPopulator"
+		class="com.hybris.oms.facade.conversion.impl.inventory.OmsInventoryPopulator" />
+
+	<alias name="compositeOrderLineAttributePopulator" alias="orderLineAttributePopulator" />
+	<bean id="compositeOrderLineAttributePopulator" parent="compositePopulator">
+		<property name="populators" ref="compositeOrderLineAttributePopulatorList" />
+	</bean>
+	<bean id="defaultOrderLineAttributePopulator"
+		class="com.hybris.oms.facade.conversion.impl.order.OrderLineAttributePopulator" />
+	<util:list id="compositeOrderLineAttributePopulatorList">
+		<ref bean="defaultOrderLineAttributePopulator" />
+	</util:list>
+
+	<alias name="compositeOrderLineQuantityStatusPopulator" alias="orderLineQuantityStatusPopulator" />
+	<bean id="compositeOrderLineQuantityStatusPopulator" parent="compositePopulator">
+		<property name="populators"
+			ref="compositeOrderLineQuantityStatusPopulatorList" />
+	</bean>
+	<bean id="defaultOrderLineQuantityStatusPopulator"
+		class="com.hybris.oms.facade.conversion.impl.order.OrderLineQuantityStatusPopulator" />
+	<util:list id="compositeOrderLineQuantityStatusPopulatorList">
+		<ref bean="defaultOrderLineQuantityStatusPopulator" />
+	</util:list>
+
+	<alias name="compositeOrderLineQuantityPopulator" alias="orderLineQuantityPopulator" />
+	<bean id="compositeOrderLineQuantityPopulator" parent="compositePopulator">
+		<property name="populators" ref="compositeOrderLineQuantityPopulatorList" />
+	</bean>
+	<bean id="defaultOrderLineQuantityPopulator"
+		class="com.hybris.oms.facade.conversion.impl.order.OrderLineQuantityPopulator">
+		<property name="shipmentConverter" ref="shipmentConverter" />
+		<property name="orderLineQuantityStatusConverter" ref="orderLineQuantityStatusConverter" />
+	</bean>
+	<util:list id="compositeOrderLineQuantityPopulatorList">
+		<ref bean="defaultOrderLineQuantityPopulator" />
+	</util:list>
+
+	<alias name="compositeOrderLinePopulator" alias="orderLinePopulator" />
+	<bean id="compositeOrderLinePopulator" parent="compositePopulator">
+		<property name="populators" ref="compositeOrderLinePopulatorList" />
+	</bean>
+	<bean id="defaultOrderLinePopulator"
+		class="com.hybris.oms.facade.conversion.impl.order.OrderLinePopulator">
+		<property name="converters" ref="converters" />
+		<property name="orderLineQuantityConverter" ref="orderLineQuantityConverter" />
+		<property name="orderLineAttributeConverter" ref="orderLineAttributeConverter" />
+	</bean>
+	<util:list id="compositeOrderLinePopulatorList">
+		<ref bean="defaultOrderLinePopulator" />
+	</util:list>
+
+	<alias name="compositePaymentInfoPopulator" alias="paymentInfoPopulator" />
+	<bean id="compositePaymentInfoPopulator" parent="compositePopulator">
+		<property name="populators" ref="compositePaymentInfoPopulatorList" />
+	</bean>
+	<bean id="defaultPaymentInfoPopulator"
+		class="com.hybris.oms.facade.conversion.impl.order.PaymentInfoPopulator">
+		<property name="addressConverter" ref="addressConverter" />
+	</bean>
+	<util:list id="compositePaymentInfoPopulatorList">
+		<ref bean="defaultPaymentInfoPopulator" />
+	</util:list>
+
+	<alias name="compositeOrderPopulator" alias="orderPopulator" />
+	<bean id="compositeOrderPopulator" parent="compositePopulator">
+		<property name="populators" ref="compositeOrderPopulatorList" />
+	</bean>
+	<bean id="defaultOrderPopulator"
+		class="com.hybris.oms.facade.conversion.impl.order.OrderPopulator">
+		<property name="converters" ref="converters" />
+		<property name="orderLineConverter" ref="orderLineConverter" />
+		<property name="paymentInfoConverter" ref="paymentInfoConverter" />
+		<property name="shippingAndHandlingConverter" ref="shippingAndHandlingConverter" />
+		<property name="addressConverter" ref="addressConverter" />
+		<property name="contactConverter" ref="contactConverter" />
+		<property name="orderService" ref="orderService" />
+	</bean>
+	<bean id="defaultActionableOrderPopulator" class="com.hybris.oms.facade.conversion.common.ActionablePopulator">
+		<property name="workflowExecutor" ref="orderWorkflowExecutor" />
+	</bean>
+	<util:list id="compositeOrderPopulatorList">
+		<ref bean="defaultOrderPopulator" />
+		<ref bean="defaultActionableOrderPopulator" />
+	</util:list>
+
+	<alias name="compositeShipmentPopulator" alias="shipmentPopulator" />
+	<bean id="compositeShipmentPopulator" parent="compositePopulator">
+		<property name="populators" ref="compositeShipmentPopulatorList" />
+	</bean>
+	<bean id="defaultShipmentPopulator"
+		class="com.hybris.oms.facade.conversion.impl.shipment.ShipmentPopulator">
+		<property name="deliveryConverter" ref="deliveryConverter" />
+		<property name="shippingAndHandlingConverter" ref="shippingAndHandlingConverter" />
+		<property name="addressConverter" ref="addressConverter" />
+		<property name="priceConverter" ref="priceConverter" />
+	</bean>
+	<bean id="defaultActionableShipmentPopulator" class="com.hybris.oms.facade.conversion.common.ActionablePopulator">
+		<property name="workflowExecutor" ref="shipmentWorkflowExecutor" />
+	</bean>
+	<util:list id="compositeShipmentPopulatorList">
+		<ref bean="defaultShipmentPopulator" />
+		<ref bean="defaultActionableShipmentPopulator" />
+	</util:list>
+
+	<alias name="compositeDeliveryPopulator" alias="deliveryPopulator" />
+	<bean id="compositeDeliveryPopulator" parent="compositePopulator">
+		<property name="populators" ref="compositeDeliveryPopulatorList" />
+	</bean>
+	<bean id="defaultDeliveryPopulator"
+		class="com.hybris.oms.facade.conversion.impl.shipment.DeliveryPopulator">
+		<property name="addressConverter" ref="addressConverter" />
+	</bean>
+	<util:list id="compositeDeliveryPopulatorList">
+		<ref bean="defaultDeliveryPopulator" />
+	</util:list>
+
+	<alias name="compositeShippingAndHandlingPopulator" alias="shippingAndHandlingPopulator" />
+	<bean id="compositeShippingAndHandlingPopulator" parent="compositePopulator">
+		<property name="populators" ref="compositeShippingAndHandlingPopulatorList" />
+	</bean>
+	<bean id="defaultShippingAndHandlingPopulator"
+		class="com.hybris.oms.facade.conversion.impl.shipment.ShippingAndHandlingPopulator">
+		<property name="priceConverter" ref="priceConverter" />
+	</bean>
+	<util:list id="compositeShippingAndHandlingPopulatorList">
+		<ref bean="defaultShippingAndHandlingPopulator" />
+	</util:list>
+
+	<alias name="compositeShipmentDetailsPopulator" alias="shipmentDetailsPopulator" />
+	<bean id="compositeShipmentDetailsPopulator" parent="compositePopulator">
+		<property name="populators" ref="compositeShipmentDetailsPopulatorList" />
+	</bean>
+	<bean id="defaultShipmentDetailsPopulator"
+		class="com.hybris.oms.facade.conversion.impl.shipment.ShipmentDetailsPopulator" />
+	<util:list id="compositeShipmentDetailsPopulatorList">
+		<ref bean="defaultShipmentDetailsPopulator" />
+	</util:list>
+
+	<alias name="defaultRuleParameterPopulator" alias="ruleParameterPopulator" />
+	<bean id="defaultRuleParameterPopulator"
+		class="com.hybris.oms.facade.conversion.impl.rule.RuleParameterPopulator" />
+
+	<bean id="ruleElementPopulator"
+		class="com.hybris.oms.facade.conversion.impl.rule.RuleElementPopulator"
+		abstract="true">
+		<property name="ruleParameterConverter" ref="ruleParameterConverter" />
+		<property name="converters" ref="converters" />
+	</bean>
+
+	<alias name="defaultRuleConditionsPopulator" alias="ruleConditionsPopulator" />
+	<bean id="defaultRuleConditionsPopulator"
+		class="com.hybris.oms.facade.conversion.impl.rule.RuleConditionsPopulator"
+		parent="ruleElementPopulator" />
+
+	<alias name="defaultRuleActionPopulator" alias="ruleActionPopulator" />
+	<bean id="defaultRuleActionPopulator"
+		class="com.hybris.oms.facade.conversion.impl.rule.RuleActionPopulator"
+		parent="ruleElementPopulator" />
+
+	<alias name="compositeRulePopulator" alias="rulePopulator" />
+	<bean id="compositeRulePopulator" parent="compositePopulator">
+		<property name="populators" ref="compositeRulePopulatorList" />
+	</bean>
+	<bean id="defaultRulePopulator"
+		class="com.hybris.oms.facade.conversion.impl.rule.RulePopulator">
+		<property name="ruleConditionsConverter" ref="ruleConditionsConverter" />
+		<property name="ruleActionConverter" ref="ruleActionConverter" />
+		<property name="converters" ref="converters" />
+	</bean>
+	<util:list id="compositeRulePopulatorList">
+		<ref bean="defaultRulePopulator" />
+	</util:list>
+
+
+	<!-- Reverse Populators -->
+
+	<alias name="propertyAwareBaseStoreReversePopulator" alias="baseStoreReversePopulator" />
+	<bean id="propertyAwareBaseStoreReversePopulator" parent="compositePopulator">
+		<property name="populators">
+			<list>
+				<ref bean="defaultBaseStoreReversePopulator" />
+				<ref bean="propertyAwareReversePopulator" />
+			</list>
+		</property>
+	</bean>
+	<bean id="defaultBaseStoreReversePopulator"
+		class="com.hybris.oms.facade.conversion.impl.basestore.BaseStoreReversePopulator" />
+
+	<alias name="propertyAwareLocationReversePopulator" alias="locationReversePopulator" />
+	<bean id="propertyAwareLocationReversePopulator" parent="compositePopulator">
+		<property name="populators">
+			<list>
+				<ref bean="defaultLocationReversePopulator" />
+				<ref bean="propertyAwareReversePopulator" />
+			</list>
+		</property>
+	</bean>
+	<bean id="defaultLocationReversePopulator"
+		class="com.hybris.oms.facade.conversion.impl.inventory.LocationReversePopulator">
+		<property name="persistenceManager" ref="persistenceManager" />
+		<property name="addressReverseConverter" ref="addressReverseConverter" />
+	</bean>
+
+	<alias name="propertyAwareBinReversePopulator" alias="binReversePopulator" />
+	<bean id="propertyAwareBinReversePopulator" parent="compositePopulator">
+		<property name="populators">
+			<list>
+				<ref bean="defaultBinReversePopulator" />
+				<ref bean="propertyAwareReversePopulator" />
+			</list>
+		</property>
+	</bean>
+	<bean id="defaultBinReversePopulator"
+		class="com.hybris.oms.facade.conversion.impl.inventory.BinReversePopulator">
+		<property name="persistenceManager" ref="persistenceManager" />
+	</bean>
+
+	<alias name="propertyAwareItemStatusReversePopulator" alias="itemStatusReversePopulator" />
+	<bean id="propertyAwareItemStatusReversePopulator" parent="compositePopulator">
+		<property name="populators">
+			<list>
+				<ref bean="defaultItemStatusReversePopulator" />
+				<ref bean="propertyAwareReversePopulator" />
+			</list>
+		</property>
+	</bean>
+	<bean id="defaultItemStatusReversePopulator"
+		class="com.hybris.oms.facade.conversion.impl.inventory.ItemStatusReversePopulator" />
+
+	<alias name="propertyAwareOrderLineAttributeReversePopulator"
+		alias="orderLineAttributeReversePopulator" />
+	<bean id="propertyAwareOrderLineAttributeReversePopulator" parent="compositePopulator">
+		<property name="populators">
+			<list>
+				<ref bean="defaultOrderLineAttributeReversePopulator" />
+				<ref bean="propertyAwareReversePopulator" />
+			</list>
+		</property>
+	</bean>
+	<bean id="defaultOrderLineAttributeReversePopulator"
+		class="com.hybris.oms.facade.conversion.impl.order.OrderLineAttributeReversePopulator" />
+
+	<alias name="propertyAwareOrderLineQuantityStatusReversePopulator"
+		alias="orderLineQuantityStatusReversePopulator" />
+	<bean id="propertyAwareOrderLineQuantityStatusReversePopulator"
+		parent="compositePopulator">
+		<property name="populators">
+			<list>
+				<ref bean="defaultOrderLineQuantityStatusReversePopulator" />
+				<ref bean="propertyAwareReversePopulator" />
+			</list>
+		</property>
+	</bean>
+	<bean id="defaultOrderLineQuantityStatusReversePopulator"
+		class="com.hybris.oms.facade.conversion.impl.order.OrderLineQuantityStatusReversePopulator" />
+
+	<alias name="propertyAwareOrderLineQuantityReversePopulator"
+		alias="orderLineQuantityReversePopulator" />
+	<bean id="propertyAwareOrderLineQuantityReversePopulator" parent="compositePopulator">
+		<property name="populators">
+			<list>
+				<ref bean="defaultOrderLineQuantityReversePopulator" />
+				<ref bean="propertyAwareReversePopulator" />
+			</list>
+		</property>
+	</bean>
+	<bean id="defaultOrderLineQuantityReversePopulator"
+		class="com.hybris.oms.facade.conversion.impl.order.OrderLineQuantityReversePopulator">
+		<property name="persistenceManager" ref="persistenceManager" />
+		<property name="shipmentReverseConverter" ref="shipmentReverseConverter" />
+	</bean>
+
+	<alias name="propertyAwareOrderLineReversePopulator" alias="orderLineReversePopulator" />
+	<bean id="propertyAwareOrderLineReversePopulator" parent="compositePopulator">
+		<property name="populators">
+			<list>
+				<ref bean="defaultOrderLineReversePopulator" />
+				<ref bean="propertyAwareReversePopulator" />
+			</list>
+		</property>
+	</bean>
+	<bean id="defaultOrderLineReversePopulator"
+		class="com.hybris.oms.facade.conversion.impl.order.OrderLineReversePopulator">
+		<property name="converters" ref="converters" />
+		<property name="orderLineQuantityReverseConverter" ref="orderLineQuantityReverseConverter" />
+		<property name="orderLineAttributeReverseConverter" ref="orderLineAttributeReverseConverter" />
+	</bean>
+
+	<alias name="propertyAwarePaymentInfoReversePopulator" alias="paymentInfoReversePopulator" />
+	<bean id="propertyAwarePaymentInfoReversePopulator" parent="compositePopulator">
+		<property name="populators">
+			<list>
+				<ref bean="defaultPaymentInfoReversePopulator" />
+				<ref bean="propertyAwareReversePopulator" />
+			</list>
+		</property>
+	</bean>
+	<bean id="defaultPaymentInfoReversePopulator"
+		class="com.hybris.oms.facade.conversion.impl.order.PaymentInfoReversePopulator">
+		<property name="addressReverseConverter" ref="addressReverseConverter" />
+	</bean>
+
+	<alias name="propertyAwareOrderReversePopulator" alias="orderReversePopulator" />
+	<bean id="propertyAwareOrderReversePopulator" parent="compositePopulator">
+		<property name="populators">
+			<list>
+				<ref bean="defaultOrderReversePopulator" />
+				<ref bean="propertyAwareReversePopulator" />
+			</list>
+		</property>
+	</bean>
+	<bean id="defaultOrderReversePopulator"
+		class="com.hybris.oms.facade.conversion.impl.order.OrderReversePopulator">
+		<property name="persistenceManager" ref="persistenceManager" />
+		<property name="orderLineReverseConverter" ref="orderLineReverseConverter" />
+		<property name="paymentInfoReverseConverter" ref="paymentInfoReverseConverter" />
+		<property name="shippingAndHandlingReverseConverter" ref="shippingAndHandlingReverseConverter" />
+		<property name="converters" ref="converters" />
+		<property name="addressReverseConverter" ref="addressReverseConverter" />
+		<property name="contactReverseConverter" ref="contactReverseConverter" />
+		<property name="orderScheduledShippingDateUtils" ref="orderScheduledShippingDateUtils"/>
+	</bean>
+
+	<alias name="propertyAwareDeliveryReversePopulator" alias="deliveryReversePopulator" />
+	<bean id="propertyAwareDeliveryReversePopulator" parent="compositePopulator">
+		<property name="populators">
+			<list>
+				<ref bean="defaultDeliveryReversePopulator" />
+				<ref bean="propertyAwareReversePopulator" />
+			</list>
+		</property>
+	</bean>
+	<bean id="defaultDeliveryReversePopulator"
+		class="com.hybris.oms.facade.conversion.impl.shipment.DeliveryReversePopulator">
+		<property name="addressReverseConverter" ref="addressReverseConverter" />
+	</bean>
+
+	<alias name="propertyAwareShipmentDetailsReversePopulator" alias="shipmentDetailsReversePopulator" />
+	<bean id="propertyAwareShipmentDetailsReversePopulator" parent="compositePopulator">
+		<property name="populators">
+			<list>
+				<ref bean="defaultShipmentDetailsReversePopulator" />
+				<ref bean="propertyAwareReversePopulator" />
+			</list>
+		</property>
+	</bean>
+	<bean id="defaultShipmentDetailsReversePopulator"
+		class="com.hybris.oms.facade.conversion.impl.shipment.ShipmentDetailsReversePopulator" />
+
+	<alias name="propertyAwareShipmentReversePopulator" alias="shipmentReversePopulator" />
+	<bean id="propertyAwareShipmentReversePopulator" parent="compositePopulator">
+		<property name="populators">
+			<list>
+				<ref bean="defaultShipmentReversePopulator" />
+				<ref bean="propertyAwareReversePopulator" />
+			</list>
+		</property>
+	</bean>
+	<bean id="defaultShipmentReversePopulator"
+		class="com.hybris.oms.facade.conversion.impl.shipment.ShipmentReversePopulator">
+		<property name="addressReverseConverter" ref="addressReverseConverter" />
+		<property name="priceReverseConverter" ref="priceReverseConverter" />
+		<property name="deliveryReverseConverter" ref="deliveryReverseConverter" />
+	</bean>
+
+	<alias name="propertyAwareShippingAndHandlingReversePopulator"
+		alias="shippingAndHandlingReversePopulator" />
+	<bean id="propertyAwareShippingAndHandlingReversePopulator"
+		parent="compositePopulator">
+		<property name="populators">
+			<list>
+				<ref bean="defaultShippingAndHandlingReversePopulator" />
+				<ref bean="propertyAwareReversePopulator" />
+			</list>
+		</property>
+	</bean>
+	<bean id="defaultShippingAndHandlingReversePopulator"
+		class="com.hybris.oms.facade.conversion.impl.shipment.ShippingAndHandlingReversePopulator">
+		<property name="priceReverseConverter" ref="priceReverseConverter" />
+	</bean>
+
+	<!-- Abstract Converters (Not real classes, only spring beans) -->
+
+	<alias name="defaultAtsFormulaConverter" alias="atsFormulaConverter" />
+	<bean id="defaultAtsFormulaConverter" parent="abstractPopulatingConverter">
+		<lookup-method name="createTarget" bean="atsFormulaDTO" />
+		<property name="populator" ref="atsFormulaPopulator" />
+	</bean>
+
+	<alias name="defaultAtsLocalQuantitiesConverter" alias="atsLocalQuantitiesConverter" />
+	<bean id="defaultAtsLocalQuantitiesConverter" parent="abstractPopulatingConverter">
+		<lookup-method name="createTarget" bean="atsLocalQuantitiesDTO" />
+		<property name="populator" ref="atsLocalQuantitiesPopulator" />
+	</bean>
+
+	<alias name="defaultAtsQuantityConverter" alias="atsQuantityConverter" />
+	<bean id="defaultAtsQuantityConverter" parent="abstractPopulatingConverter">
+		<lookup-method name="createTarget" bean="atsQuantityDTO" />
+		<property name="populator" ref="atsQuantityPopulator" />
+	</bean>
+
+	<alias name="defaultBaseStoreConverter" alias="baseStoreConverter" />
+	<bean id="defaultBaseStoreConverter" parent="abstractPopulatingConverter">
+		<lookup-method name="createTarget" bean="baseStoreDTO" />
+		<property name="populator" ref="baseStorePopulator" />
+	</bean>
+
+	<alias name="defaultLocationConverter" alias="locationConverter" />
+	<bean id="defaultLocationConverter" parent="abstractPopulatingConverter">
+		<lookup-method name="createTarget" bean="locationDTO" />
+		<property name="populator" ref="locationPopulator" />
+	</bean>
+
+	<alias name="defaultBinConverter" alias="binConverter" />
+	<bean id="defaultBinConverter" parent="abstractPopulatingConverter">
+		<lookup-method name="createTarget" bean="binDTO" />
+		<property name="populator" ref="binPopulator" />
+	</bean>
+
+	<alias name="defaultCurrentItemQuantityConverter" alias="currentItemQuantityConverter" />
+	<bean id="defaultCurrentItemQuantityConverter" parent="abstractPopulatingConverter">
+		<lookup-method name="createTarget" bean="currentItemQuantityDTO" />
+		<property name="populator" ref="currentItemQuantityPopulator" />
+	</bean>
+
+	<alias name="defaultFutureItemQuantityConverter" alias="futureItemQuantityConverter" />
+	<bean id="defaultFutureItemQuantityConverter" parent="abstractPopulatingConverter">
+		<lookup-method name="createTarget" bean="futureItemQuantityDTO" />
+		<property name="populator" ref="futureItemQuantityPopulator" />
+	</bean>
+
+	<alias name="defaultItemLocationCurrentConverter" alias="itemLocationCurrentConverter" />
+	<bean id="defaultItemLocationCurrentConverter" parent="abstractPopulatingConverter">
+		<lookup-method name="createTarget" bean="itemLocationCurrentDTO" />
+		<property name="populator" ref="itemLocationCurrentPopulator" />
+	</bean>
+
+	<alias name="defaultItemLocationFutureConverter" alias="itemLocationFutureConverter" />
+	<bean id="defaultItemLocationFutureConverter" parent="abstractPopulatingConverter">
+		<lookup-method name="createTarget" bean="itemLocationFutureDTO" />
+		<property name="populator" ref="itemLocationFuturePopulator" />
+	</bean>
+
+	<alias name="defaultItemStatusConverter" alias="itemStatusConverter" />
+	<bean id="defaultItemStatusConverter" parent="abstractPopulatingConverter">
+		<lookup-method name="createTarget" bean="itemStatusDTO" />
+		<property name="populator" ref="itemStatusPopulator" />
+	</bean>
+
+	<alias name="defaultOmsInventoryConverter" alias="omsInventoryConverter" />
+	<bean id="defaultOmsInventoryConverter" parent="abstractPopulatingConverter">
+		<lookup-method name="createTarget" bean="omsInventoryDTO" />
+		<property name="populator" ref="omsInventoryPopulator" />
+	</bean>
+
+	<alias name="defaultOrderLineAttributeConverter" alias="orderLineAttributeConverter" />
+	<bean id="defaultOrderLineAttributeConverter" parent="abstractPopulatingConverter">
+		<lookup-method name="createTarget" bean="orderLineAttributeDTO" />
+		<property name="populator" ref="orderLineAttributePopulator" />
+	</bean>
+
+	<alias name="defaultOrderLineQuantityStatusConverter" alias="orderLineQuantityStatusConverter" />
+	<bean id="defaultOrderLineQuantityStatusConverter" parent="abstractPopulatingConverter">
+		<lookup-method name="createTarget" bean="orderLineQuantityStatusDTO" />
+		<property name="populator" ref="orderLineQuantityStatusPopulator" />
+	</bean>
+
+	<alias name="defaultOrderLineQuantityConverter" alias="orderLineQuantityConverter" />
+	<bean id="defaultOrderLineQuantityConverter" parent="abstractPopulatingConverter">
+		<lookup-method name="createTarget" bean="orderLineQuantityDTO" />
+		<property name="populator" ref="orderLineQuantityPopulator" />
+	</bean>
+
+	<alias name="defaultOrderLineConverter" alias="orderLineConverter" />
+	<bean id="defaultOrderLineConverter" parent="abstractPopulatingConverter">
+		<lookup-method name="createTarget" bean="orderLineDTO" />
+		<property name="populator" ref="orderLinePopulator" />
+	</bean>
+
+	<alias name="defaultPaymentInfoConverter" alias="paymentInfoConverter" />
+	<bean id="defaultPaymentInfoConverter" parent="abstractPopulatingConverter">
+		<lookup-method name="createTarget" bean="paymentInfoDTO" />
+		<property name="populator" ref="paymentInfoPopulator" />
+	</bean>
+
+	<alias name="defaultOrderConverter" alias="orderConverter" />
+	<bean id="defaultOrderConverter" parent="abstractPopulatingConverter">
+		<lookup-method name="createTarget" bean="orderDTO" />
+		<property name="populator" ref="orderPopulator" />
+	</bean>
+
+	<alias name="defaultShipmentConverter" alias="shipmentConverter" />
+	<bean id="defaultShipmentConverter" parent="abstractPopulatingConverter">
+		<lookup-method name="createTarget" bean="shipmentDTO" />
+		<property name="populator" ref="shipmentPopulator" />
+	</bean>
+
+	<alias name="defaultDeliveryConverter" alias="deliveryConverter" />
+	<bean id="defaultDeliveryConverter" parent="abstractPopulatingConverter">
+		<lookup-method name="createTarget" bean="deliveryDTO" />
+		<property name="populator" ref="deliveryPopulator" />
+	</bean>
+
+	<alias name="defaultShippingAndHandlingConverter" alias="shippingAndHandlingConverter" />
+	<bean id="defaultShippingAndHandlingConverter" parent="abstractPopulatingConverter">
+		<lookup-method name="createTarget" bean="shippingAndHandlingDTO" />
+		<property name="populator" ref="shippingAndHandlingPopulator" />
+	</bean>
+
+	<alias name="defaultShipmentDetailsConverter" alias="shipmentDetailsConverter" />
+	<bean id="defaultShipmentDetailsConverter" parent="abstractPopulatingConverter">
+		<lookup-method name="createTarget" bean="shipmentDetailsDTO" />
+		<property name="populator" ref="shipmentDetailsPopulator" />
+	</bean>
+
+	<alias name="defaultRuleParameterConverter" alias="ruleParameterConverter" />
+	<bean id="defaultRuleParameterConverter" parent="abstractPopulatingConverter">
+		<lookup-method name="createTarget" bean="ruleParameterDTO" />
+		<property name="populator" ref="ruleParameterPopulator" />
+	</bean>
+
+	<alias name="defaultRuleConditionsConverter" alias="ruleConditionsConverter" />
+	<bean id="defaultRuleConditionsConverter" parent="abstractPopulatingConverter">
+		<lookup-method name="createTarget" bean="ruleConditionDTO" />
+		<property name="populator" ref="ruleConditionsPopulator" />
+	</bean>
+
+	<alias name="defaultRuleActionConverter" alias="ruleActionConverter" />
+	<bean id="defaultRuleActionConverter" parent="abstractPopulatingConverter">
+		<lookup-method name="createTarget" bean="ruleActionDTO" />
+		<property name="populator" ref="ruleActionPopulator" />
+	</bean>
+
+	<alias name="defaultRuleConverter" alias="ruleConverter" />
+	<bean id="defaultRuleConverter" parent="abstractPopulatingConverter">
+		<lookup-method name="createTarget" bean="ruleDTO" />
+		<property name="populator" ref="rulePopulator" />
+	</bean>
+
+	<alias name="defaultBaseStoreReverseConverter" alias="baseStoreReverseConverter" />
+	<bean id="defaultBaseStoreReverseConverter" parent="abstractPopulatingConverter">
+		<lookup-method name="createTarget" bean="baseStoreMO" />
+		<property name="populator" ref="baseStoreReversePopulator" />
+	</bean>
+
+	<alias name="defaultLocationReverseConverter" alias="locationReverseConverter" />
+	<bean id="defaultLocationReverseConverter" parent="abstractPopulatingConverter">
+		<lookup-method name="createTarget" bean="stockroomLocationMO" />
+		<property name="populator" ref="locationReversePopulator" />
+	</bean>
+
+	<alias name="defaultBinReverseConverter" alias="binReverseConverter" />
+	<bean id="defaultBinReverseConverter" parent="abstractPopulatingConverter">
+		<lookup-method name="createTarget" bean="binMO" />
+		<property name="populator" ref="binReversePopulator" />
+	</bean>
+
+	<alias name="defaultItemStatusReverseConverter" alias="itemStatusReverseConverter" />
+	<bean id="defaultItemStatusReverseConverter" parent="abstractPopulatingConverter">
+		<lookup-method name="createTarget" bean="itemStatusMO" />
+		<property name="populator" ref="itemStatusReversePopulator" />
+	</bean>
+
+	<alias name="defaultOrderLineAttributeReverseConverter" alias="orderLineAttributeReverseConverter" />
+	<bean id="defaultOrderLineAttributeReverseConverter" parent="abstractPopulatingConverter">
+		<lookup-method name="createTarget" bean="orderLineAttributeMO" />
+		<property name="populator" ref="orderLineAttributeReversePopulator" />
+	</bean>
+
+	<alias name="defaultOrderLineQuantityStatusReverseConverter"
+		alias="orderLineQuantityStatusReverseConverter" />
+	<bean id="defaultOrderLineQuantityStatusReverseConverter" parent="abstractPopulatingConverter">
+		<lookup-method name="createTarget" bean="orderLineQuantityStatusMO" />
+		<property name="populator" ref="orderLineQuantityStatusReversePopulator" />
+	</bean>
+
+	<alias name="defaultOrderLineQuantityReverseConverter" alias="orderLineQuantityReverseConverter" />
+	<bean id="defaultOrderLineQuantityReverseConverter" parent="abstractPopulatingConverter">
+		<lookup-method name="createTarget" bean="orderLineQuantityMO" />
+		<property name="populator" ref="orderLineQuantityReversePopulator" />
+	</bean>
+
+	<alias name="defaultOrderLineReverseConverter" alias="orderLineReverseConverter" />
+	<bean id="defaultOrderLineReverseConverter" parent="abstractPopulatingConverter">
+		<lookup-method name="createTarget" bean="orderLineMO" />
+		<property name="populator" ref="orderLineReversePopulator" />
+	</bean>
+
+	<alias name="defaultPaymentInfoReverseConverter" alias="paymentInfoReverseConverter" />
+	<bean id="defaultPaymentInfoReverseConverter" parent="abstractPopulatingConverter">
+		<lookup-method name="createTarget" bean="paymentInfoMO" />
+		<property name="populator" ref="paymentInfoReversePopulator" />
+	</bean>
+
+	<alias name="defaultOrderReverseConverter" alias="orderReverseConverter" />
+	<bean id="defaultOrderReverseConverter" parent="abstractPopulatingConverter">
+		<lookup-method name="createTarget" bean="orderMO" />
+		<property name="populator" ref="orderReversePopulator" />
+	</bean>
+
+	<alias name="defaultDeliveryReverseConverter" alias="deliveryReverseConverter" />
+	<bean id="defaultDeliveryReverseConverter" parent="abstractPopulatingConverter">
+		<lookup-method name="createTarget" bean="deliveryMO" />
+		<property name="populator" ref="deliveryReversePopulator" />
+	</bean>
+
+	<alias name="defaultShipmentReverseConverter" alias="shipmentReverseConverter" />
+	<bean id="defaultShipmentReverseConverter" parent="abstractPopulatingConverter">
+		<lookup-method name="createTarget" bean="shipmentMO" />
+		<property name="populator" ref="shipmentReversePopulator" />
+	</bean>
+
+	<alias name="defaultShippingAndHandlingReverseConverter" alias="shippingAndHandlingReverseConverter" />
+	<bean id="defaultShippingAndHandlingReverseConverter" parent="abstractPopulatingConverter">
+		<lookup-method name="createTarget" bean="shippingAndHandlingMO" />
+		<property name="populator" ref="shippingAndHandlingReversePopulator" />
+	</bean>
+
+	<!-- Prototype Beans for DTO POJOs -->
+	<bean id="atsFormulaDTO" class="com.hybris.oms.domain.ats.AtsFormula"
+		scope="prototype" />
+	<bean id="atsLocalQuantitiesDTO" class="java.util.ArrayList"
+		scope="prototype" />
+	<bean id="atsQuantityDTO" class="com.hybris.oms.domain.ats.AtsQuantity"
+		scope="prototype" />
+	<bean id="baseStoreDTO" class="com.hybris.oms.domain.basestore.BaseStore"
+		scope="prototype" />
+	<bean id="locationDTO" class="com.hybris.oms.domain.inventory.Location"
+		scope="prototype" />
+	<bean id="binDTO" class="com.hybris.oms.domain.inventory.Bin"
+		scope="prototype" />
+	<bean id="currentItemQuantityDTO" class="com.hybris.oms.domain.inventory.CurrentItemQuantity"
+		scope="prototype" />
+	<bean id="futureItemQuantityDTO" class="com.hybris.oms.domain.inventory.FutureItemQuantity"
+		scope="prototype" />
+	<bean id="itemLocationCurrentDTO" class="com.hybris.oms.domain.inventory.ItemLocationCurrent"
+		scope="prototype" />
+	<bean id="itemLocationFutureDTO" class="com.hybris.oms.domain.inventory.ItemLocationFuture"
+		scope="prototype" />
+	<bean id="itemStatusDTO" class="com.hybris.oms.domain.inventory.ItemStatus"
+		scope="prototype" />
+	<bean id="omsInventoryDTO" class="com.hybris.oms.api.inventory.OmsInventory"
+		scope="prototype" />
+	<bean id="orderLineAttributeDTO" class="com.hybris.oms.domain.order.OrderLineAttribute"
+		scope="prototype" />
+	<bean id="orderLineQuantityDTO" class="com.hybris.oms.domain.order.OrderLineQuantity"
+		scope="prototype" />
+	<bean id="orderLineDTO" class="com.hybris.oms.domain.order.OrderLine"
+		scope="prototype" />
+	<bean id="paymentInfoDTO" class="com.hybris.oms.domain.order.PaymentInfo"
+		scope="prototype" />
+	<bean id="orderLineQuantityStatusDTO" class="com.hybris.oms.domain.order.OrderLineQuantityStatus"
+		scope="prototype" />
+	<bean id="orderDTO" class="com.hybris.oms.domain.order.Order"
+		scope="prototype" />
+	<bean id="shipmentDTO" class="com.hybris.oms.domain.shipping.Shipment"
+		scope="prototype" />
+	<bean id="deliveryDTO" class="com.hybris.oms.domain.shipping.Delivery"
+		scope="prototype" />
+	<bean id="shippingAndHandlingDTO" class="com.hybris.oms.domain.shipping.ShippingAndHandling"
+		scope="prototype" />
+	<bean id="shipmentDetailsDTO" class="com.hybris.oms.domain.shipping.ShipmentDetails"
+		scope="prototype" />
+	<bean id="ruleActionDTO"
+		class="com.hybris.oms.domain.rule.custom.ChangeOrderStatusRuleAction"
+		scope="prototype" />
+	<bean id="ruleConditionDTO"
+		class="com.hybris.oms.domain.rule.custom.ChangeOrderStatusRuleCondition"
+		scope="prototype" />
+	<bean id="ruleDTO" class="com.hybris.oms.domain.rule.custom.ChangeOrderStatusRule"
+		scope="prototype" />
+	<bean id="ruleParameterDTO" class="com.hybris.oms.domain.rule.domain.RuleParameter"
+		scope="prototype" />
+	<bean id="returnOrderLineDTO" class="com.hybris.oms.domain.returns.ReturnOrderLine"
+		scope="prototype" />
+	<bean id="returnPaymentInfoDTO" class="com.hybris.oms.domain.returns.ReturnPaymentInfo"
+		scope="prototype" />
+	<bean id="returnDTO" class="com.hybris.oms.domain.returns.Return"
+		scope="prototype" />
+	<bean id="returnShipmentDTO" class="com.hybris.oms.domain.returns.ReturnShipment"
+		scope="prototype" />
+    <bean id="returnLineRejectionDTO" class="com.hybris.oms.domain.returns.ReturnLineRejection"
+        scope="prototype" />
+
+
+    <!-- Prototype Beans for Managed Objects -->
+
+	<bean id="baseStoreMO" parent="abstractMO">
+		<property name="arguments">
+			<list>
+				<value type="java.lang.Class">com.hybris.oms.service.managedobjects.basestore.BaseStoreData
+				</value>
+			</list>
+		</property>
+	</bean>
+	<bean id="stockroomLocationMO" parent="abstractMO">
+		<property name="arguments">
+			<list>
+				<value type="java.lang.Class">com.hybris.oms.service.managedobjects.inventory.StockroomLocationData
+				</value>
+			</list>
+		</property>
+	</bean>
+	<bean id="binMO" parent="abstractMO">
+		<property name="arguments">
+			<list>
+				<value type="java.lang.Class">com.hybris.oms.service.managedobjects.inventory.BinData
+				</value>
+			</list>
+		</property>
+	</bean>
+	<bean id="itemStatusMO" parent="abstractMO">
+		<property name="arguments">
+			<list>
+				<value type="java.lang.Class">com.hybris.oms.service.managedobjects.inventory.ItemStatusData
+				</value>
+			</list>
+		</property>
+	</bean>
+	<bean id="orderLineAttributeMO" parent="abstractMO">
+		<property name="arguments">
+			<list>
+				<value type="java.lang.Class">com.hybris.oms.service.managedobjects.order.OrderLineAttributeData
+				</value>
+			</list>
+		</property>
+	</bean>
+	<bean id="orderLineQuantityMO" parent="abstractMO">
+		<property name="arguments">
+			<list>
+				<value type="java.lang.Class">com.hybris.oms.service.managedobjects.order.OrderLineQuantityData
+				</value>
+			</list>
+		</property>
+	</bean>
+	<bean id="orderLineMO" parent="abstractMO">
+		<property name="arguments">
+			<list>
+				<value type="java.lang.Class">com.hybris.oms.service.managedobjects.order.OrderLineData
+				</value>
+			</list>
+		</property>
+	</bean>
+	<bean id="orderLineQuantityStatusMO" parent="abstractMO">
+		<property name="arguments">
+			<list>
+				<value type="java.lang.Class">com.hybris.oms.service.managedobjects.order.OrderLineQuantityStatusData
+				</value>
+			</list>
+		</property>
+	</bean>
+	<bean id="paymentInfoMO" parent="abstractMO">
+		<property name="arguments">
+			<list>
+				<value type="java.lang.Class">com.hybris.oms.service.managedobjects.order.PaymentInfoData
+				</value>
+			</list>
+		</property>
+	</bean>
+	<bean id="orderMO" parent="abstractMO">
+		<property name="arguments">
+			<list>
+				<value type="java.lang.Class">com.hybris.oms.service.managedobjects.order.OrderData
+				</value>
+			</list>
+		</property>
+	</bean>
+	<bean id="shipmentMO" parent="abstractMO">
+		<property name="arguments">
+			<list>
+				<value type="java.lang.Class">com.hybris.oms.service.managedobjects.shipment.ShipmentData
+				</value>
+			</list>
+		</property>
+	</bean>
+	<bean id="deliveryMO" parent="abstractMO">
+		<property name="arguments">
+			<list>
+				<value type="java.lang.Class">com.hybris.oms.service.managedobjects.shipment.DeliveryData
+				</value>
+			</list>
+		</property>
+	</bean>
+	<bean id="shippingAndHandlingMO" parent="abstractMO">
+		<property name="arguments">
+			<list>
+				<value type="java.lang.Class">com.hybris.oms.service.managedobjects.shipment.ShippingAndHandlingData
+				</value>
+			</list>
+		</property>
+	</bean>
+	<bean id="returnMO" parent="abstractMO">
+		<property name="arguments">
+			<list>
+				<value type="java.lang.Class">com.hybris.oms.service.managedobjects.returns.ReturnData
+				</value>
+			</list>
+		</property>
+	</bean>
+	<bean id="returnOrderLineMO" parent="abstractMO">
+		<property name="arguments">
+			<list>
+				<value type="java.lang.Class">com.hybris.oms.service.managedobjects.returns.ReturnOrderLineData
+				</value>
+			</list>
+		</property>
+	</bean>
+	<bean id="returnPaymentInfoMO" parent="abstractMO">
+		<property name="arguments">
+			<list>
+				<value type="java.lang.Class">com.hybris.oms.service.managedobjects.returns.ReturnPaymentInfoData
+				</value>
+			</list>
+		</property>
+	</bean>
+	<bean id="returnShipmentMO" parent="abstractMO">
+		<property name="arguments">
+			<list>
+				<value type="java.lang.Class">com.hybris.oms.service.managedobjects.returns.ReturnShipmentData
+				</value>
+			</list>
+		</property>
+	</bean>
+    <bean id="returnLineRejectionMO" parent="abstractMO">
+        <property name="arguments">
+            <list>
+                <value type="java.lang.Class">com.hybris.oms.service.managedobjects.returns.ReturnLineRejectionData
+                </value>
+            </list>
+        </property>
+    </bean>
+
+	<alias name="compositeReturnOrderLinePopulator" alias="returnOrderLinePopulator" />
+	<bean id="compositeReturnOrderLinePopulator" parent="compositePopulator">
+		<property name="populators" ref="compositeReturnOrderLinePopulatorList" />
+	</bean>
+	<bean id="defaultReturnOrderLinePopulator"
+		class="com.hybris.oms.facade.conversion.impl.returns.ReturnOrderLinePopulator">
+		<property name="orderLineConverter" ref="orderLineConverter" />
+        <property name="returnLineRejectionConverter" ref="returnLineRejectionConverter" />
+		<property name="orderService" ref="orderService" />
+	</bean>
+	<util:list id="compositeReturnOrderLinePopulatorList">
+		<ref bean="defaultReturnOrderLinePopulator" />
+	</util:list>
+	
+	<alias name="compositeReturnShipmentPopulator" alias="returnShipmentPopulator" />
+	<bean id="compositeReturnShipmentPopulator" parent="compositePopulator">
+		<property name="populators" ref="compositeReturnShipmentPopulatorList" />
+	</bean>
+	<bean id="defaultReturnShipmentPopulator"
+		class="com.hybris.oms.facade.conversion.impl.returns.ReturnShipmentPopulator" />
+	<util:list id="compositeReturnShipmentPopulatorList">
+		<ref bean="defaultReturnShipmentPopulator" />
+	</util:list>
+
+
+	<alias name="propertyAwareReturnOrderLineReversePopulator" alias="returnOrderLineReversePopulator" />
+	<bean id="propertyAwareReturnOrderLineReversePopulator" parent="compositePopulator">
+		<property name="populators">
+			<list>
+				<ref bean="defaultReturnOrderLineReversePopulator" />
+				<ref bean="propertyAwareReversePopulator" />
+			</list>
+		</property>
+	</bean>
+	<bean id="defaultReturnOrderLineReversePopulator" class="com.hybris.oms.facade.conversion.impl.returns.ReturnOrderLineReversePopulator" />
+	
+	<alias name="propertyAwareReturnShipmentReversePopulator" alias="returnShipmentReversePopulator" />
+	<bean id="propertyAwareReturnShipmentReversePopulator" parent="compositePopulator">
+		<property name="populators">
+			<list>
+				<ref bean="defaultReturnShipmentReversePopulator" />
+				<ref bean="propertyAwareReversePopulator" />
+			</list>
+		</property>
+	</bean>
+	<bean id="defaultReturnShipmentReversePopulator"
+		  class="com.hybris.oms.facade.conversion.impl.returns.ReturnShipmentReversePopulator">
+		    	<property name="tenantPreferenceService" ref="tenantPreferenceService" />
+	</bean>
+
+	<alias name="compositeReturnPaymentInfoPopulator" alias="returnPaymentInfoPopulator" />
+	<bean id="compositeReturnPaymentInfoPopulator" parent="compositePopulator">
+		<property name="populators" ref="compositeReturnPaymentInfoPopulatorList" />
+
+	</bean>
+	<bean id="defaultReturnPaymentInfoPopulator"
+		class="com.hybris.oms.facade.conversion.impl.returns.ReturnPaymentInfoPopulator">
+	</bean>
+	<util:list id="compositeReturnPaymentInfoPopulatorList">
+		<ref bean="defaultReturnPaymentInfoPopulator" />
+	</util:list>
+
+	<alias name="propertyAwareReturnPaymentInfoReversePopulator"
+		alias="returnPaymentInfoReversePopulator" />
+	<bean id="propertyAwareReturnPaymentInfoReversePopulator" parent="compositePopulator">
+		<property name="populators">
+			<list>
+				<ref bean="defaultReturnPaymentInfoReversePopulator" />
+				<ref bean="propertyAwareReversePopulator" />
+			</list>
+		</property>
+	</bean>
+	<bean id="defaultReturnPaymentInfoReversePopulator"
+		class="com.hybris.oms.facade.conversion.impl.returns.ReturnPaymentInfoReversePopulator">
+	</bean>
+
+	<alias name="compositeReturnPopulator" alias="returnPopulator" />
+	<bean id="compositeReturnPopulator" parent="compositePopulator">
+		<property name="populators" ref="compositeReturnPopulatorList" />
+	</bean>
+	<bean id="defaultReturnPopulator"
+		class="com.hybris.oms.facade.conversion.impl.returns.ReturnPopulator">
+		<property name="converters" ref="converters" />
+		<property name="returnOrderLineConverter" ref="returnOrderLineConverter" />
+		<property name="returnPaymentInfoConverter" ref="returnPaymentInfoConverter" />
+		<property name="returnShipmentConverter" ref="returnShipmentConverter" />
+	</bean>
+	<bean id="defaultActionableReturnPopulator" class="com.hybris.oms.facade.conversion.common.ActionablePopulator">
+		<property name="workflowExecutor" ref="returnWorkflowExecutor" />
+	</bean>
+	<util:list id="compositeReturnPopulatorList">
+		<ref bean="defaultReturnPopulator" />
+		<ref bean="defaultActionableReturnPopulator" />
+	</util:list>
+
+    <alias name="propertyAwareReturnLineRejectionPopulator" alias="returnLineRejectionPopulator" />
+    <bean id="propertyAwareReturnLineRejectionPopulator" parent="compositePopulator">
+        <property name="populators">
+            <list>
+                <ref bean="defaultReturnLineRejectionPopulator" />
+            </list>
+        </property>
+    </bean>
+
+    <bean id="defaultReturnLineRejectionPopulator"
+          class="com.hybris.oms.facade.conversion.impl.returns.ReturnLineRejectionPopulator">
+    </bean>
+
+    <alias name="propertyAwareReturnLineRejectionReversePopulator" alias="returnLineRejectionReversePopulator" />
+    <bean id="propertyAwareReturnLineRejectionReversePopulator" parent="compositePopulator">
+        <property name="populators">
+            <list>
+                <ref bean="defaultReturnLineRejectionReversePopulator" />
+            </list>
+        </property>
+    </bean>
+
+    <bean id="defaultReturnLineRejectionReversePopulator"
+          class="com.hybris.oms.facade.conversion.impl.returns.ReturnLineRejectionReversePopulator">
+        <property name="persistenceManager" ref="persistenceManager" />
+    </bean>
+
+	<alias name="propertyAwareReturnReversePopulator" alias="returnReversePopulator" />
+	<bean id="propertyAwareReturnReversePopulator" parent="compositePopulator">
+		<property name="populators">
+			<list>
+				<ref bean="defaultReturnReversePopulator" />
+				<ref bean="propertyAwareReversePopulator" />
+			</list>
+		</property>
+	</bean>
+	<bean id="defaultReturnReversePopulator" class="com.hybris.oms.facade.conversion.impl.returns.ReturnReversePopulator">
+		<property name="persistenceManager" ref="persistenceManager" />
+		<property name="returnOrderLineReverseConverter" ref="returnOrderLineReverseConverter" />
+		<property name="returnShipmentReverseConverter" ref="returnShipmentReverseConverter" />
+		<property name="returnPaymentInfoReverseConverter" ref="returnPaymentInfoReverseConverter" />
+		<property name="amountReverseConverter" ref="amountReverseConverter" />
+		<property name="quantityReverseConverter" ref="quantityReverseConverter" />
+		<property name="orderService" ref="orderService" />
+	</bean>
+
+	<alias name="defaultReturnOrderLineConverter" alias="returnOrderLineConverter" />
+	<bean id="defaultReturnOrderLineConverter" parent="abstractPopulatingConverter">
+		<lookup-method name="createTarget" bean="returnOrderLineDTO" />
+		<property name="populator" ref="returnOrderLinePopulator" />
+	</bean>
+
+	<alias name="defaultReturnShipmentConverter" alias="returnShipmentConverter" />
+	<bean id="defaultReturnShipmentConverter" parent="abstractPopulatingConverter">
+		<lookup-method name="createTarget" bean="returnShipmentDTO" />
+		<property name="populator" ref="returnShipmentPopulator" />
+	</bean>
+
+	<alias name="defaultReturnPaymentInfoConverter" alias="returnPaymentInfoConverter" />
+	<bean id="defaultReturnPaymentInfoConverter" parent="abstractPopulatingConverter">
+		<lookup-method name="createTarget" bean="returnPaymentInfoDTO" />
+		<property name="populator" ref="returnPaymentInfoPopulator" />
+	</bean>
+
+	<alias name="defaultReturnOrderLineReverseConverter" alias="returnOrderLineReverseConverter" />
+	<bean id="defaultReturnOrderLineReverseConverter" parent="abstractPopulatingConverter">
+		<lookup-method name="createTarget" bean="returnOrderLineMO" />
+		<property name="populator" ref="returnOrderLineReversePopulator" />
+	</bean>
+
+	<alias name="defaultReturnShipmentReverseConverter" alias="returnShipmentReverseConverter" />
+	<bean id="defaultReturnShipmentReverseConverter" parent="abstractPopulatingConverter">
+		<lookup-method name="createTarget" bean="returnShipmentMO" />
+		<property name="populator" ref="returnShipmentReversePopulator" />
+	</bean>
+
+	<alias name="defaultReturnPaymentInfoReverseConverter" alias="returnPaymentInfoReverseConverter" />
+	<bean id="defaultReturnPaymentInfoReverseConverter" parent="abstractPopulatingConverter">
+		<lookup-method name="createTarget" bean="returnPaymentInfoMO" />
+		<property name="populator" ref="returnPaymentInfoReversePopulator" />
+	</bean>
+
+	<alias name="defaultReturnConverter" alias="returnConverter" />
+	<bean id="defaultReturnConverter" parent="abstractPopulatingConverter">
+		<lookup-method name="createTarget" bean="returnDTO" />
+		<property name="populator" ref="returnPopulator" />
+	</bean>
+
+	<alias name="defaultReturnReverseConverter" alias="returnReverseConverter" />
+	<bean id="defaultReturnReverseConverter" parent="abstractPopulatingConverter">
+		<lookup-method name="createTarget" bean="returnMO" />
+		<property name="populator" ref="returnReversePopulator" />
+	</bean>
+
+	<alias name="defaultReturnLineRejectionReverseConverter" alias="returnLineRejectionReverseConverter" />
+	<bean id="defaultReturnLineRejectionReverseConverter" parent="abstractPopulatingConverter">
+		<lookup-method name="createTarget" bean="returnLineRejectionMO" />
+		<property name="populator" ref="returnLineRejectionReversePopulator" />
+	</bean>
+
+    <alias name="defaultReturnLineRejectionConverter" alias="returnLineRejectionConverter" />
+    <bean id="defaultReturnLineRejectionConverter" parent="abstractPopulatingConverter">
+        <lookup-method name="createTarget" bean="returnLineRejectionDTO" />
+        <property name="populator" ref="returnLineRejectionPopulator" />
+    </bean>
+
+</beans>

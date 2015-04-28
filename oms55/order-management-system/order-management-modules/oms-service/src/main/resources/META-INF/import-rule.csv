@@ -1,0 +1,9 @@
+id,ruleId,name,conditionOperator,eligibilityOperator,enabled,version
+RuleData|1,1,ChangeOrderStatusAllocated,OR,OR,true,1
+RuleData|2,2,ChangeOrderStatusPicked,OR,OR,true,1
+RuleData|3,3,ChangeOrderStatusPacked,OR,OR,true,1
+RuleData|4,4,OLQStatusFromAllocatedToDeclined,OR,OR,true,1
+RuleData|5,5,OLQStatusFromPickedToDeclined,OR,OR,true,1
+RuleData|6,6,OLQStatusFromPackedToDeclined,OR,OR,true,1
+RuleData|7,7,OLQStatusFromTaxesInvoicedToShipped,OR,OR,true,1
+RuleData|8,8,OLQStatusFromPaymentCapturedToShipped,OR,OR,true,1

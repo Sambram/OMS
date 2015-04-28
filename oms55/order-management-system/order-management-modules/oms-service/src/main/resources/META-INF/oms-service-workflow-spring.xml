@@ -1,0 +1,353 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ [y] hybris Platform
+  ~
+  ~ Copyright (c) 2000-2015 hybris AG
+  ~ All rights reserved.
+  ~
+  ~ This software is the confidential and proprietary information of hybris
+  ~ ("Confidential Information"). You shall not disclose such Confidential
+  ~ Information and shall use it only in accordance with the terms of the
+  ~ license agreement you entered into with hybris.
+  -->
+
+<beans xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:util="http://www.springframework.org/schema/util"
+       xmlns="http://www.springframework.org/schema/beans"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd">
+
+	<import resource="classpath:/META-INF/oms-core-service-workflow-spring.xml"/>
+	<!-- Workflow Executors -->
+	<alias alias="returnWorkflowExecutor" name="defaultReturnWorkflowExecutor" />
+	<bean id="defaultReturnWorkflowExecutor" class="com.hybris.oms.service.workflow.executor.returns.ReturnWorkflowExecutor"
+		  parent="abstractWorkflowExecutor">
+		<property name="deploymentResource" value="classpath:/Return_Process.bpmn" />
+		<property name="returnApprovalStrategy" ref="returnApprovalStrategy" />
+	</bean>
+	<alias name="defaultOrderWorkflowExecutor" alias="orderWorkflowExecutor" />
+	<bean id="defaultOrderWorkflowExecutor" class="com.hybris.oms.service.workflow.executor.order.OrderWorkflowExecutor"
+		  parent="abstractWorkflowExecutor">
+		<property name="orderService" ref="orderService" />
+		<property name="deploymentResource" value="classpath:/Order_Process.bpmn" />
+		<property name="waitShipmentTimeout" value="${oms.activiti.timeout.waitShipment}" />
+		<property name="fulfillmentRetryTimeout" value="${oms.activiti.timeout.retryFulfillment}" />
+	</bean>
+
+	<alias name="defaultShipmentWorkflowExecutor" alias="shipmentWorkflowExecutor" />
+	<bean id="defaultShipmentWorkflowExecutor" class="com.hybris.oms.service.workflow.executor.shipment.ShipmentWorkflowExecutor"
+		  parent="abstractWorkflowExecutor">
+		<property name="shipmentService" ref="shipmentService" />
+		<property name="deploymentResource" value="classpath:/Shipment_Process.bpmn" />
+	</bean>
+
+	<bean id="processMbean" class="com.hybris.oms.service.workflow.jmx.WorkflowProcessMonitor" />
+
+	<bean id="jmxOrderStartListener" class="com.hybris.oms.service.workflow.listener.JmxOrderStartListener">
+		<property name="processMbean" ref="processMbean" />
+	</bean>
+	<bean id="jmxOrderEndListener" class="com.hybris.oms.service.workflow.listener.JmxOrderEndListener">
+		<property name="processMbean" ref="processMbean" />
+	</bean>
+	<bean id="jmxShipmentStartListener" class="com.hybris.oms.service.workflow.listener.JmxShipmentStartListener">
+		<property name="processMbean" ref="processMbean" />
+	</bean>
+	<bean id="jmxShipmentEndListener" class="com.hybris.oms.service.workflow.listener.JmxShipmentEndListener">
+		<property name="processMbean" ref="processMbean" />
+	</bean>
+	<bean id="signalShipmentEndListener" class="com.hybris.oms.service.workflow.listener.SignalShipmentEndListener">
+		<property name="orderWorkflowExecutor" ref="orderWorkflowExecutor" />
+		<property name="orderService" ref="orderService" />
+		<property name="tenantContextService" ref="tenantContextService" />
+	</bean>
+
+	<alias name="omsWorkItemWorkersMap" alias="workItemWorkers" />
+	<util:map id="omsWorkItemWorkersMap">
+		<entry key="WFE_GEOCODING" value-ref="geocodingWorkItemWorker" />
+		<entry key="WFE_FULFILLMENT" value-ref="fulfillmentWorkItemWorker" />
+		<entry key="WFE_CANCEL_UNFULFILLED" value-ref="cancelUnfulfilledWorkItemWorker" />
+		<entry key="WFE_SPLIT_SHIPMENT_OLQ" value-ref="shipmentSplitOlqWorkItemWorker" />
+		<entry key="WFE_SPLIT_SHIPMENT_QUANTITIES" value-ref="shipmentSplitQuantitiesWorkItemWorker" />
+		<entry key="WFE_SHIPMENTS_COMPLETION" value-ref="shipmentsCompletionWorkItemWorker" />
+		<entry key="WFE_FULFILLMENT_COMPLETION" value-ref="fulfillmentCompletionWorkItemWorker" />
+		<entry key="WFE_PAYMENT_CAPTURE" value-ref="paymentWorkItemWorker" />
+		<entry key="WFE_TAX_INVOICE" value-ref="taxesWorkItemWorker" />
+		<entry key="WFE_DECLINED_SHIPMENT" value-ref="declinedShipmentWorkItemWorker" />
+		<entry key="WFE_SHIPMENT_ACTION_QUEUE" value-ref="actionQueueWorkItemWorker" />
+		<entry key="WFE_REALLOCATE_SHIPMENT" value-ref="reallocateShipmentWorkItemWorker" />
+		<entry key="WFE_SHIPMENT_UPDATE_STATUS" value-ref="shipmentUpdateStatusWorkItemWorker" />
+		<entry key="WFE_SHIPMENT_UPDATE_STATUS_SHIPPED" value-ref="shipmentUpdateStatusShippedWorkItemWorker" />
+		<entry key="WFE_SHIPMENT_UPDATE_STATUS_FAILEDPAYMENT" value-ref="shipmentUpdateStatusFailedPaymentWorkItemWorker" />
+		<entry key="WFE_SHIPMENT_UPDATE_STATUS_FAILEDTAX" value-ref="shipmentUpdateStatusFailedTaxWorkItemWorker" />
+		<entry key="WFE_SHIPMENT_UPDATE_STATUS_CANCELED" value-ref="shipmentUpdateStatusCanceledWorkItemWorker" />
+
+		<entry key="WFE_RETURN_CALCULATE" value-ref="calculateRefundWorkItemWorker" />
+		<entry key="WFE_RETURN_CAPTURE" value-ref="captureRefundWorkItemWorker" />
+		<entry key="WFE_SUCCESS_CAPTURE" value-ref="successReturnCaptureWorkItemWorker" />
+		<entry key="WFE_FAIL_CAPTURE" value-ref="failedReturnCaptureWorkItemWorker" />
+		<entry key="WFE_RETURN_TAX_REVERSE" value-ref="taxReverseWorkItemWorker" />
+		<entry key="WFE_SUCCESS_TAX_REVERSE" value-ref="successTaxReverseWorkItemWorker" />
+		<entry key="WFE_FAIL_TAX_REVERSE" value-ref="failedTaxReverseWorkItemWorker" />
+		<entry key="WFE_INVENTORY_UPDATE" value-ref="inventoryUpdateWorkItemWorker" />
+		<entry key="WFE_RETURN_UPDATE" value-ref="updateReturnWorkItemWorker" />
+		<entry key="WFE_RETURN_CANCELLED" value-ref="cancelReturnWorkItemWorker" />
+		<entry key="WFE_RETURN_REVIEW" value-ref="returnReviewWorkItemWorker" />
+		<entry key="WFE_RETURN_WAIT_APPROVAL" value-ref="waitForApprovalWorkItemWorker" />
+		<entry key="WFE_RETURN_REJECTED" value-ref="rejectReturnWorkItemWorker" />
+		<entry key="WFE_RETURN_WAIT_GOODS" value-ref="waitForGoodsWorkItemWorker" />
+		<entry key="WFE_RETURN_APPROVE_REMAINDER" value-ref="approveRemainderWorkItemWorker" />
+		<entry key="WFE_RETURN_NOTIFY" value-ref="notifyCustomerWorkItemWorker" />
+		<entry key="WFE_RETURN_PACKING_SLIP" value-ref="returnPackingSlipWorkItemWorker" />
+		<entry key="WFE_RETURN_SHIPPING_LABEL" value-ref="returnShippingLabelWorkItemWorker" />
+	</util:map>
+
+	<alias name="defaultShipmentUpdateStatusWorkItemWorker" alias="shipmentUpdateStatusWorkItemWorker" />
+	<bean id="defaultShipmentUpdateStatusWorkItemWorker"
+		  class="com.hybris.oms.service.workflow.worker.shipment.UpdateShipmentStatusWorkItemWorker"
+		  parent="abstractWorkItemWorker">
+		<property name="shipmentService" ref="shipmentService" />
+		<property name="orderService" ref="orderService" />
+	</bean>
+
+	<alias name="defaultShipmentSplitOlqWorkItemWorker" alias="shipmentSplitOlqWorkItemWorker" />
+	<bean id="defaultShipmentSplitOlqWorkItemWorker"
+		  class="com.hybris.oms.service.workflow.worker.shipment.SplitShipmentOlqsWorkItemWorker" parent="abstractWorkItemWorker">
+		<property name="shipmentService" ref="shipmentService" />
+		<property name="orderService" ref="orderService" />
+	</bean>
+
+	<alias name="defaultShipmentSplitQuantitiesWorkItemWorker" alias="shipmentSplitQuantitiesWorkItemWorker" />
+	<bean id="defaultShipmentSplitQuantitiesWorkItemWorker"
+		  class="com.hybris.oms.service.workflow.worker.shipment.SplitShipmentQuantitiesWorkItemWorker"
+		  parent="abstractWorkItemWorker">
+		<property name="shipmentService" ref="shipmentService" />
+		<property name="orderService" ref="orderService" />
+	</bean>
+
+	<alias name="defaultPaymentWorkItemWorker" alias="paymentWorkItemWorker" />
+	<bean id="defaultPaymentWorkItemWorker" class="com.hybris.oms.service.workflow.worker.shipment.PaymentWorkItemWorker"
+		  parent="abstractWorkItemWorker">
+		<property name="shipmentService" ref="shipmentService" />
+	</bean>
+
+	<alias name="defaultTaxesWorkItemWorker" alias="taxesWorkItemWorker" />
+	<bean id="defaultTaxesWorkItemWorker" class="com.hybris.oms.service.workflow.worker.shipment.TaxesWorkItemWorker"
+		  parent="abstractWorkItemWorker">
+		<property name="shipmentService" ref="shipmentService" />
+	</bean>
+
+	<alias name="defaultFulfillmentWorkItemWorker" alias="fulfillmentWorkItemWorker" />
+	<bean id="defaultFulfillmentWorkItemWorker" class="com.hybris.oms.service.workflow.worker.order.FulfillmentWorkItemWorker"
+		  parent="abstractWorkItemWorker">
+		<property name="shipmentService" ref="shipmentService" />
+		<property name="sourcingService" ref="sourcingService" />
+	</bean>
+
+	<alias name="defaultCancelUnfulfilledWorkItemWorker" alias="cancelUnfulfilledWorkItemWorker" />
+	<bean id="defaultCancelUnfulfilledWorkItemWorker"
+		  class="com.hybris.oms.service.workflow.worker.order.CancelUnfulfilledWorkItemWorker" parent="abstractWorkItemWorker">
+		<property name="orderService" ref="orderService" />
+	</bean>
+
+	<alias name="defaultShipmentsCompletionWorkItemWorker" alias="shipmentsCompletionWorkItemWorker" />
+	<bean id="defaultShipmentsCompletionWorkItemWorker"
+		  class="com.hybris.oms.service.workflow.worker.order.ShipmentsCompletionWorkItemWorker" parent="abstractWorkItemWorker">
+		<property name="shipmentService" ref="shipmentService" />
+		<property name="orderService" ref="orderService" />
+		<property name="shipmentWorkflowExecutor" ref="shipmentWorkflowExecutor" />
+	</bean>
+
+
+	<alias name="defaultFulfillmentCompletionWorkItemWorker" alias="fulfillmentCompletionWorkItemWorker" />
+	<bean id="defaultFulfillmentCompletionWorkItemWorker"
+		  class="com.hybris.oms.service.workflow.worker.order.FulfillmentCompletionWorkItemWorker"
+		  parent="abstractWorkItemWorker">
+		<property name="orderService" ref="orderService" />
+	</bean>
+
+	<alias name="defaultGeocodingWorkItemWorker" alias="geocodingWorkItemWorker" />
+	<bean id="defaultGeocodingWorkItemWorker" class="com.hybris.oms.service.workflow.worker.order.GeocodingWorkItemWorker"
+		  parent="abstractWorkItemWorker">
+		<property name="orderService" ref="orderService" />
+		<property name="cisService" ref="cisService" />
+	</bean>
+
+	<alias name="defaultDeclinedShipmentWorkItemWorker" alias="declinedShipmentWorkItemWorker" />
+	<bean id="defaultDeclinedShipmentWorkItemWorker"
+		  class="com.hybris.oms.service.workflow.worker.shipment.DeclineShipmentWorkItemWorker" parent="abstractWorkItemWorker">
+		<property name="shipmentService" ref="shipmentService" />
+        <property name="inventoryService" ref="inventoryService" />
+	</bean>
+
+	<alias name="defaultActionQueueWorkItemWorker" alias="actionQueueWorkItemWorker" />
+	<bean id="defaultActionQueueWorkItemWorker" class="com.hybris.oms.service.workflow.worker.impl.ActionQueueWorkItemWorker"
+		  parent="abstractWorkItemWorker" />
+
+	<alias name="defaultReallocateShipmentWorkItemWorker" alias="reallocateShipmentWorkItemWorker" />
+	<bean id="defaultReallocateShipmentWorkItemWorker"
+		  class="com.hybris.oms.service.workflow.worker.shipment.ReallocateShipmentWorkItemWorker"
+		  parent="abstractWorkItemWorker">
+		<property name="inventoryService" ref="inventoryService" />
+		<property name="shipmentService" ref="shipmentService" />
+	</bean>
+
+	<bean id="abstractReturnStateWorkItemWorker" class="com.hybris.oms.service.workflow.worker.returns.ReturnStateWorkItemWorker"
+		  parent="abstractWorkItemWorker" abstract="true">
+		<property name="returnService" ref="returnService" />
+		<property name="retryEnabled" value="false" />
+	</bean>
+
+	<alias name="defaultCalculateRefundWorkItemWorker" alias="calculateRefundWorkItemWorker" />
+	<bean id="defaultCalculateRefundWorkItemWorker"
+		  class="com.hybris.oms.service.workflow.worker.returns.CalculateRefundWorkItemWorker"
+		  parent="abstractWorkItemWorker">
+		<property name="returnService" ref="returnService" />
+		<property name="refundCalculationStrategy" ref="refundCalculationStrategy" />
+
+	</bean>
+
+	<alias name="defaultCaptureRefundWorkItemWorker" alias="captureRefundWorkItemWorker" />
+	<bean id="defaultCaptureRefundWorkItemWorker"
+		  class="com.hybris.oms.service.workflow.worker.returns.CaptureRefundWorkItemWorker"
+		  parent="abstractWorkItemWorker">
+		<property name="returnService" ref="returnService" />
+		<property name="cisService" ref="cisService" />
+	</bean>
+
+	<alias name="defaultSuccessReturnCaptureWorkItemWorker" alias="successReturnCaptureWorkItemWorker" />
+	<bean id="defaultSuccessReturnCaptureWorkItemWorker" parent="abstractReturnStateWorkItemWorker">
+		<property name="state" value="SUCCESS_RETURN_CAPTURE" />
+	</bean>
+
+	<alias name="defaultWaitForApprovalWorkItemWorker" alias="waitForApprovalWorkItemWorker" />
+	<bean id="defaultWaitForApprovalWorkItemWorker" parent="abstractReturnStateWorkItemWorker">
+		<property name="state" value="WAIT_FOR_APPROVAL" />
+	</bean>
+
+	<alias name="defaultWaitForGoodsWorkItemWorker" alias="waitForGoodsWorkItemWorker" />
+	<bean id="defaultWaitForGoodsWorkItemWorker" parent="abstractReturnStateWorkItemWorker">
+		<property name="state" value="WAIT_FOR_GOODS" />
+	</bean>
+
+	<alias name="defaultFailedReturnCaptureWorkItemWorker" alias="failedReturnCaptureWorkItemWorker" />
+	<bean id="defaultFailedReturnCaptureWorkItemWorker" parent="abstractReturnStateWorkItemWorker">
+		<property name="state" value="FAILED_RETURN_CAPTURE" />
+	</bean>
+
+	<alias name="defaultTaxReverseWorkItemWorker" alias="taxReverseWorkItemWorker" />
+	<bean id="defaultTaxReverseWorkItemWorker" class="com.hybris.oms.service.workflow.worker.returns.TaxReverseWorkItemWorker"
+		  parent="abstractWorkItemWorker">
+		<property name="returnService" ref="returnService" />
+		<property name="cisService" ref="cisService" />
+	</bean>
+
+	<alias name="defaultApproveRemainderWorkItemWorker" alias="approveRemainderWorkItemWorker" />
+	<bean id="defaultApproveRemainderWorkItemWorker" class="com.hybris.oms.service.workflow.worker.returns.ApproveRemainderWorkItemWorker" parent="abstractWorkItemWorker">
+		<property name="returnService" ref="returnService" />
+	</bean>
+
+	<alias name="defaultSuccessTaxReverseWorkItemWorker" alias="successTaxReverseWorkItemWorker" />
+	<bean id="defaultSuccessTaxReverseWorkItemWorker" parent="abstractReturnStateWorkItemWorker">
+		<property name="state" value="WFE_SUCCESS_TAX_REVERSE" />
+	</bean>
+
+	<alias name="defaultFailedTaxReverseWorkItemWorker" alias="failedTaxReverseWorkItemWorker" />
+	<bean id="defaultFailedTaxReverseWorkItemWorker" parent="abstractReturnStateWorkItemWorker">
+		<property name="state" value="WFE_FAIL_TAX_REVERSE" />
+	</bean>
+
+
+	<alias name="defaultReturnReviewWorkItemWorker" alias="returnReviewWorkItemWorker" />
+	<bean id="defaultReturnReviewWorkItemWorker" class="com.hybris.oms.service.workflow.worker.returns.ReturnReviewWorkItemWorker"
+		  parent="abstractWorkItemWorker">
+		<property name="returnService" ref="returnService" />
+	</bean>
+
+	<alias name="defaultInventoryUpdateWorkItemWorker" alias="inventoryUpdateWorkItemWorker" />
+	<bean id="defaultInventoryUpdateWorkItemWorker"
+		  class="com.hybris.oms.service.workflow.worker.returns.InventoryUpdateWorkItemWorker"
+		  parent="abstractWorkItemWorker">
+		<property name="inventoryService" ref="inventoryService" />
+		<property name="returnService" ref="returnService" />
+	</bean>
+
+	<alias name="defaultUpdateReturnWorkItemWorker" alias="updateReturnWorkItemWorker" />
+	<bean id="defaultUpdateReturnWorkItemWorker" class="com.hybris.oms.service.workflow.worker.returns.UpdateReturnWorkItemWorker"
+		  parent="abstractWorkItemWorker">
+		<property name="returnService" ref="returnService" />
+	</bean>
+
+	<alias name="defaultCancelReturnWorkItemWorker" alias="cancelReturnWorkItemWorker" />
+	<bean id="defaultCancelReturnWorkItemWorker" parent="abstractReturnStateWorkItemWorker">
+		<property name="state" value="CANCELED" />
+	</bean>
+	<bean id="returnStartProcessExecutionListener"
+		  class="com.hybris.oms.service.workflow.listener.JmxReturnStartListener">
+		<property name="processMbean" ref="processMbean" />
+	</bean>
+	<bean id="returnEndProcessExecutionListener"
+		  class="com.hybris.oms.service.workflow.listener.JmxReturnEndListener">
+		<property name="processMbean" ref="processMbean" />
+	</bean>
+
+	<bean id="abstractShipmentUpdateStatusWorkItemWorker"
+		  class="com.hybris.oms.service.workflow.worker.shipment.AbstractUpdateShipmentStatusWorkItemWorker"
+		  parent="abstractWorkItemWorker" abstract="true">
+		<property name="shipmentService" ref="shipmentService" />
+		<property name="orderService" ref="orderService" />
+	</bean>
+
+	<alias name="defaultShipmentUpdateStatusShippedWorkItemWorker" alias="shipmentUpdateStatusShippedWorkItemWorker" />
+	<bean id="defaultShipmentUpdateStatusShippedWorkItemWorker" parent="abstractShipmentUpdateStatusWorkItemWorker">
+		<property name="statusPreferenceKey">
+			<util:constant static-field="com.hybris.oms.domain.preference.TenantPreferenceConstants.PREF_KEY_OLQSTATUS_SHIPPED" />
+		</property>
+	</bean>
+
+	<alias name="defaultShipmentUpdateStatusFailedPaymentWorkItemWorker"
+		   alias="shipmentUpdateStatusFailedPaymentWorkItemWorker" />
+	<bean id="defaultShipmentUpdateStatusFailedPaymentWorkItemWorker" parent="abstractShipmentUpdateStatusWorkItemWorker">
+		<property name="statusPreferenceKey">
+			<util:constant
+					static-field="com.hybris.oms.domain.preference.TenantPreferenceConstants.PREF_KEY_OLQSTATUS_FAILEDCAPTURE" />
+		</property>
+	</bean>
+
+	<alias name="defaultShipmentUpdateStatusFailedTaxWorkItemWorker" alias="shipmentUpdateStatusFailedTaxWorkItemWorker" />
+	<bean id="defaultShipmentUpdateStatusFailedTaxWorkItemWorker" parent="abstractShipmentUpdateStatusWorkItemWorker">
+		<property name="statusPreferenceKey">
+			<util:constant
+					static-field="com.hybris.oms.domain.preference.TenantPreferenceConstants.PREF_KEY_OLQSTATUS_FAILEDTAX" />
+		</property>
+	</bean>
+
+	<alias name="defaultShipmentUpdateStatusCanceledWorkItemWorker" alias="shipmentUpdateStatusCanceledWorkItemWorker" />
+	<bean id="defaultShipmentUpdateStatusCanceledWorkItemWorker" parent="abstractShipmentUpdateStatusWorkItemWorker">
+		<property name="statusPreferenceKey">
+			<util:constant
+					static-field="com.hybris.oms.domain.preference.TenantPreferenceConstants.PREF_KEY_OLQSTATUS_CANCELED" />
+		</property>
+	</bean>
+
+	<alias name="defaultRejectReturnWorkItemWorker" alias="rejectReturnWorkItemWorker" />
+	<bean id="defaultRejectReturnWorkItemWorker" parent="abstractReturnStateWorkItemWorker">
+		<property name="state" value="REJECTED" />
+	</bean>
+
+	<alias name="stubNotifyCustomerWorkItemWorker" alias="notifyCustomerWorkItemWorker" />
+	<bean id="stubNotifyCustomerWorkItemWorker" parent="abstractReturnStubWorkItemWorker" />
+
+
+	<alias name="stubReturnPackingSlipWorkItemWorker" alias="returnPackingSlipWorkItemWorker" />
+	<bean id="stubReturnPackingSlipWorkItemWorker" parent="abstractReturnStubWorkItemWorker" />
+
+
+	<alias name="stubReturnShippingLabelWorkItemWorker" alias="returnShippingLabelWorkItemWorker" />
+	<bean id="stubReturnShippingLabelWorkItemWorker" parent="abstractReturnStubWorkItemWorker" />
+
+
+	<bean id="abstractReturnStubWorkItemWorker" class="com.hybris.oms.service.workflow.worker.returns.ReturnStubWorkItemWorker"
+		  parent="abstractWorkItemWorker" abstract="true">
+	</bean>
+
+</beans>

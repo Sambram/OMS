@@ -1,0 +1,5 @@
+id,myReturnOrderLine,reason,rejectionId,quantity,responsible,version
+ReturnLineRejectionData|1,ReturnOrderLineData|6,reasonOfRejection,1,3,responsible1,1
+ReturnLineRejectionData|2,ReturnOrderLineData|6,reasonOfRejection,2,2,responsible2,1
+ReturnLineRejectionData|3,ReturnOrderLineData|7,reasonOfRejection,3,0,responsible3,1
+ReturnLineRejectionData|4,ReturnOrderLineData|8,reasonOfRejection,4,5,responsible4,1

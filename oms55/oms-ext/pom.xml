@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<parent>
+		<groupId>com.hybris.oms</groupId>
+		<artifactId>oms55</artifactId>
+		<version>1.0-SNAPSHOT</version>
+	</parent>
+
+	<groupId>com.hybris.oms.ext</groupId>
+	<artifactId>oms-ext</artifactId>
+	<packaging>pom</packaging>
+
+	<build>
+	</build>
+
+  <modules>
+    <module>oms-ext-api</module>
+    <module>oms-ext-client</module>
+    <module>oms-ext-service</module>
+    <module>oms-ext-web</module>
+    <module>oms-ext-integration-test</module>
+  </modules>
+</project>

@@ -1,0 +1,476 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:util="http://www.springframework.org/schema/util" xmlns="http://www.springframework.org/schema/beans"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd">
+
+	<import resource="classpath:/META-INF/oms-core-service-spring.xml"/>
+	
+	<bean class="com.hybris.kernel.services.aggregation.AggregationGroupBean">
+		<property name="aggregationClasses" ref="aggregationClasses" />
+	</bean>
+	<util:list id="aggregationClasses">
+		<value>com.hybris.oms.service.inventory.impl.dataaccess.AggItemQuantityByItemIdStatus</value>
+		<value>com.hybris.oms.service.inventory.impl.dataaccess.AggItemQuantityByItemIdLocationStatus</value>
+		<value>com.hybris.oms.service.order.impl.dataaccess.AggQuantityUnassignedBySku</value>
+		<value>com.hybris.oms.service.order.impl.dataaccess.AggOrderLineQuantityBySkuLocationStatus</value>
+		<value>com.hybris.oms.service.order.impl.dataaccess.AggOrderLineQuantityBySkuStatus</value>
+		<value>com.hybris.oms.service.inventory.impl.dataaccess.AggFutureItemQuantityBySkuStatus</value>
+		<value>com.hybris.oms.service.inventory.impl.dataaccess.AggFutureItemQuantityBySkuLocationStatus</value>
+	</util:list>
+
+	<!-- Sourcing -->
+	<alias name="defaultSourcingService" alias="sourcingService" />
+	<bean id="defaultSourcingService"
+		class="com.hybris.oms.service.sourcing.impl.DefaultSourcingService">
+		<property name="sourcingStrategies" ref="sourcingStrategies" />
+		<property name="atsDescriptor" value="ATS" />
+		<property name="distanceDescriptor" value="DISTANCE" />
+		<property name="sequenceDescriptor" value="SEQUENCE" />
+		<property name="sourcingResultBuilder" ref="sourcingResultBuilder" />
+		<property name="orderLineSplitStrategy" ref="orderLineSplitStrategy" />
+		<property name="locationsFilterStrategy" ref="locationsFilterStrategy" />
+		<property name="contextBuilder" ref="sourcingContextBuilder" />
+		<property name="sourcingMatrixBuilder" ref="sourcingMatrixBuilder" />
+		<property name="comparatorFactory" ref="sourcingComparatorFactory" />
+		<property name="resultPersistenceStrategy" ref="sourcingResultPersistenceStrategy" />
+		<property name="orderService" ref="orderService" />
+		<property name="inventoryService" ref="inventoryService" />
+		<property name="atsService" ref="atsService" />
+		<property name="lineActionsStrategy" ref="lineActionsStrategy" />
+		<property name="sourcingSplitOptions" ref="splitOptionMap"/>
+		<property name="sourcingComparatorFactory" ref="sourcingComparatorFactory"/>
+	</bean>
+	<util:list id="sourcingStrategies">
+		<ref bean="sourcingPickupInStoreStrategy" />
+		<ref bean="sourcingWholeOrderStrategy" />
+		<ref bean="sourcingItemGroupingStrategy" />
+		<ref bean="sourcingWholeOrderLineStrategy" />
+		<ref bean="sourcingSplitOrderLineStrategy" />
+	</util:list>
+
+	<alias name="defaultSourcingResultPersistenceStrategy" alias="sourcingResultPersistenceStrategy" />
+	<bean id="defaultSourcingResultPersistenceStrategy"
+		class="com.hybris.oms.service.sourcing.strategy.impl.DefaultSourcingResultPersistenceStrategy">
+		<property name="orderService" ref="orderService" />
+		<property name="persistenceManager" ref="persistenceManager" />
+	</bean>
+
+	<alias name="defaultLineActionsStrategy" alias="lineActionsStrategy" />
+	<bean id="defaultLineActionsStrategy"
+		class="com.hybris.oms.service.sourcing.strategy.impl.DefaultLineActionsStrategy" />
+
+	<alias name="defaultSourcingResultBuilder" alias="sourcingResultBuilder" />
+	<bean id="defaultSourcingResultBuilder"
+		class="com.hybris.oms.service.sourcing.impl.SourcingResultConverter">
+		<lookup-method name="getSourcingResult" bean="sourcingResult" />
+	</bean>
+
+	<bean id="sourcingResult"
+		class="com.hybris.oms.service.sourcing.impl.DefaultSourcingResult"
+		scope="prototype" />
+
+	<alias name="defaultSourcingContextBuilder" alias="sourcingContextBuilder" />
+	<bean id="defaultSourcingContextBuilder"
+		class="com.hybris.oms.service.sourcing.builder.SourcingContextBuilder">
+		<property name="splitOptionMap" ref="splitOptionMap" />
+		<lookup-method name="getProcessStatus" bean="processStatus" />
+		<property name="preferenceService" ref="tenantPreferenceService" />
+		<property name="matrixBuilder" ref="sourcingMatrixBuilder" />
+		<property name="comparatorFactory" ref="sourcingComparatorFactory" />
+		<property name="propertiesBuilders" ref="sourcingContextPropertiesBuilders" />
+	</bean>
+	<util:list id="sourcingContextPropertiesBuilders" />
+
+	<util:map id="splitOptionMap">
+		<entry key="CANCELLED">
+			<util:constant
+				static-field="com.hybris.oms.service.sourcing.context.SourcingSplitOption.CANCELLED" />
+		</entry>
+		<entry key="ON_HOLD">
+			<util:constant
+				static-field="com.hybris.oms.service.sourcing.context.SourcingSplitOption.ON_HOLD" />
+		</entry>
+		<entry key="SPLIT">
+			<util:constant
+				static-field="com.hybris.oms.service.sourcing.context.SourcingSplitOption.SPLIT" />
+		</entry>
+	</util:map>
+
+	<alias name="defaultSourcingComparatorFactory" alias="sourcingComparatorFactory" />
+	<bean id="defaultSourcingComparatorFactory"
+		class="com.hybris.oms.service.sourcing.builder.SourcingComparatorFactory">
+		<property name="comparatorMap" ref="sourcingComparatorMap" />
+	</bean>
+	<util:map id="sourcingComparatorMap">
+		<entry key="ATS" value-ref="sourcingAtsComparator" />
+		<entry key="DISTANCE" value-ref="sourcingDistanceComparator" />
+		<entry key="SEQUENCE" value-ref="sourcingPriorityComparator" />
+		<entry key="_default_" value-ref="sourcingDefaultComparator" />
+	</util:map>
+
+	<bean id="sourcingAtsComparator"
+		class="com.hybris.oms.service.sourcing.context.SourcingLocation$AtsComparator" />
+	<bean id="sourcingDistanceComparator"
+		class="com.hybris.oms.service.sourcing.context.SourcingLocation$DistanceComparator" />
+	<bean id="sourcingPriorityComparator"
+		class="com.hybris.oms.service.sourcing.context.SourcingLocation$PriorityComparator" />
+	<bean id="sourcingDefaultComparator"
+		class="com.hybris.oms.service.sourcing.context.SourcingLocation$LocationIdComparator" />
+
+	<alias name="defaultAbstractSourcingStrategy" alias="abstractSourcingStrategy" />
+	<bean id="defaultAbstractSourcingStrategy" abstract="true">
+		<property name="olqBuilder" ref="sourcingOLQBuilder" />
+	</bean>
+
+	<alias name="defaultSourcingPickupInStoreStrategy" alias="sourcingPickupInStoreStrategy" />
+	<bean id="defaultSourcingPickupInStoreStrategy"
+		class="com.hybris.oms.service.sourcing.strategy.impl.PickupInStoreStrategy"
+		parent="abstractSourcingStrategy" />
+
+	<alias name="defaultSourcingWholeOrderStrategy" alias="sourcingWholeOrderStrategy" />
+	<bean id="defaultSourcingWholeOrderStrategy"
+		class="com.hybris.oms.service.sourcing.strategy.impl.WholeOrderStrategy"
+		parent="abstractSourcingStrategy" />
+
+	<alias name="defaultSourcingItemGroupingStrategy" alias="sourcingItemGroupingStrategy" />
+	<bean id="defaultSourcingItemGroupingStrategy"
+		class="com.hybris.oms.service.sourcing.strategy.impl.ItemGroupingStrategy"
+		parent="abstractSourcingStrategy">
+		<property name="sequenceDescriptor" value="ATS" />
+		<property name="comparatorFactory" ref="sourcingComparatorFactory" />
+	</bean>
+
+	<alias name="defaultSourcingWholeOrderLineStrategy" alias="sourcingWholeOrderLineStrategy" />
+	<bean id="defaultSourcingWholeOrderLineStrategy"
+		class="com.hybris.oms.service.sourcing.strategy.impl.WholeOrderLineStrategy"
+		parent="abstractSourcingStrategy" />
+
+	<alias name="defaultSourcingSplitOrderLineStrategy" alias="sourcingSplitOrderLineStrategy" />
+	<bean id="defaultSourcingSplitOrderLineStrategy"
+		class="com.hybris.oms.service.sourcing.strategy.impl.SplitOrderLineStrategy"
+		parent="abstractSourcingStrategy" />
+
+	<alias name="defaultLocationsFilterStrategy" alias="locationsFilterStrategy" />
+	<bean id="defaultLocationsFilterStrategy"
+		class="com.hybris.oms.service.sourcing.strategy.CompositeLocationsFilterStrategy">
+		<property name="locationFilters" ref="locationFilters" />
+	</bean>
+	<util:list id="locationFilters">
+		<bean id="stockRoomLocationsFilterStrategy"
+			class="com.hybris.oms.service.sourcing.strategy.impl.StockRoomLocationsFilterStrategy" />
+		<bean id="baseStoreLocationsFilterStrategy"
+			class="com.hybris.oms.service.sourcing.strategy.impl.BaseStoreLocationsFilterStrategy" />
+	</util:list>
+
+	<alias name="defaultSourcingMatrixBuilder" alias="sourcingMatrixBuilder" />
+	<bean id="defaultSourcingMatrixBuilder"
+		class="com.hybris.oms.service.sourcing.builder.SourcingMatrixBuilder">
+		<property name="matrixRowBuilder" ref="sourcingMatrixRowBuilder" />
+		<property name="matrixTotalsRowBuilder" ref="matrixTotalsRowBuilder" />
+	</bean>
+
+	<alias name="defaultSourcingMatrixRowBuilder" alias="sourcingMatrixRowBuilder" />
+	<bean id="defaultSourcingMatrixRowBuilder"
+		class="com.hybris.oms.service.sourcing.builder.SourcingMatrixRowBuilder">
+		<property name="atsService" ref="atsService" />
+		<property name="inventoryService" ref="inventoryService"/>
+		<property name="sourcingLocationBuilder" ref="sourcingLocationBuilder" />
+		<property name="lineLocationsFilterStrategy" ref="lineLocationsFilterStrategy" />
+	</bean>
+
+	<alias name="defaultMatrixTotalsRowBuilder" alias="matrixTotalsRowBuilder" />
+	<bean id="defaultMatrixTotalsRowBuilder"
+		class="com.hybris.oms.service.sourcing.builder.SourcingMatrixTotalsRowBuilder">
+		<property name="sourcingLocationBuilder" ref="sourcingLocationBuilder" />
+		<property name="propertiesBuilders" ref="matrixTotalsPropertiesBuilders" />
+	</bean>
+	<util:list id="matrixTotalsPropertiesBuilders" />
+
+	<alias name="defaultLineLocationsFilterStrategy" alias="lineLocationsFilterStrategy" />
+	<bean id="defaultLineLocationsFilterStrategy"
+		class="com.hybris.oms.service.sourcing.strategy.CompositeLocationsFilterStrategy">
+		<property name="locationFilters" ref="lineLocationFilters" />
+	</bean>
+	<util:list id="lineLocationFilters">
+		<ref bean="pickupLocationsFilterStrategy" />
+		<ref bean="queryBasedLocationsFilterStrategy" />
+	</util:list>
+
+	<alias name="defaultPickupLocationsFilterStrategy" alias="pickupLocationsFilterStrategy" />
+	<bean id="defaultPickupLocationsFilterStrategy"
+		class="com.hybris.oms.service.sourcing.strategy.impl.PickupLocationsFilterStrategy">
+		<property name="inventoryService" ref="inventoryService" />
+	</bean>
+
+	<alias name="defaultQueryBasedLocationsFilterStrategy" alias="queryBasedLocationsFilterStrategy" />
+	<bean id="defaultQueryBasedLocationsFilterStrategy"
+		class="com.hybris.oms.service.sourcing.strategy.impl.QueryBasedLocationsFilterStrategy">
+		<property name="inventoryService" ref="inventoryService" />
+	</bean>
+
+	<alias name="defaultSourcingLocationBuilder" alias="sourcingLocationBuilder" />
+	<bean id="defaultSourcingLocationBuilder"
+		class="com.hybris.oms.service.sourcing.builder.SourcingLocationBuilder">
+		<property name="locationInfoBuilder" ref="locationInfoBuilder" />
+		<property name="propertiesBuilders" ref="sourcingLocationPropertiesBuilders" />
+	</bean>
+	<util:list id="sourcingLocationPropertiesBuilders" />
+
+	<alias name="defaultLocationInfoBuilder" alias="locationInfoBuilder" />
+	<bean id="defaultLocationInfoBuilder"
+		class="com.hybris.oms.service.sourcing.builder.LocationInfoBuilder">
+		<property name="propertiesBuilders" ref="locationInfoPropertiesBuilders" />
+	</bean>
+	<util:list id="locationInfoPropertiesBuilders" />
+
+	<alias name="defaultOrderLineSplitStrategy" alias="orderLineSplitStrategy" />
+	<bean id="defaultOrderLineSplitStrategy"
+		class="com.hybris.oms.service.sourcing.strategy.impl.DefaultOrderLineSplitStrategy">
+		<property name="propertiesBuilders" ref="sourcingLinePropertiesBuilders" />
+	</bean>
+	<util:list id="sourcingLinePropertiesBuilders">
+		<ref bean="schemalessPropertiesBuilder" />
+		<ref bean="orderLineAttributePropertiesBuilder" />
+	</util:list>
+
+	<alias name="defaultSchemalessPropertiesBuilder" alias="schemalessPropertiesBuilder" />
+	<bean id="defaultSchemalessPropertiesBuilder"
+		class="com.hybris.oms.service.sourcing.builder.SchemalessPropertiesBuilder" />
+
+	<alias name="defaultOrderLineAttributePropertiesBuilder" alias="orderLineAttributePropertiesBuilder" />
+	<bean id="defaultOrderLineAttributePropertiesBuilder"
+		class="com.hybris.oms.service.sourcing.builder.OrderLineAttributePropertiesBuilder" />
+
+	<alias name="defaultSourcingOLQBuilder" alias="sourcingOLQBuilder" />
+	<bean id="defaultSourcingOLQBuilder"
+		class="com.hybris.oms.service.sourcing.builder.SourcingOLQBuilder">
+		<property name="propertiesBuilders" ref="sourcingOlqPropertiesBuilders" />
+	</bean>
+	<util:list id="sourcingOlqPropertiesBuilders" />
+
+	<bean id="processStatus" class="com.hybris.oms.service.sourcing.context.ProcessStatus"
+		scope="prototype" />
+
+	<!-- Mapper bean to find matched formula to aggregation -->
+	<alias name="defaultAggregationToFormulaMatcher" alias="aggregationToFormulaMatcher" />
+	<bean id="defaultAggregationToFormulaMatcher"
+		class="com.hybris.oms.service.ats.impl.DefaultAggregationToFormulaMatcher">
+		<property name="atsService" ref="atsService" />
+		<property name="formulaParser" ref="formulaParser" />
+	</bean>
+
+	<alias name="defaultAtsService" alias="atsService" />
+	<bean id="defaultAtsService" class="com.hybris.oms.service.ats.impl.DefaultAtsService">
+		<property name="persistenceManager" ref="persistenceManager" />
+		<property name="tenantPreferenceService" ref="tenantPreferenceService" />
+		<property name="contextBuilder" ref="calculationContextBuilder" />
+		<property name="atsCalculator" ref="atsCalculator" />
+		<property name="queryFactory" ref="atsQueryFactory" />
+	</bean>
+	<alias name="defaultAtsQueryFactory" alias="atsQueryFactory" />
+	<bean id="defaultAtsQueryFactory" class="com.hybris.oms.service.ats.impl.AtsQueryFactory">
+		<property name="atsFormulaQueryTtl" value="${query.atsFormula.timeToLive}" />
+	</bean>
+
+	<alias name="defaultAggregateHelper" alias="aggregateHelper" />
+	<bean id="defaultAggregateHelper" class="com.hybris.oms.service.ats.impl.AggregateHelper">
+		<property name="aggregationService" ref="omsAggregationService" />
+		<property name="realmRegistry" ref="statusRealmRegistry" />
+	</bean>
+
+	<alias name="defaultAtsCalculator" alias="atsCalculator" />
+	<bean id="defaultAtsCalculator" class="com.hybris.oms.service.ats.impl.AtsCalculator">
+		<property name="keyBuilder" ref="keyBuilder" />
+		<property name="formulaParser" ref="formulaParser" />
+	</bean>
+
+	<alias name="defaultKeyBuilder" alias="keyBuilder" />
+	<bean id="defaultKeyBuilder" class="com.hybris.oms.service.ats.impl.KeyBuilder" />
+
+	<alias name="defaultFormulaParser" alias="formulaParser" />
+	<bean id="defaultFormulaParser" class="com.hybris.oms.service.ats.impl.FormulaParser">
+		<property name="realmRegistry" ref="statusRealmRegistry" />
+	</bean>
+
+	<alias name="defaultStatusRealmRegistry" alias="statusRealmRegistry" />
+	<bean id="defaultStatusRealmRegistry"
+		class="com.hybris.oms.service.ats.impl.DefaultStatusRealmRegistry">
+		<property name="realmInfos" ref="realmInfos" />
+		<property name="atsUnassignedQuantity"
+			value="com.hybris.oms.service.order.impl.dataaccess.AggQuantityUnassignedBySku" />
+	</bean>
+	<util:list id="realmInfos">
+		<bean
+			class="com.hybris.oms.service.ats.impl.DefaultStatusRealmRegistry$RealmInfo">
+			<property name="globalAggregateClass"
+				value="com.hybris.oms.service.inventory.impl.dataaccess.AggItemQuantityByItemIdStatus" />
+			<property name="localAggregateClass"
+				value="com.hybris.oms.service.inventory.impl.dataaccess.AggItemQuantityByItemIdLocationStatus" />
+			<property name="realm">
+				<util:constant static-field="com.hybris.oms.service.ats.StatusRealm.INVENTORY" />
+			</property>
+		</bean>
+		<bean
+			class="com.hybris.oms.service.ats.impl.DefaultStatusRealmRegistry$RealmInfo">
+			<property name="globalAggregateClass"
+				value="com.hybris.oms.service.order.impl.dataaccess.AggOrderLineQuantityBySkuStatus" />
+			<property name="localAggregateClass"
+				value="com.hybris.oms.service.order.impl.dataaccess.AggOrderLineQuantityBySkuLocationStatus" />
+			<property name="realm">
+				<util:constant static-field="com.hybris.oms.service.ats.StatusRealm.ORDER" />
+			</property>
+		</bean>
+		<bean
+			class="com.hybris.oms.service.ats.impl.DefaultStatusRealmRegistry$RealmInfo">
+			<property name="globalAggregateClass"
+				value="com.hybris.oms.service.inventory.impl.dataaccess.AggFutureItemQuantityBySkuStatus" />
+			<property name="localAggregateClass"
+				value="com.hybris.oms.service.inventory.impl.dataaccess.AggFutureItemQuantityBySkuLocationStatus" />
+			<property name="realm">
+				<util:constant static-field="com.hybris.oms.service.ats.StatusRealm.FUTUR" />
+			</property>
+		</bean>
+	</util:list>
+
+	<alias name="defaultCalculationContextBuilder" alias="calculationContextBuilder" />
+	<bean id="defaultCalculationContextBuilder"
+		class="com.hybris.oms.service.ats.impl.CalculationContextBuilder">
+		<property name="thresholdBuilder" ref="thresholdBuilder" />
+		<property name="aggregateValuesBuilder" ref="aggregateValuesBuilder" />
+		<property name="formulaParser" ref="formulaParser" />
+	</bean>
+
+	<alias name="defaultAggregateValuesBuilder" alias="aggregateValuesBuilder" />
+	<bean id="defaultAggregateValuesBuilder" class="com.hybris.oms.service.ats.impl.AggregateValuesBuilder">
+		<property name="aggregateHelper" ref="aggregateHelper" />
+		<property name="keyBuilder" ref="keyBuilder" />
+	</bean>
+
+	<alias name="defaultThresholdBuilder" alias="thresholdBuilder" />
+	<bean id="defaultThresholdBuilder" class="com.hybris.oms.service.ats.impl.ThresholdBuilder">
+		<property name="inventoryService" ref="inventoryService" />
+		<property name="tenantPreferenceService" ref="tenantPreferenceService" />
+	</bean>
+
+	<alias name="defaultInventoryService" alias="inventoryService" />
+	<bean id="defaultInventoryService"
+		class="com.hybris.oms.service.inventory.impl.DefaultInventoryService">
+		<property name="inventoryQueries" ref="inventoryQueryFactory" />
+		<property name="tenantPreferenceService" ref="tenantPreferenceService" />
+	</bean>
+
+	<alias name="defaultInventoryQueryFactory" alias="inventoryQueryFactory" />
+	<bean id="defaultInventoryQueryFactory"
+		class="com.hybris.oms.service.inventory.impl.InventoryQueryFactory">
+		<property name="locationsQueryTtl" value="${query.locations.timeToLive}" />
+	</bean>
+
+	<alias name="defaultBaseStoreQueryFactory" alias="baseStoreQueryFactory" />
+	<bean id="defaultBaseStoreQueryFactory"
+		class="com.hybris.oms.service.basestore.impl.BaseStoreQueryFactory" />
+
+	<alias name="defaultBaseStoreService" alias="baseStoreService" />
+	<bean id="defaultBaseStoreService"
+		class="com.hybris.oms.service.basestore.impl.DefaultBaseStoreService">
+		<property name="baseStoreQueryFactory" ref="baseStoreQueryFactory" />
+	</bean>
+
+	<alias name="defaultRuleService" alias="ruleService" />
+	<bean id="defaultRuleService" class="com.hybris.oms.service.rule.impl.DefaultRuleService">
+		<property name="inventoryService" ref="inventoryService" />
+		<property name="inventoryUpdateStrategyFactory" ref="inventoryUpdateStrategyFactory" />
+	</bean>
+
+	<alias name="defaultShipmentQueryFactory" alias="shipmentQueryFactory" />
+	<bean id="defaultShipmentQueryFactory"
+		class="com.hybris.oms.service.shipment.impl.ShipmentQueryFactory" />
+
+	<alias name="defaultShipmentService" alias="shipmentService" />
+	<bean id="defaultShipmentService"
+		class="com.hybris.oms.service.shipment.impl.DefaultShipmentService">
+		<property name="inventoryService" ref="inventoryService" />
+		<property name="orderService" ref="orderService" />
+		<property name="shipmentQueryFactory" ref="shipmentQueryFactory" />
+		<property name="cisService" ref="cisService" />
+		<property name="olqGroupingStrategy" ref="olqGroupingStrategy" />
+		<property name="shipmentWorkflowExecutor" ref="shipmentWorkflowExecutor" />
+		<property name="tenantPreferenceService" ref="tenantPreferenceService" />
+		<property name="shipmentPollPageSize" value="${oms.synchronization.poll.pageSize}"/>
+	</bean>
+
+	<alias name="defaultOlqGroupingStrategy" alias="olqGroupingStrategy" />
+	<bean id="defaultOlqGroupingStrategy"
+		class="com.hybris.oms.service.shipment.strategy.impl.DefaultOlqGroupingStrategy" />
+
+	<alias name="defaultOrderService" alias="orderService" />
+	<bean id="defaultOrderService" class="com.hybris.oms.service.order.impl.DefaultOrderService">
+		<property name="orderQueries" ref="orderQueryFactory" />
+		<property name="tenantPreferenceService" ref="tenantPreferenceService" />
+		<property name="ruleService" ref="ruleService" />
+		<property name="shipmentService" ref="shipmentService" />
+		<property name="persistenceManager" ref="persistenceManager" />
+		<property name="orderPollPageSize" value="${oms.synchronization.poll.pageSize}"/>
+	</bean>
+
+	<alias name="defaultOrderQueryFactory" alias="orderQueryFactory" />
+	<bean id="defaultOrderQueryFactory" class="com.hybris.oms.service.order.impl.OrderQueryFactory" />
+
+	<!-- Inventory Update Rule Strategies -->
+	<alias name="defaultInventoryUpdateStrategyFactory" alias="inventoryUpdateStrategyFactory" />
+	<bean id="defaultInventoryUpdateStrategyFactory"
+		class="com.hybris.oms.service.rule.strategy.InventoryUpdateStrategyFactory">
+		<property name="strategyMap" ref="inventoryUpdateStrategyMap" />
+	</bean>
+	<util:map id="inventoryUpdateStrategyMap">
+		<entry key="OLQ_QUANTITY" value-ref="inventoryUpdateOlqQuantityStrategy" />
+        <entry key="OLQ_QUANTITY_MAX_VALUE" value-ref="inventoryUpdateOlqQuantityStrategy" />
+		<entry key="LOCAL_ATS" value-ref="inventoryUpdateLocalAtsStrategy" />
+	</util:map>
+
+	<bean id="inventoryUpdateOlqQuantityStrategy"
+		class="com.hybris.oms.service.rule.strategy.impl.InventoryUpdateOlqQuantityStrategy" />
+
+	<bean id="inventoryUpdateLocalAtsStrategy"
+		class="com.hybris.oms.service.rule.strategy.impl.InventoryUpdateLocalAtsStrategy">
+		<property name="atsService" ref="atsService" />
+	</bean>
+
+	<alias name="defaultReturnService" alias="returnService" />
+	<bean id="defaultReturnService"
+		class="com.hybris.oms.service.returns.impl.DefaultReturnService">
+		<property name="returnQueryFactory" ref="returnQueryFactory" />
+		<property name="tenantPreferenceService" ref="tenantPreferenceService" />
+		<property name="orderService" ref="orderService" />
+		<property name="returnReasonCodes" ref="returnReasonCodes" />
+	</bean>
+
+	<alias name="defaultReturnQueryFactory" alias="returnQueryFactory" />
+	<bean id="defaultReturnQueryFactory" class="com.hybris.oms.service.returns.impl.ReturnQueryFactory" />
+
+	<util:list id="returnReasonCodes" value-type="java.lang.String">
+		<value>DAMAGED</value>
+		<value>WRONGSIZE</value>
+		<value>CHANGMIND</value>
+		<value>LATEDELIVERY</value>
+		<value>OTHER</value>
+	</util:list>
+
+	<alias name="defaultReturnApprovalStrategy" alias="returnApprovalStrategy" />
+	<bean id="defaultReturnApprovalStrategy"
+		class="com.hybris.oms.service.returns.strategy.impl.InStoreVersusOnlineStrategy" />
+
+	<alias name="defaultRefundCalculationStrategy" alias="refundCalculationStrategy" />
+	<bean id="defaultRefundCalculationStrategy"
+		class="com.hybris.oms.service.returns.strategy.impl.DefaultRefundCalculationStrategy">
+		<property name="tenantPreferenceService" ref="tenantPreferenceService" />
+		<property name="orderService" ref="orderService" />
+		<property name="returnService" ref="returnService" />
+	</bean>
+
+	<alias name="orderScheduledShippingDateUtils" alias="orderScheduledShippingDateUtils" />
+	<bean id="orderScheduledShippingDateUtils" class="com.hybris.oms.service.order.OrderScheduledShippingDateUtils">
+		<property name="tenantPreferenceService" ref="tenantPreferenceService" />
+	</bean>
+
+</beans>

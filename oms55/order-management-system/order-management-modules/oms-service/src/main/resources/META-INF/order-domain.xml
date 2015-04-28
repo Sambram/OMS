@@ -1,0 +1,334 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<types xmlns="http://www.hybris.com/schema/ondemand/domain"
+	   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	   xsi:schemaLocation="http://www.hybris.com/schema/onpremise/domain http://www.hybris.com/schema/onpremise/domain-5.3.xsd"
+	   package="com.hybris.oms.service.managedobjects.order">
+
+	<enumerations>
+		<enumeration code="OrderlineFulfillmentType">
+			<values>
+				<value code="REGULAR"/>
+				<value code="PRE_ORDERLINE"/>
+				<value code="BACK_ORDERLINE"/>
+			</values>
+		</enumeration>
+	</enumerations>
+	
+	<managedobjects>
+		<!-- https://wiki.hybris.com/display/dra/order+tables -->
+		<managedobject code="OrderData" properties="true">
+			<description>Contains data on when the order was placed</description>
+			<persistence name="orders"/>
+			<versionattribute name="version"/>
+			<attributes>
+				<attribute name="state" type="String">
+					<description>Current order state</description>
+				</attribute>
+
+				<attribute name="contact" type="ContactVT">
+					<description>Order contact</description>
+				</attribute>
+
+				<attribute name="currencyCode" type="String">
+					<description>Currency code</description>
+				</attribute>
+
+				<attribute name="customerLocale" type="String">
+					<description>a string representation of a Locale object, consisting of language, country, etc</description>
+				</attribute>
+
+				<attribute name="emailid" type="String">
+					<description>Customer's Email Id</description>
+					<!-- deactivated temporarily -->
+					<!-- modifiers mandatory="true"/-->
+				</attribute>
+
+				<attribute name="firstName" type="String">
+					<description>Customer's First Name</description>
+					<modifiers mandatory="true"/>
+				</attribute>
+
+				<attribute name="issueDate" type="Date">
+					<description>Order issue Date</description>
+					<modifiers mandatory="true" indexed="true"/>
+				</attribute>
+				
+				<attribute name="scheduledShippingDate" type="Date">
+					<description>Order Scheduled Shipping Date</description>
+					<modifiers indexed="true"/>
+				</attribute>
+				
+				<attribute name="lastName" type="String">
+					<description>Customer's Last name</description>
+					<modifiers mandatory="true"/>
+				</attribute>
+
+				<attribute name="orderId" type="String">
+					<description>Unique business code of the order</description>
+					<modifiers unique="true" mandatory="true" final="true" tracked="true"/>
+				</attribute>
+
+				<!-- At least 1: cannot be validated by setting this field to mandatory -->
+				<attribute name="orderLines" type="List(OrderLineData)">
+					<constraints>
+						<constraint package="org.apache.bval.constraints" type="NotEmpty"/>
+					</constraints>
+					<description>Order line containing item and order line quantities</description>
+					<relation>
+						<one2many mappedBy="myOrder"/>
+					</relation>
+				</attribute>
+
+				<!-- At least 1: cannot be validated by setting this field to mandatory -->
+				<attribute name="paymentInfos" type="List(PaymentInfoData)">
+					<constraints>
+						<!--  TODO remove when validation is added due to efficiency reasons and interference with lazy loading -->
+						<constraint package="org.apache.bval.constraints" type="NotEmpty"/>
+					</constraints>
+					<description>Order containing list of payment information</description>
+					<relation>
+						<one2many mappedBy="myOrder"/>
+					</relation>
+				</attribute>
+
+				<attribute name="priorityLevelCode" type="String"/>
+
+				<attribute name="shippingAddress" type="AddressVT">
+					<description>Order shipping address</description>
+					<modifiers mandatory="true"/>
+					<persistence name="shAd"/>
+				</attribute>
+
+				<attribute name="shippingAndHandling" type="ShippingAndHandlingData">
+					<description>Shipping and handling costs</description>
+					<modifiers mandatory="true"/>
+				</attribute>
+
+				<attribute name="shippingFirstName" type="String"/>
+
+				<attribute name="shippingLastName" type="String"/>
+
+				<!-- Shipping info coming in from Accelerator. -->
+				<attribute name="shippingMethod" type="String">
+					<modifiers mandatory="true"/>
+				</attribute>
+
+				<attribute name="shippingTaxCategory" type="String"/>
+
+				<attribute name="username" type="String">
+					<description>Username of the user who created this order</description>
+					<modifiers indexed="true"/>
+				</attribute>
+
+				<attribute name="stockroomLocationIds" type="List(String)">
+					<persistence name="orderdata_srlocationids" />
+					<description>Filter list of eligible locations for sourcing</description>
+				</attribute>
+
+				<attribute name="baseStore" type="BaseStoreData">
+					<description>Base store that the order belongs to</description>
+				</attribute>
+			</attributes>
+		</managedobject>
+
+		<managedobject code="OrderLineData" properties="true">
+			<description>Contains data on each order line</description>
+			<persistence name="orderLines">
+				<index name="UQ_Order_OrderLineId" unique="true">
+					<attribute name="myOrder"/>
+					<attribute name="orderLineId"/>
+				</index>
+			</persistence>
+			<versionattribute name="version"/>
+			<attributes>
+				<attribute name="note" type="String">
+					<description>Note about the order line</description>
+				</attribute>
+				<attribute type="OrderData" name="myOrder">
+					<modifiers mandatory="true" final="true"/>
+					<description>A handle to the parent order</description>
+				</attribute>
+				<attribute name="orderLineId" type="String">
+					<description>Order line id</description>
+					<modifiers mandatory="true" final="true"/>
+				</attribute>
+				<attribute name="orderLineQuantities" type="List(OrderLineQuantityData)">
+					<description>Order line details</description>
+					<relation>
+						<one2many mappedBy="orderLine"/>
+					</relation>
+				</attribute>
+				<attribute name="orderLineStatus" type="String">
+					<description>order line status</description>
+				</attribute>
+				<attribute name="quantityUnassignedUnitCode" type="String">
+					<description>Order line quantity still not assigned</description>
+				</attribute>
+				<attribute name="quantityUnassignedValue" type="int">
+					<modifiers mandatory="true" tracked="true" />
+					<description>Order line quantity still not assigned</description>
+				</attribute>
+				<attribute name="quantityUnitCode" type="String">
+					<description>Order line quantity</description>
+				</attribute>
+				<attribute name="quantityValue" type="int">
+					<modifiers mandatory="true"/>
+					<description>Order line quantity</description>
+				</attribute>
+				<attribute name="skuId" type="String">
+					<modifiers mandatory="true" final="true"/>
+					<description>Order line item being ordered sku Id.</description>
+				</attribute>
+				<attribute name="taxCategory" type="String">
+					<modifiers mandatory="true"/>
+				</attribute>
+				<attribute name="unitPriceCurrencyCode" type="String">
+					<description>Order line item price value</description>
+				</attribute>
+				<attribute name="unitPriceValue" type="double">
+					<modifiers mandatory="true"/>
+					<description>Order line item price value</description>
+				</attribute>
+				<attribute name="unitTaxCurrencyCode" type="String">
+					<description>Order line item tax value</description>
+				</attribute>
+				<attribute name="unitTaxValue" type="double">
+					<modifiers mandatory="true"/>
+					<description>Order line item tax value</description>
+				</attribute>
+				<attribute name="pickupStoreId" type="String">
+					<description>Store id</description>
+				</attribute>
+				<attribute name="locationRoles" type="Set(String)">
+					<description>Location Roles (shipping, pickup)</description>
+					<modifiers mandatory="true"/>
+				</attribute>
+				<attribute name="orderLineAttributes" type="List(OrderLineAttributeData)">
+					<description>Order line attributes</description>
+					<relation>
+						<one2many mappedBy="orderLine"/>
+					</relation>
+				</attribute>
+				<attribute type="OrderlineFulfillmentType" name="fulfillmentType">
+					<description>Fulfillment Type for orderline(REGULAR, PRE_ORDERLINE, BACK_ORDERLINE)</description>
+				</attribute>
+			</attributes>
+		</managedobject>
+
+		<managedobject code="OrderLineAttributeData" properties="true">
+			<description>Contains Orderline Attribute information</description>
+			<persistence name="orderLineAttributes"/>
+			<versionattribute name="version"/>
+			<attributes>
+				<attribute name="attributeId" type="String">
+					<description>Attribute id</description>
+					<modifiers mandatory="true"/>
+				</attribute>
+				<attribute name="description" type="String">
+					<description>Attribute description</description>
+				</attribute>
+				<attribute type="OrderLineData" name="orderLine">
+					<description>A handle to the parent order line.</description>
+					<modifiers mandatory="true"/>
+				</attribute>
+			</attributes>
+		</managedobject>
+
+		<managedobject code="OrderLineQuantityData" properties="true">
+			<description>Contains data on each order line quantity</description>
+			<persistence name="orderLineQuantities"/>
+			<versionattribute name="version"/>
+			<attributes>
+
+				<attribute name="stockroomLocationId" type="String">
+					<description>Order line quantity location</description>
+					<modifiers mandatory="true" indexed="true" tracked="true" />
+				</attribute>
+
+				<attribute name="olqId" type="long">
+					<description>Unique order line quantity identifier</description>
+					<modifiers generated="true" mandatory="true" final="true" unique="true"/>
+				</attribute>
+
+				<attribute type="OrderLineData" name="orderLine">
+					<description>A handle to the parent order line.</description>
+					<modifiers mandatory="true" tracked="true" />
+				</attribute>
+
+				<attribute name="quantityUnitCode" type="String">
+					<description>Order line quantity quantity</description>
+				</attribute>
+
+				<attribute name="quantityValue" type="int">
+					<description>Order line quantity quantity</description>
+					<modifiers mandatory="true" tracked="true" />
+				</attribute>
+
+				<attribute type="ShipmentData" name="shipment">
+					<description>A handle to a shipment.</description>
+				</attribute>
+
+				<attribute name="status" type="OrderLineQuantityStatusData">
+					<modifiers mandatory="true" tracked="true" />
+					<description>Order line quantity status</description>
+				</attribute>
+
+			</attributes>
+		</managedobject>
+
+		<managedobject code="OrderLineQuantityStatusData" properties="true">
+			<description>Contains data for inventory status</description>
+			<persistence name="orderLineQuantityStatuses"/>
+			<versionattribute name="version"/>
+			<attributes>
+				<attribute type="Boolean" name="active">
+					<description>Order line quantity status activity indicator</description>
+				</attribute>
+
+				<attribute type="String" name="statusCode">
+					<description>Order line quantity status code</description>
+					<modifiers unique="true" mandatory="true" final="true"/>
+				</attribute>
+
+				<attribute type="String" name="description">
+					<description>Order line quantity status description</description>
+				</attribute>
+			</attributes>
+		</managedobject>
+
+		<managedobject code="PaymentInfoData" properties="true">
+			<description>Contains payment information</description>
+			<persistence name="paymentInfo"/>
+			<versionattribute name="version"/>
+			<attributes>
+				<attribute name="paymentInfoId" type="long">
+					<description>Unique paymentInfo identifier</description>
+					<modifiers generated="true" mandatory="true" final="true" unique="true"/>
+				</attribute>
+				<attribute name="authUrl" type="String">
+					<description>Authorization URL</description>
+					<modifiers mandatory="true"/>
+				</attribute>
+
+				<attribute name="paymentInfoType" type="String">
+					<modifiers mandatory="true"/>
+					<description>Payment Info Type</description>
+				</attribute>
+
+				<attribute name="billingAddress" type="AddressVT">
+					<modifiers mandatory="true"/>
+					<persistence name="blAd"/>
+				</attribute>
+				<attribute name="captureId" type="String">
+					<description>CaptureId after Payment Capture</description>
+					<modifiers mandatory="false"/>
+				</attribute>
+				<attribute type="OrderData" name="myOrder">
+					<description>A handle to the parent order</description>
+				</attribute>
+			</attributes>
+		</managedobject>
+
+	</managedobjects>
+</types>

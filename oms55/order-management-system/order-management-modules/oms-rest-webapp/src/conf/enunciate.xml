@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<enunciate label = "OMS" xmlns:xsi = "http://www.w3.org/2001/XMLSchema-instance"
+		   xsi:noNamespaceSchemaLocation = "http://enunciate.codehaus.org/schemas/enunciate-1.26.xsd">
+
+	<namespaces>
+		<namespace id = "order" uri = "http://api.hybris.com/oms/order" />
+		<namespace id = "inventory" uri = "http://api.hybris.com/oms/inventory" />
+		<namespace id = "product" uri = "http://api.hybris.com/oms/product" />
+		<namespace id = "shipping" uri = "http://api.hybris.com/oms/shipping" />
+	</namespaces>
+
+	<modules>
+		<!-- Docs -->
+		<docs splashPackage="com.hybris.oms" title="OMS REST API" copyright="hybris.com" includeDefaultDownloads="false" disableRestMountpoint="true"/>
+		<c disabled = "true" />
+		<obj-c disabled = "true" />
+		<csharp disabled = "true" />
+	</modules>
+</enunciate>

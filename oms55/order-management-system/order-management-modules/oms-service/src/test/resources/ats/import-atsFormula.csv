@@ -1,0 +1,3 @@
+id,atsId,name,formula,version
+AtsFormulaData|1,WEB,Storefront,I[ON_HAND]-O[statusCodeALLOCATED]-O[statusCodeSOURCED]-O[statusCodePICKED]-O[statusCodePACKED]-T,1
+AtsFormulaData|2,D1,On Hand,I[ON_HAND],1

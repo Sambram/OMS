@@ -1,0 +1,42 @@
+[INFO] Error stacktraces are turned on.
+[INFO] Scanning for projects...
+[INFO]                                                                         
+[INFO] ------------------------------------------------------------------------
+[INFO] Building order-management-configuration 0.1-SNAPSHOT
+[INFO] ------------------------------------------------------------------------
+[INFO] 
+[INFO] --- maven-resources-plugin:2.6:resources (default-resources) @ basic ---
+[INFO] Using 'UTF-8' encoding to copy filtered resources.
+[INFO] Copying 2 resources
+[INFO] 
+[INFO] --- maven-compiler-plugin:3.1:compile (default-compile) @ basic ---
+[INFO] No sources to compile
+[INFO] 
+[INFO] --- maven-resources-plugin:2.6:testResources (default-testResources) @ basic ---
+[INFO] Using 'UTF-8' encoding to copy filtered resources.
+[INFO] Copying 2 resources
+[INFO] 
+[INFO] --- maven-compiler-plugin:3.1:testCompile (default-testCompile) @ basic ---
+[INFO] No sources to compile
+[INFO] 
+[INFO] --- maven-surefire-plugin:2.14.1:test (default-test) @ basic ---
+[INFO] 
+[INFO] --- maven-jar-plugin:2.4:jar (default-jar) @ basic ---
+[INFO] Building jar: /srv/jenkins/workspace/01-oms-services-create-archetype/order-management-system/order-management-configuration/target/generated-sources/archetype/target/test-classes/projects/basic/project/basic/target/basic-0.1-SNAPSHOT.jar
+[INFO] 
+[INFO] --- maven-jar-plugin:2.4:test-jar (default) @ basic ---
+[INFO] Building jar: /srv/jenkins/workspace/01-oms-services-create-archetype/order-management-system/order-management-configuration/target/generated-sources/archetype/target/test-classes/projects/basic/project/basic/target/basic-0.1-SNAPSHOT-tests.jar
+[INFO] 
+[INFO] --- hybris-deps-property-report-plugin:5.1.1:verify-defaults (hybris.properties) @ basic ---
+[INFO] No default.properties found
+[INFO] 
+[INFO] --- hybris-deps-property-report-plugin:5.1.1:verify-templates (hybris.properties) @ basic ---
+[INFO] No template/basic.properties found
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESS
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time: 2.494s
+[INFO] Finished at: Thu Feb 12 01:53:09 CET 2015
+[INFO] Final Memory: 13M/206M
+[INFO] ------------------------------------------------------------------------
+[WARNING] The requested profile "it" could not be activated because it does not exist.

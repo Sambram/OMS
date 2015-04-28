@@ -1,0 +1,286 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<beans xmlns="http://www.hybris.com/schema/onpremise/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.hybris.com/schema/onpremise/beans http://www.hybris.com/schema/onpremise/beans-5.3.xsd">
+    
+    <package name="com.hybris.oms.domain.order">
+		
+		<enum name="OrderlineFulfillmentType">
+       		<description>Defines the fulfillment type for orderlines</description>
+       		<value>REGULAR</value>
+       		<value>PRE_ORDERLINE</value>
+       		<value>BACK_ORDERLINE</value>
+       	</enum>
+       	
+		<bean name="OrderLine" extend="com.hybris.commons.dto.impl.PropertyAwareEntityDto">
+       		<description>Order Line</description>
+       		<annotations>
+       			<value>@javax.xml.bind.annotation.XmlRootElement</value>
+       			<value>@javax.xml.bind.annotation.XmlAccessorType(javax.xml.bind.annotation.XmlAccessType.FIELD)</value>
+       		</annotations>
+       		<property name="orderLineId" type="String" />
+       		<property name="orderLineQuantities" type="java.util.List" generic="OrderLineQuantity" initValue="new java.util.ArrayList()">
+       			<annotations>
+       				<value>@javax.xml.bind.annotation.XmlElement</value>
+       			</annotations>
+       		</property>
+       		<property name="orderLineAttributes" type="java.util.List" generic="OrderLineAttribute" initValue="new java.util.ArrayList()">
+       			<annotations>
+       				<value>@javax.xml.bind.annotation.XmlElement</value>
+       			</annotations>
+       		</property>
+       		<property name="locationRoles" type="java.util.Set" generic="com.hybris.oms.domain.locationrole.LocationRole">
+       			<annotations>
+       				<value>@javax.xml.bind.annotation.XmlElement</value>
+       			</annotations>
+       		</property>
+			<property name="note" type="String" />
+			<property name="orderLineStatus" type="String" />
+			<property name="pickupStoreId" type="String" />
+			<property name="skuId" type="String" />
+			<property name="taxCategory" type="String" />
+			<property name="quantity" type="com.hybris.oms.domain.types.Quantity" />
+			<property name="quantityUnassigned" type="com.hybris.oms.domain.types.Quantity" />
+			<property name="unitPrice" type="com.hybris.oms.domain.types.Amount" />
+			<property name="unitTax" type="com.hybris.oms.domain.types.Amount" />
+			<property name="fulfillmentType" type="com.hybris.oms.domain.order.OrderlineFulfillmentType" />
+          	<customCode>
+<![CDATA[
+	public void addOrderLineQuantity(final OrderLineQuantity orderLineQuantity)
+	{
+		if (this.orderLineQuantities == null)
+		{
+			this.orderLineQuantities = new java.util.ArrayList<>();
+		}
+		this.orderLineQuantities.add(orderLineQuantity);
+	}
+	
+	public void addOrderLineAttribute(final OrderLineAttribute orderLineAttribute)
+	{
+		if (this.orderLineAttributes == null)
+		{
+			this.orderLineAttributes = new java.util.ArrayList<>();
+		}
+		this.orderLineAttributes.add(orderLineAttribute);
+	}
+	
+	@Override
+	public String getId()
+	{
+		return orderLineId;
+	}
+]]>
+    		</customCode>
+       	</bean>
+       	
+		<bean name="OrderLineQuantity" extend="com.hybris.commons.dto.impl.PropertyAwareEntityDto">
+       		<description>Order Line Quantities</description>
+       		<annotations>
+       			<value>@javax.xml.bind.annotation.XmlRootElement</value>
+       			<value>@javax.xml.bind.annotation.XmlAccessorType(javax.xml.bind.annotation.XmlAccessType.FIELD)</value>
+       		</annotations>
+       		<property name="olqId" type="String" />
+       		<property name="location" type="String" />
+       		<property name="quantity" type="com.hybris.oms.domain.types.Quantity" />
+       		<property name="status" type="OrderLineQuantityStatus" />
+       		<property name="shipment" type="com.hybris.oms.domain.shipping.Shipment" />
+       		<customCode>
+<![CDATA[
+	@Override
+	public String getId()
+	{
+		return olqId;
+	}
+]]>
+    		</customCode>
+       	</bean>
+		
+		<bean name="OrderLineAttribute" extend="com.hybris.commons.dto.impl.PropertyAwareEntityDto">
+       		<description>Order Line Attributes</description>
+       		<annotations>
+       			<value>@javax.xml.bind.annotation.XmlRootElement</value>
+       			<value>@javax.xml.bind.annotation.XmlAccessorType(javax.xml.bind.annotation.XmlAccessType.FIELD)</value>
+       		</annotations>
+       		<property name="id" type="String" />
+       		<property name="description" type="String" />
+       		<customCode>
+<![CDATA[
+	public OrderLineAttribute(final String description, final String id)
+	{
+		this.description = description;
+		this.id = id;
+	}
+]]>
+    		</customCode>
+       	</bean>
+       	
+       	<bean name="PaymentInfo" extend="com.hybris.commons.dto.impl.PropertyAwareEntityDto">
+       		<description>Payment Info</description>
+       		<annotations>
+       			<value>@javax.xml.bind.annotation.XmlRootElement</value>
+       			<value>@javax.xml.bind.annotation.XmlAccessorType(javax.xml.bind.annotation.XmlAccessType.FIELD)</value>
+       		</annotations>
+       		<property name="authUrl" type="String" />
+       		<property name="billingAddress" type="com.hybris.oms.domain.address.Address" />
+       		<property name="paymentAmount" type="com.hybris.oms.domain.types.Amount" />
+       		<property name="paymentInfoType" type="String" />
+       		<property name="id" type="String" />
+       		<property name="captureId" type="String" />
+      	</bean>
+       	
+       <bean name="OrderLineQuantityStatus" extend="com.hybris.commons.dto.impl.PropertyAwareEntityDto">
+       		<description>Order Statuses</description>
+       		<annotations>
+       			<value>@javax.xml.bind.annotation.XmlRootElement</value>
+       			<value>@javax.xml.bind.annotation.XmlAccessorType(javax.xml.bind.annotation.XmlAccessType.FIELD)</value>
+       		</annotations>
+       		<property name="statusCode" type="String" />
+       		<property name="description" type="String" />
+       		<property name="active" type="boolean" />
+       		<customCode>
+<![CDATA[
+	@Override
+	public String getId()
+	{
+		return statusCode;
+	}
+]]>
+    		</customCode>
+       	</bean>
+       	
+       	<bean name="Order" extend="com.hybris.commons.dto.impl.PropertyAwareEntityDto">
+       		<description>Order</description>
+       		<implements>
+       			<value>com.hybris.oms.domain.ActionableDto</value>
+       		</implements>
+       		<annotations>
+       			<value>@javax.xml.bind.annotation.XmlRootElement</value>
+       			<value>@javax.xml.bind.annotation.XmlAccessorType(javax.xml.bind.annotation.XmlAccessType.FIELD)</value>
+       		</annotations>
+       		<property name="currencyCode" type="String" />
+       		<property name="contact" type="com.hybris.oms.domain.types.Contact" />
+       		<property name="customerLocale" type="String" />
+       		<property name="emailid" type="String" />
+       		<property name="firstName" type="String" />
+       		<property name="issueDate" type="java.util.Date">
+       			<annotations>
+       				<value>@javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter(com.hybris.commons.dto.xml.bind.DateAdapter.class)</value>
+       			</annotations>
+       		</property>
+       		
+       		<property name="scheduledShippingDate" type="java.util.Date">
+       			<annotations>
+       				<value>@javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter(com.hybris.commons.dto.xml.bind.DateAdapter.class)</value>
+       			</annotations>
+       		</property>
+       		
+       		<property name="lastName" type="String" />
+       		<property name="locationIds" type="java.util.List" generic="String">
+       			<annotations>
+       				<value>@javax.xml.bind.annotation.XmlElement</value>
+       			</annotations>
+       		</property>
+       		<property name="orderId" type="String" />
+       		<property name="orderLines" type="java.util.List" generic="OrderLine" initValue="new java.util.ArrayList()">
+       			<annotations>
+       				<value>@javax.xml.bind.annotation.XmlElement</value>
+       			</annotations>
+       		</property>
+       		<property name="paymentInfos" type="java.util.List" generic="PaymentInfo" initValue="new java.util.ArrayList()">
+       			<annotations>
+       				<value>@javax.xml.bind.annotation.XmlElement</value>
+       			</annotations>
+       		</property>
+       		<property name="priorityLevelCode" type="String" />
+       		<property name="shippingAddress" type="com.hybris.oms.domain.address.Address" />
+       		<property name="shippingAndHandling" type="com.hybris.oms.domain.shipping.ShippingAndHandling" />
+       		<property name="shippingFirstName" type="String" />
+       		<property name="shippingLastName" type="String" />
+       		<property name="shippingMethod" type="String" />
+       		<property name="shippingTaxCategory" type="String" />
+       		<property name="username" type="String" />
+       		<property name="baseStoreName" type="String" />
+       		<property name="actions" type="java.util.Set" generic="String" />
+       		<property name="preOrder" type="Boolean" />
+       		
+       		<property name="cancellable" type="boolean">
+       			<annotations>
+       				<value>@java.lang.Deprecated</value>
+       			</annotations>
+       		</property>
+       		<property name="state" type="String">
+       			<annotations>
+       				<value>@java.lang.Deprecated</value>
+       			</annotations>
+       		</property>
+       		<customCode>
+<![CDATA[
+	public void addOrderLine(final OrderLine line)
+	{
+		if (this.orderLines == null)
+		{
+			this.orderLines = new java.util.ArrayList<>();
+		}
+		this.orderLines.add(line);
+	}
+	
+	public void addPaymentInfo(final PaymentInfo paymentInfo)
+	{
+		if (this.paymentInfos == null)
+		{
+			this.paymentInfos = new java.util.ArrayList<>();
+		}
+		this.paymentInfos.add(paymentInfo);
+	}
+	
+	public List<OrderLineQuantity> getListOrderLinesQuantities()
+	{
+		final List<OrderLineQuantity> olqs = new java.util.ArrayList<>();
+		if (this.orderLines != null)
+		{
+			for (final OrderLine orderLine : this.orderLines)
+			{
+				olqs.addAll(orderLine.getOrderLineQuantities());
+			}
+		}
+		return olqs;
+	}
+	
+	public int getNumberOfOrderLines()
+	{
+		return this.orderLines.size();
+	}
+	
+	public List<OrderLineQuantity> getOrderLineQuantities()
+	{
+		final List<OrderLineQuantity> olqs = new java.util.ArrayList<>();
+		for (final OrderLineQuantity olq : this.getListOrderLinesQuantities())
+		{
+			olqs.add(olq);
+		}
+		return olqs;
+	}
+	
+	@Override
+	public String getId()
+	{
+		return orderId;
+	}
+]]>
+    		</customCode>
+       	</bean>
+       	
+       	
+       	<enum name="OrderQuerySupport">
+       		<description>Columns to sort the orders query by</description>
+       		<value>DEFAULT</value>
+       		<value>FIRST_NAME</value>
+       		<value>LAST_NAME</value>
+       		<value>ORDER_DATE</value>
+       		<value>ORDER_ID</value>
+       		<value>SCHEDULED_SHIPPING_DATE</value>
+       	</enum>
+        
+    </package>
+
+</beans>

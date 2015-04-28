@@ -1,0 +1,3 @@
+ShipmentData,classpath:/shipment/import-shipment.csv
+DeliveryData,classpath:/shipment/import-delivery.csv
+ShippingAndHandlingData,classpath:/shipment/import-shippingAndHandling.csv

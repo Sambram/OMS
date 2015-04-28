@@ -1,0 +1,4 @@
+BaseStoreData,classpath:/basestore/import-baseStore.csv
+StockroomLocationData.baseStores,classpath:/basestore/import-locations-baseStores.csv
+StockroomLocationData,classpath:/basestore/import-location.csv
+StockroomLocationData.locationRoles,classpath:/basestore/import-location-locationRoles.csv

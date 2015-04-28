@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:aop="http://www.springframework.org/schema/aop" xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd">
+
+	<import resource="classpath:/META-INF/hybris-commons-tenant-spring.xml" />
+	<import resource="classpath:/META-INF/hybris-commons-context-spring.xml" />
+	<import resource="classpath:/META-INF/hybris-commons-configuration-spring.xml" />
+	<import resource="classpath:/META-INF/hybris-commons-rest-client-spring.xml" />
+
+	<import resource="classpath:/META-INF/cis-integration-spring.xml" />
+
+	<import resource="classpath:/META-INF/oms-core-service-spring.xml" />
+	<import resource="classpath:/META-INF/oms-service-spring.xml" />
+	<import resource="classpath:/META-INF/oms-service-workflow-spring.xml" />
+
+	<!-- Performance Monitor is the Default Monitor, logs performance with cis
+		calls. -->
+	<!-- To use this monitor, make sure to comment out the Debug Monitor -->
+	<bean id="performanceMonitor"
+		class="org.springframework.aop.interceptor.PerformanceMonitorInterceptor" />
+
+	<aop:aspectj-autoproxy />
+
+	<aop:config>
+		<aop:pointcut id="allServiceMethods"
+			expression="execution(* com.hybris.oms.service.cis.impl.*.*(..))" />
+		<aop:advisor pointcut-ref="allServiceMethods" advice-ref="performanceMonitor" />
+	</aop:config>
+
+
+</beans>

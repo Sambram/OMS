@@ -1,0 +1,40 @@
+[INFO] Error stacktraces are turned on.
+[INFO] Scanning for projects...
+[INFO]                                                                         
+[INFO] ------------------------------------------------------------------------
+[INFO] Building oms-ext-test-configuration 0.1-SNAPSHOT
+[INFO] ------------------------------------------------------------------------
+[INFO] 
+[INFO] --- maven-resources-plugin:2.6:resources (default-resources) @ basic ---
+[INFO] Using 'UTF-8' encoding to copy filtered resources.
+[INFO] Copying 2 resources
+[INFO] 
+[INFO] --- maven-compiler-plugin:3.1:compile (default-compile) @ basic ---
+[INFO] No sources to compile
+[INFO] 
+[INFO] --- maven-resources-plugin:2.6:testResources (default-testResources) @ basic ---
+[INFO] Using 'UTF-8' encoding to copy filtered resources.
+[INFO] skip non existing resourceDirectory /srv/jenkins/workspace/01-oms-services-create-archetype/oms-ext/oms-ext-test-configuration/target/generated-sources/archetype/target/test-classes/projects/basic/project/basic/src/test/resources
+[INFO] 
+[INFO] --- maven-compiler-plugin:3.1:testCompile (default-testCompile) @ basic ---
+[INFO] No sources to compile
+[INFO] 
+[INFO] --- maven-surefire-plugin:2.14.1:test (default-test) @ basic ---
+[INFO] No tests to run.
+[INFO] 
+[INFO] --- maven-jar-plugin:2.4:jar (default-jar) @ basic ---
+[INFO] Building jar: /srv/jenkins/workspace/01-oms-services-create-archetype/oms-ext/oms-ext-test-configuration/target/generated-sources/archetype/target/test-classes/projects/basic/project/basic/target/basic-0.1-SNAPSHOT.jar
+[INFO] 
+[INFO] --- hybris-deps-property-report-plugin:5.1.1:verify-defaults (hybris.properties) @ basic ---
+[INFO] No default.properties found
+[INFO] 
+[INFO] --- hybris-deps-property-report-plugin:5.1.1:verify-templates (hybris.properties) @ basic ---
+[INFO] No template/basic.properties found
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESS
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time: 2.314s
+[INFO] Finished at: Thu Feb 12 01:58:08 CET 2015
+[INFO] Final Memory: 12M/152M
+[INFO] ------------------------------------------------------------------------
+[WARNING] The requested profile "it" could not be activated because it does not exist.

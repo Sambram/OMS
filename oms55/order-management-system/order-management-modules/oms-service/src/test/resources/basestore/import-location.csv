@@ -1,0 +1,4 @@
+id,locationId,description,storeName,priority,address.latitudeValue,address.longitudeValue,address.cityName,address.countryIso3166Alpha2Code,address.countrySubentity,address.postalZone,version
+StockroomLocationData|1,1,Warehouse 1,store1,1,45.42349,-75.69793,Ottawa,CA,ON,K1A 0B1,1
+StockroomLocationData|2,2,Warehouse 2,store2,3,43.652527,-79.381961,Toronto,CA,ON,M5H 1A1,1
+StockroomLocationData|3,3,Warehouse 3,store3,3,50.292,18.66719,Gliwice,PL,,55-040,1

@@ -1,0 +1,13 @@
+id,active,description,statusCode,version
+OrderLineQuantityStatusData|1,TRUE,Sourced,SOURCED,1
+OrderLineQuantityStatusData|2,TRUE,Allocated,ALLOCATED,1
+OrderLineQuantityStatusData|3,TRUE,Picked,PICKED,1
+OrderLineQuantityStatusData|4,TRUE,Packed,PACKED,1
+OrderLineQuantityStatusData|5,TRUE,Shipped,SHIPPED,1
+OrderLineQuantityStatusData|6,TRUE,Payment captured,PAYMENT_CAPTURED,1
+OrderLineQuantityStatusData|7,TRUE,Tax invoiced,TAX_INVOICED,1
+OrderLineQuantityStatusData|8,TRUE,Cancelled,CANCELLED,1
+OrderLineQuantityStatusData|9,TRUE,On hold,ON_HOLD,1
+OrderLineQuantityStatusData|10,TRUE,Manual decline,DECLINED,1
+OrderLineQuantityStatusData|11,TRUE,FAILED_PAYMENT,FAILED_PAYMENT,1
+OrderLineQuantityStatusData|12,TRUE,FAILED_TAX,FAILED_TAX,1

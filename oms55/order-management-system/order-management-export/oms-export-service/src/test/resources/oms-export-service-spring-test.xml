@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:context="http://www.springframework.org/schema/context"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
+
+    <context:annotation-config />
+
+    <import resource="classpath:/META-INF/oms-core-service-spring.xml" />
+	<import resource="classpath:/META-INF/oms-service-spring.xml" />
+	<import resource="classpath:/META-INF/oms-service-workflow-spring.xml" />
+	<import resource="classpath:/META-INF/cis-integration-spring.xml" />
+	<import resource="classpath:/META-INF/oms-export-service-spring.xml"/>
+	
+</beans>

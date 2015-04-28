@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:context="http://www.springframework.org/schema/context" xmlns:util="http://www.springframework.org/schema/util"
+
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd">
+
+	<import resource="classpath:/META-INF/hybris-commons-monitoring-spring.xml"/>
+
+	<alias name="defaultServiceHealthService" alias="serviceHealthService"/>
+	<bean id="defaultServiceHealthService" class="com.hybris.oms.service.health.impl.DefaultHealthService">
+		<property name="metricCollector" ref="metricCollector"/>
+	</bean>
+	
+	<bean id="serviceHealthAggGroupBean" class="com.hybris.kernel.services.aggregation.AggregationGroupBean">
+		<property name="aggregationClasses">
+			<list merge="true">
+				<value>com.hybris.oms.service.health.agg.AggOrderLineQuantityStatus</value>
+				<value>com.hybris.oms.service.health.agg.AggCurrentItemQuantity</value>
+				<value>com.hybris.oms.service.health.agg.AggStockroomLocation</value>
+			</list>
+		</property>
+	</bean>
+
+	<bean id="kernelEventListener" class="com.hybris.oms.service.health.impl.KernelEventListener">
+		<property name="metricCollector" ref="metricCollector"/>
+	</bean>
+	
+	<util:list id="metrics" scope="prototype">
+		<bean class="com.hybris.commons.monitoring.collector.metrics.CompositeMetric">
+			<constructor-arg value="OrderDataCREATE"/>
+			<constructor-arg>
+				<list>
+					<bean class="com.hybris.commons.monitoring.collector.metrics.TimeEventMetric">
+						<constructor-arg value="1"/>
+						<constructor-arg value="3600000"/>
+						<property name="description" value="Orders created in last 1 hour since start up"/>
+					</bean>
+					<bean class="com.hybris.commons.monitoring.collector.metrics.TimeEventMetric">
+						<constructor-arg value="24"/>
+						<constructor-arg value="86400000"/>
+						<property name="description" value="Orders created in last 24 hours since start up"/>
+					</bean>
+				</list>
+			</constructor-arg>
+			<property name="description" value="Orders created since start up"/>
+		</bean>
+		<bean class="com.hybris.commons.monitoring.collector.metrics.CompositeMetric">
+			<constructor-arg value="CurrentItemQuantityDataCREATE_UPDATE"/>
+			<constructor-arg>
+				<list>
+					<bean class="com.hybris.commons.monitoring.collector.metrics.TimeEventMetric">
+						<constructor-arg value="1"/>
+						<constructor-arg value="3600000"/>
+						<property name="description" value="Inventory changes in last 1 hour since start up"/>
+					</bean>
+					<bean class="com.hybris.commons.monitoring.collector.metrics.TimeEventMetric">
+						<constructor-arg value="24"/>
+						<constructor-arg value="86400000"/>
+						<property name="description" value="Inventory changes in last 24 hours since start up"/>
+					</bean>
+				</list>
+			</constructor-arg>
+			<property name="description" value="Inventory changes since start up"/>
+		</bean>
+		<bean class="com.hybris.commons.monitoring.collector.metrics.CompositeMetric">
+			<constructor-arg value="CurrentItemQuantityDataCREATE"/>
+			<constructor-arg>
+				<list>
+					<bean class="com.hybris.commons.monitoring.collector.metrics.TimeEventMetric">
+						<constructor-arg value="1"/>
+						<constructor-arg value="3600000"/>
+						<property name="description" value="Inventory creations in last 1 hour since start up"/>
+					</bean>
+					<bean class="com.hybris.commons.monitoring.collector.metrics.TimeEventMetric">
+						<constructor-arg value="24"/>
+						<constructor-arg value="86400000"/>
+						<property name="description" value="Inventory creations in last 24 hours since start up"/>
+					</bean>
+				</list>
+			</constructor-arg>
+			<property name="description" value="Inventory creations since start up"/>
+		</bean>
+	</util:list>
+</beans>

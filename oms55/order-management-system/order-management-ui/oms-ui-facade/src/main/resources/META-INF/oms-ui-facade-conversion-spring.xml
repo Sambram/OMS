@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:util="http://www.springframework.org/schema/util"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+		http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd">
+
+	<context:annotation-config />
+
+	<!-- Populators -->
+	<alias name="compositeUIOrderPopulator" alias="uIOrderPopulator" />
+	<bean id="compositeUIOrderPopulator" parent="compositePopulator">
+		<property name="populators" ref="compositeUIOrderPopulatorList" />
+	</bean>
+	<bean id="defaultUIOrderPopulator"
+		class="com.hybris.oms.ui.facade.conversion.impl.order.UIOrderPopulator">
+	</bean>
+	<util:list id="compositeUIOrderPopulatorList">
+		<ref bean="defaultUIOrderPopulator" />
+	</util:list>
+
+	<alias name="compositeUIOrderDetailsPopulator" alias="uIOrderDetailsPopulator" />
+	<bean id="compositeUIOrderDetailsPopulator" parent="compositePopulator">
+		<property name="populators" ref="compositeUIOrderDetailsPopulatorList" />
+	</bean>
+	<bean id="defaultUIOrderDetailsPopulator"
+		class="com.hybris.oms.ui.facade.conversion.impl.order.UIOrderDetailsPopulator">
+		<property name="orderService" ref="orderService" />
+		<property name="converters" ref="converters" />
+		<property name="shippingAndHandlingConverter" ref="shippingAndHandlingConverter" />
+		<property name="addressConverter" ref="addressConverter" />
+		<property name="paymentInfoConverter" ref="paymentInfoConverter" />
+	</bean>
+	<util:list id="compositeUIOrderDetailsPopulatorList">
+		<ref bean="defaultUIOrderDetailsPopulator" />
+	</util:list>
+
+	<alias name="compositeUIShipmentPopulator" alias="uiShipmentPopulator" />
+	<bean id="compositeUIShipmentPopulator" parent="compositePopulator">
+    	<property name="populators" ref="compositeUIShipmentPopulatorList" />
+	</bean>
+	
+	<bean id="defaultActionableShipmentPopulator" class="com.hybris.oms.facade.conversion.common.ActionablePopulator">
+    	<property name="workflowExecutor" ref="shipmentWorkflowExecutor" />
+	</bean>
+
+	<util:list id="compositeUIShipmentPopulatorList">
+    	<ref bean="defaultUiShipmentPopulator" />
+    	<ref bean="defaultUIActionableShipmentPopulator" />
+	</util:list>
+
+	<bean id="defaultUIActionableShipmentPopulator" class="com.hybris.oms.facade.conversion.common.ActionablePopulator">
+   	 	<property name="workflowExecutor" ref="shipmentWorkflowExecutor" />
+	</bean>
+	
+	<bean id="defaultUiShipmentPopulator"
+		class="com.hybris.oms.ui.facade.conversion.impl.shipment.UIShipmentPopulator">
+		<property name="inventoryService" ref="inventoryService"/>
+	</bean>
+	
+	<!-- Abstract Converters (Not real classes, only spring beans) -->
+	<alias name="defaultUIOrderConverter" alias="uIOrderConverter" />
+	<bean id="defaultUIOrderConverter" parent="abstractPopulatingConverter">
+		<lookup-method name="createTarget" bean="uIOrderDTO" />
+		<property name="populator" ref="uIOrderPopulator" />
+	</bean>
+
+	<alias name="defaultUIOrderDetailsConverter" alias="uIOrderDetailsConverter" />
+	<bean id="defaultUIOrderDetailsConverter" parent="abstractPopulatingConverter">
+		<lookup-method name="createTarget" bean="uIOrderDetailsDTO" />
+		<property name="populator" ref="uIOrderDetailsPopulator" />
+	</bean>
+
+	<alias name="defaultUiShipmentConverter" alias="uiShipmentConverter" />
+	<bean id="defaultUiShipmentConverter" parent="abstractPopulatingConverter">
+		<lookup-method name="createTarget" bean="uiShipment" />
+		<property name="populator" ref="uiShipmentPopulator" />
+	</bean>
+
+	<!-- Prototype Beans for DTO POJOs -->
+	<bean id="uIOrderDTO" class="com.hybris.oms.ui.api.order.UIOrder"
+		scope="prototype" />
+	<bean id="uIOrderDetailsDTO" class="com.hybris.oms.ui.api.order.UIOrderDetails"
+		scope="prototype" />
+	<bean id="uiShipment" class="com.hybris.oms.ui.api.shipment.UIShipment"
+		scope="prototype" />
+
+</beans>

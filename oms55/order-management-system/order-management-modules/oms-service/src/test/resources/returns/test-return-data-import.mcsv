@@ -1,0 +1,4 @@
+ReturnData,classpath:/returns/import-return.csv
+ReturnOrderLineData,classpath:/returns/import-returnOrderLine.csv
+ReturnPaymentInfoData,classpath:/returns/import-returnPaymentInfo.csv
+ReturnLineRejectionData,classpath:/returns/import-returnLineRejection.csv

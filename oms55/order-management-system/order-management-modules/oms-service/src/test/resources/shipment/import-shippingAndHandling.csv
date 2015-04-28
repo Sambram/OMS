@@ -1,0 +1,17 @@
+id,orderId,shippingPrice.subTotalValue,shippingPrice.subTotalCurrencyCode,shippingPrice.taxValue,shippingPrice.taxCurrencyCode,shippingPrice.taxCommittedValue,shippingPrice.taxCommittedCurrencyCode,firstShipmentId,version
+ShippingAndHandlingData|1,96,4.5,USD,1.0,USD,0.0,USD,,1
+ShippingAndHandlingData|2,OMS141,1.5,USD,1.0,USD,0.0,USD,1004,1
+ShippingAndHandlingData|3,12,4.5,CAD,1.0,CAD,0.0,CAD,100,1
+ShippingAndHandlingData|4,23,4.5,CAD,1.0,CAD,0.0,CAD,100,1
+ShippingAndHandlingData|5,34,4.5,CAD,1.0,CAD,0.0,CAD,100,1
+ShippingAndHandlingData|6,55,4.5,CAD,1.0,CAD,0.0,CAD,100,1
+ShippingAndHandlingData|7,65,4.5,CAD,1.0,CAD,0.0,CAD,100,1
+ShippingAndHandlingData|8,75,4.5,CAD,1.0,CAD,0.0,CAD,100,1
+ShippingAndHandlingData|9,85,4.5,CAD,1.0,CAD,0.0,CAD,100,1
+ShippingAndHandlingData|10,99,2,USD,0.5,USD,0.0,USD,1101,1
+ShippingAndHandlingData|11,100,2,USD,0.5,USD,0.0,USD,,1
+ShippingAndHandlingData|12,101,2,USD,0.5,USD,0.0,USD,1103,1
+ShippingAndHandlingData|13,102,0,USD,0.0,USD,0.0,USD,1104,1
+ShippingAndHandlingData|14,103,0,USD,0.0,USD,0.0,USD,1105,1
+ShippingAndHandlingData|15,83,5,USD,0.0,USD,0.0,USD,1104,1
+ShippingAndHandlingData|16,86,5,USD,0.5,USD,0.5,USD,2000,1

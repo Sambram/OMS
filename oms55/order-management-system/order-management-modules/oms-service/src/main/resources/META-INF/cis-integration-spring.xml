@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	   xmlns:util="http://www.springframework.org/schema/util" xmlns:tx="http://www.springframework.org/schema/tx"
+	   xsi:schemaLocation="http://www.springframework.org/schema/beans
+           http://www.springframework.org/schema/beans/spring-beans.xsd
+           http://www.springframework.org/schema/util
+           http://www.springframework.org/schema/util/spring-util.xsd
+           http://www.springframework.org/schema/tx
+           http://www.springframework.org/schema/tx/spring-tx.xsd">
+
+	<!-- ############################################################################################## -->
+	<!-- # INTERNAL -->
+	<!-- ############################################################################################## -->
+	<tx:annotation-driven />
+
+	<import resource="classpath:/hybris-cis-geolocation-rest-client.xml" />
+	<import resource="classpath:/hybris-cis-payment-rest-client.xml" />
+	<import resource="classpath:/hybris-cis-shipping-rest-client.xml" />
+	<import resource="classpath:/hybris-cis-tax-rest-client.xml" />
+	<import resource="classpath:/META-INF/hybris-commons-tenant-rest-client-spring.xml" />
+
+	<util:list id="cisRestCallDecorators">
+		<ref bean="tenantRestCallDecorator" />
+		<ref bean="localeRestCallDecorator" />
+		<ref bean="userRestCallDecorator" />
+		<ref bean="roleRestCallDecorator" />
+	</util:list>
+
+	<alias name="defaultGeolocationService" alias="geolocationService" />
+	<bean id="defaultGeolocationService" class="com.hybris.oms.service.cis.impl.GeolocationService">
+		<property name="geoLocationClient" ref="geolocationClient" />
+		<property name="cisConverter" ref="cisConverter" />
+	</bean>
+
+	<alias name="defaultPaymentService" alias="paymentService" />
+	<bean id="defaultPaymentService" class="com.hybris.oms.service.cis.impl.PaymentService">
+		<property name="paymentClient" ref="paymentClient" />
+		<property name="cisConverter" ref="cisConverter" />
+	</bean>
+
+	<alias name="defaultShippingService" alias="shippingService" />
+	<bean id="defaultShippingService" class="com.hybris.oms.service.cis.impl.ShippingService">
+		<property name="shippingClient" ref="shippingClient" />
+		<property name="cisConverter" ref="cisConverter" />
+	</bean>
+
+	<alias name="defaultTaxService" alias="taxService" />
+	<bean id="defaultTaxService" class="com.hybris.oms.service.cis.impl.TaxService">
+		<property name="taxClient" ref="taxClient" />
+		<property name="cisConverter" ref="cisConverter" />
+		<property name="shipmentService" ref="shipmentService" />
+		<property name="orderService" ref="orderService" />
+	</bean>
+
+	<alias name="defaultCisService" alias="cisService" />
+	<bean id="defaultCisService" class="com.hybris.oms.service.cis.impl.DefaultCisService">
+		<property name="geoLocationService" ref="geolocationService" />
+		<property name="paymentService" ref="paymentService" />
+		<property name="shippingService" ref="shippingService" />
+		<property name="taxService" ref="taxService" />
+	</bean>
+
+	<alias name="defaultCisAddressConverter" alias="cisAddressConverter" />
+	<bean id="defaultCisAddressConverter" class="com.hybris.oms.service.cis.conversion.CisAddressConverter" />
+
+	<alias name="defaultCisPaymentConverter" alias="cisPaymentConverter" />
+	<bean id="defaultCisPaymentConverter" class="com.hybris.oms.service.cis.conversion.CisPaymentConverter" />
+
+	<alias name="defaultCisShipmentConverter" alias="cisShipmentConverter" />
+	<bean id="defaultCisShipmentConverter" class="com.hybris.oms.service.cis.conversion.CisShipmentConverter">
+		<property name="inventoryService" ref="inventoryService" />
+		<property name="cisAddressConverter" ref="cisAddressConverter" />
+	</bean>
+
+	<alias name="defaultCisReturnConverter" alias="cisReturnConverter" />
+	<bean id="defaultCisReturnConverter" class="com.hybris.oms.service.cis.conversion.CisReturnConverter">
+		<property name="cisAddressConverter" ref="cisAddressConverter" />
+		<property name="tenantPreferenceService" ref="tenantPreferenceService" />
+		<property name="returnService" ref="returnService" />
+		<property name="orderService" ref="orderService" />
+	</bean>
+
+	<alias name="defaultCisConverter" alias="cisConverter" />
+	<bean id="defaultCisConverter" class="com.hybris.oms.service.cis.conversion.DefaultCisConverter">
+		<property name="cisAddressConverter" ref="cisAddressConverter" />
+		<property name="cisPaymentConverter" ref="cisPaymentConverter" />
+		<property name="cisShipmentConverter" ref="cisShipmentConverter" />
+		<property name="cisReturnConverter" ref="cisReturnConverter" />
+	</bean>
+</beans>

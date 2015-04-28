@@ -1,0 +1,239 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<beans xmlns="http://www.hybris.com/schema/onpremise/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.hybris.com/schema/onpremise/beans http://www.hybris.com/schema/onpremise/beans-5.3.xsd">
+
+	<package name="com.hybris.oms.api.inventory">
+		<bean name="OmsInventory" annotation="@javax.xml.bind.annotation.XmlRootElement">
+			<description>Simplified inventory view.</description>
+			<property name="deliveryDate" type="java.util.Date" />
+			<property name="locationId" type="String">
+			</property>
+			<property name="skuId" type="String" />
+			<property name="status" type="String" />
+			<property name="unitCode" type="String" />
+			<property name="binCode" type="String" />
+			<property name="quantity" type="int" />
+
+			<customCode>
+<![CDATA[
+	/**
+	 * Instantiates a new oms inventory.
+	 *
+	 * @param deliveryDate the delivery date
+	 * @param locationId the location id
+	 * @param skuId the sku id
+	 * @param status the status
+	 * @throws IllegalArgumentException if preconditions are not met.
+	 */
+	public OmsInventory(final Date deliveryDate, final String locationId, final String skuId, final String status)
+			throws IllegalArgumentException
+	{
+		this.deliveryDate = deliveryDate;
+		this.locationId = locationId;
+		this.skuId = skuId;
+		this.status = status;
+	}
+
+	/**
+	 * Instantiates a new oms inventory.
+	 *
+	 * @param deliveryDate the delivery date
+	 * @param locationId the location id
+	 * @param skuId the sku id
+	 * @param status the status
+	 * @param binCode the binCode
+	 * @throws IllegalArgumentException if preconditions are not met.
+	 */
+	public OmsInventory(final Date deliveryDate, final String locationId, final String skuId, final String status,
+			final String binCode) throws IllegalArgumentException
+	{
+		this(deliveryDate, locationId, skuId, status);
+		this.binCode = binCode;
+	}
+
+	public OmsInventory(final OmsInventory other) throws IllegalArgumentException
+	{
+		this.deliveryDate = other.getDeliveryDate();
+		this.locationId = other.getLocationId();
+		this.quantity = other.getQuantity();
+		this.skuId = other.getSkuId();
+		this.status = other.getStatus();
+		this.unitCode = other.getUnitCode();
+		this.binCode = other.getBinCode();
+	}
+			]]>
+			</customCode>
+
+		</bean>
+	</package>
+
+	<package name="com.hybris.oms.domain.inventory">
+		<bean name="Bin" extend="com.hybris.commons.dto.impl.PropertyAwareEntityDto">
+			<description>Bin</description>
+			<annotations>
+				<value>@javax.xml.bind.annotation.XmlRootElement</value>
+				<value>@javax.xml.bind.annotation.XmlAccessorType(javax.xml.bind.annotation.XmlAccessType.FIELD)
+				</value>
+			</annotations>
+			<property name="binCode" type="String">
+				<annotations>
+					<value>@javax.xml.bind.annotation.XmlAttribute</value>
+				</annotations>
+			</property>
+			<property name="locationId" type="String" />
+			<property name="description" type="String" />
+			<property name="priority" type="int" />
+			<customCode>
+<![CDATA[
+	@Override
+	public String getId()
+	{
+		return this.locationId + "_" + this.binCode;
+	}
+]]>
+    		</customCode>
+		</bean>
+
+		<bean name="Location" extend="com.hybris.commons.dto.impl.PropertyAwareEntityDto">
+			<description>Location</description>
+			<annotations>
+				<value>@javax.xml.bind.annotation.XmlRootElement</value>
+				<value>@javax.xml.bind.annotation.XmlAccessorType(javax.xml.bind.annotation.XmlAccessType.FIELD)
+				</value>
+			</annotations>
+			<property name="locationId" type="String" />
+			<property name="description" type="String" />
+			<property name="priority" type="int" />
+			<property name="storeName" type="String" />
+			<property name="taxAreaId" type="String" />
+			<property name="address" type="com.hybris.oms.domain.address.Address" />
+			<property name="absoluteInventoryThreshold" type="int" />
+			<property name="percentageInventoryThreshold" type="int" />
+			<property name="usePercentageThreshold" type="boolean" />
+			<property name="active" type="boolean" initValue="true" />
+			<property name="creationTime" type="java.util.Date" />
+			<property name="modifiedTime" type="java.util.Date" />
+			<property name="locationRoles" type="java.util.Set" generic="com.hybris.oms.domain.locationrole.LocationRole" initValue="new java.util.HashSet()">
+				<annotations>
+					<value>@javax.xml.bind.annotation.XmlElement</value>
+				</annotations>
+			</property>
+			<property name="baseStores" type="java.util.Set" generic="String" initValue="new java.util.HashSet()">
+				<annotations>
+					<value>@javax.xml.bind.annotation.XmlElement</value>
+				</annotations>
+			</property>
+			<property name="shipToCountriesCodes" type="java.util.Set" generic="String" initValue="new java.util.HashSet()">
+				<annotations>
+					<value>@javax.xml.bind.annotation.XmlElement</value>
+				</annotations>
+			</property>
+			<customCode>
+<![CDATA[
+	public Location(final String locationId)
+	{
+		if (locationId == null)
+		{
+			throw new java.lang.IllegalStateException("Location Id must not be null");
+		}
+		this.locationId = locationId;
+	}
+	
+	@Override
+	public String getId()
+	{
+		return locationId;
+	}
+]]>
+    		</customCode>
+		</bean>
+
+		<bean name="ItemStatus" extend="com.hybris.commons.dto.impl.PropertyAwareEntityDto">
+			<description>Inventory status</description>
+			<annotations>
+				<value>@javax.xml.bind.annotation.XmlRootElement</value>
+				<value>@javax.xml.bind.annotation.XmlAccessorType(javax.xml.bind.annotation.XmlAccessType.FIELD)
+				</value>
+			</annotations>
+			<property name="statusCode" type="String" />
+			<property name="description" type="String" />
+			<customCode>
+<![CDATA[
+	@Override
+	public String getId()
+	{
+		return statusCode;
+	}
+]]>
+    		</customCode>
+		</bean>
+
+		<enum name="BinSequencingEnum">
+			<annotations>
+				<value>@javax.xml.bind.annotation.XmlEnum</value>
+			</annotations>
+			<value>BIN_CODE</value>
+			<value>BIN_PRIORITY</value>
+			<value>BIN_DESCRIPTION</value>
+			<value>BIN_MIN_QUANTITY</value>
+			<value>BIN_MAX_QUANTITY</value>
+		</enum>
+	</package>
+
+	<package name="com.hybris.oms.domain.locationrole">
+		<enum name="LocationRole">
+			<annotations>
+				<value>@javax.xml.bind.annotation.XmlEnum</value>
+			</annotations>
+			<value>PICKUP</value>
+			<value>SHIPPING</value>
+		</enum>
+	</package>
+	
+	<package name="com.hybris.oms.domain.basestore">
+		<bean name="BaseStore" extend="com.hybris.commons.dto.impl.PropertyAwareEntityDto">
+			<description>Base Store</description>
+			<annotations>
+				<value>@javax.xml.bind.annotation.XmlRootElement</value>
+				<value>@javax.xml.bind.annotation.XmlAccessorType(javax.xml.bind.annotation.XmlAccessType.FIELD)
+				</value>
+			</annotations>
+			<property name="name" type="String" />
+			<property name="description" type="String" />
+			<customCode>
+<![CDATA[
+	@Override
+	public String getId()
+	{
+		return name;
+	}
+]]>
+    		</customCode>
+		</bean>
+	</package>
+
+	<!-- <bean name="ItemLocation"> <annotations> <value>@javax.xml.bind.annotation.XmlRootElement</value> 
+		<value>@javax.xml.bind.annotation.XmlSeeAlso({ItemLocationCurrent.class, 
+		ItemLocationFuture.class})</value> </annotations> <description>Inventory</description> 
+		<property name="id" type="String" /> <property name="itemId" type="String" 
+		/> <property name="future" type="boolean" /> <property name="bin" type="Bin" 
+		/> <property name="location" type="Location" /> </bean> <bean name="ItemLocationCurrent" 
+		annotation="@javax.xml.bind.annotation.XmlRootElement" extends="ItemLocation"> 
+		<description>Current inventory</description> <property name="itemQuantities" 
+		type="java.util.Map" generic="String, CurrentItemQuantity" /> </bean> <bean 
+		name="ItemLocationFuture" annotation="@javax.xml.bind.annotation.XmlRootElement" 
+		extends="ItemLocation"> <description>Future inventory</description> <property 
+		name="itemQuantities" type="java.util.Map" generic="String, FutureItemQuantity" 
+		/> </bean> <bean name="ItemQuantity"> <annotations> <value>@javax.xml.bind.annotation.XmlRootElement</value> 
+		<value>@javax.xml.bind.annotation.XmlSeeAlso({CurrentItemQuantity.class, 
+		FutureItemQuantity.class})</value> </annotations> <description>Inventory 
+		quantity</description> <property name="id" type="String" /> <property name="quantity" 
+		type="com.hybris.oms.api.valuetype.Quantity" /> </bean> <bean name="CurrentItemQuantity" 
+		annotation="@javax.xml.bind.annotation.XmlRootElement" extends="ItemQuantity"> 
+		<description>Current inventory quantity</description> </bean> <bean name="FutureItemQuantity" 
+		annotation="@javax.xml.bind.annotation.XmlRootElement" extends="ItemQuantity"> 
+		<description>Future inventory quantity</description> <property name="expectedDeliveryDate" 
+		type="java.util.Date" /> </bean> -->
+
+</beans>

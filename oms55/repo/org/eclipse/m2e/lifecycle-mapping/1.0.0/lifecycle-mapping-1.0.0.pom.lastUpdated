@@ -1,0 +1,10 @@
+#NOTE: This is an Aether internal implementation file, its format can be changed without prior notice.
+#Mon Mar 09 18:03:14 CET 2015
+https\://repository.hybris.com/hybris-repository/.lastUpdated=1425920594011
+http\://repo.maven.apache.org/maven2/.lastUpdated=1425920594066
+http\://jkmaster.omstest.oms.b2c.ydev.hybris.com\:9080/job/02-build-all-dob/23/maven-repository/repositoryChain/.error=
+http\://jkmaster.omstest.oms.b2c.ydev.hybris.com\:9080/job/02-build-all-oms/32/maven-repository/repositoryChain/.error=
+http\://repo.maven.apache.org/maven2/.error=
+https\://repository.hybris.com/hybris-repository/.error=
+http\://jkmaster.omstest.oms.b2c.ydev.hybris.com\:9080/job/02-build-all-dob/23/maven-repository/repositoryChain/.lastUpdated=1425920594037
+http\://jkmaster.omstest.oms.b2c.ydev.hybris.com\:9080/job/02-build-all-oms/32/maven-repository/repositoryChain/.lastUpdated=1425920594051

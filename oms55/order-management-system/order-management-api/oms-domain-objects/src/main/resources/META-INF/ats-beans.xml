@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<beans xmlns="http://www.hybris.com/schema/onpremise/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.hybris.com/schema/onpremise/beans http://www.hybris.com/schema/onpremise/beans-5.3.xsd">
+   
+    <package name="com.hybris.oms.domain.ats">
+    
+       	<bean name="AtsFormula" extend="com.hybris.commons.dto.impl.PropertyAwareEntityDto">
+       		<description>ATS formula</description>
+       		<annotations>
+       			<value>@javax.xml.bind.annotation.XmlRootElement</value>
+       			<value>@javax.xml.bind.annotation.XmlAccessorType(javax.xml.bind.annotation.XmlAccessType.FIELD)</value>
+       		</annotations>
+       		<property name="atsId" type="String" />
+       		<property name="formula" type="String" />
+       		<property name="name" type="String" />
+       		<property name="description" type="String" />
+       		
+          	<customCode>
+<![CDATA[
+	public AtsFormula(final String atsId, final String formula, final String name, final String description)
+	{
+		this.atsId = atsId;
+		this.formula = formula;
+		this.name = name;
+		this.description = description;
+	}
+	
+	@Override
+	public String getId()
+	{
+		return atsId;
+	}
+]]>
+    		</customCode>
+       	</bean>
+       	
+       	<bean name="AtsQuantity">
+       		<description>ATS quantity</description>
+       		<annotations>
+       			<value>@javax.xml.bind.annotation.XmlRootElement</value>
+       			<value>@javax.xml.bind.annotation.XmlAccessorType(javax.xml.bind.annotation.XmlAccessType.FIELD)</value>
+       		</annotations>
+       		<property name="sku" type="String">
+       			<annotations>
+       				<value>@javax.xml.bind.annotation.XmlAttribute</value>
+       			</annotations>
+       		</property>
+       		<property name="atsId" type="String">
+       			<annotations>
+       				<value>@javax.xml.bind.annotation.XmlAttribute</value>
+       			</annotations>
+       		</property>
+       		<property name="quantity" type="com.hybris.oms.domain.types.Quantity" />
+       	</bean>
+       	
+       	<bean name="AtsQuantities"> 
+       		<description>ATS quantities</description>
+       		<annotations>
+       			<value>@javax.xml.bind.annotation.XmlRootElement</value>
+       			<value>@javax.xml.bind.annotation.XmlAccessorType(javax.xml.bind.annotation.XmlAccessType.FIELD)</value>
+       		</annotations>
+       		<property name="atsQuantities" type="java.util.List" generic="AtsQuantity" initValue="new java.util.ArrayList()">
+       			<annotations>
+       				<value>@javax.xml.bind.annotation.XmlElement(name = "ats")</value>
+       			</annotations>
+       		</property>
+       		<customCode>
+<![CDATA[
+	public void addAtsQuantity(final AtsQuantity atsQuantity)
+	{
+		this.atsQuantities.add(atsQuantity);
+	}
+]]>
+    		</customCode>
+       	</bean>
+       	
+       	<bean name="AtsLocalQuantities" extend="AtsQuantities">
+       		<description>Local ATS quantities</description>
+       		<annotations>
+       			<value>@javax.xml.bind.annotation.XmlRootElement(name = "atsLocal")</value>
+       			<value>@javax.xml.bind.annotation.XmlAccessorType(javax.xml.bind.annotation.XmlAccessType.FIELD)</value>
+       		</annotations>
+       		<property name="locationId" type="String" equals="true" />
+       	</bean>
+        
+    </package>
+
+</beans>

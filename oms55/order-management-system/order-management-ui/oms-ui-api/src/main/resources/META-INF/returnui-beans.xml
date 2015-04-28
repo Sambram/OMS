@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<beans xmlns="http://www.hybris.com/schema/onpremise/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.hybris.com/schema/onpremise/beans
+	   http://www.hybris.com/schema/onpremise/beans-5.3.xsd">
+
+	<package name="com.hybris.oms.ui.api.returns">
+
+		<bean name="ReturnDetail">
+			<description>ReturnDetail</description>
+
+			<implements>
+				<value>com.hybris.commons.dto.Dto</value>
+			</implements>
+			
+						
+			<annotations>
+				<value>@javax.xml.bind.annotation.XmlRootElement</value>
+			</annotations>
+
+			<property name="order" type="com.hybris.oms.domain.order.Order" />
+			<property name="aReturn" type="com.hybris.oms.domain.returns.Return" />
+		
+			<property name="previouslyrefundedshippingcost" type="boolean" />
+			<property name="onlineReturn" type="boolean" />
+	
+			<customCode>
+				<![CDATA[
+                   	@Override
+					public boolean equals(final Object otherObject)
+					{
+						if (this == otherObject)
+						{
+							return true;
+						}
+						if (otherObject == null || this.getClass() != otherObject.getClass())
+						{
+							return false;
+						}
+						return java.util.Objects.equals(aReturn, ((ReturnDetail) otherObject).aReturn)
+								&& java.util.Objects.equals(order, ((ReturnDetail) otherObject).order);
+					}
+					
+					@Override
+					public int hashCode()
+					{
+						return java.util.Objects.hash(aReturn);
+					}
+					
+					public boolean isOnlineReturn()
+					{
+						return onlineReturn;
+					}
+					
+					public Return getReturn()
+					{
+						return this.aReturn;
+					}
+					
+					public void setReturn(final Return aReturn)
+					{
+						this.aReturn = aReturn;
+					}
+					
+					
+				]]>
+			</customCode>
+		</bean>
+
+
+	</package>
+
+
+</beans>

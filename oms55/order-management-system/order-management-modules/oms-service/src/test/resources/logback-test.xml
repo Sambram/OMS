@@ -1,0 +1,39 @@
+<configuration>
+
+    <!-- !!!This file is also used by order-management-integration-test don't make it generate too many traces -->
+	<appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+		<encoder>
+<!-- 			<Pattern>[%-5level][%c] %m%n</Pattern> -->
+			<Pattern>[%level] [%thread] [%logger] -  %msg%n</Pattern>
+		</encoder>
+	</appender>
+
+    <logger name="httpclient.wire" level="info" />
+
+	<logger name="com.hybris.oms" level="info" />
+	<logger name="com.hybris.oms.service.sourcing" level="warn" />
+	<logger name="com.hybris.oms.service.workflow" level="info" />
+	<logger name="com.hybris.oms.service.ats" level="warn" />
+	<logger name="com.hybris.oms.facade.validation" level="info" />
+    <logger name="com.hybris.oms.export" level="warn" />
+
+	<!-- Out of OMS scope should not log for tests -->
+	<logger name="org.springframework" level="error" />
+	<logger name="com.hybris.kernel" level="info" />
+	<logger name="com.hybris.commons" level="error" />
+	<logger name="org.apache" level="error" />
+	<logger name="org.activiti.engine.impl.bpmn" level="warn" />
+	<logger name="org.activiti.engine.impl.pvm" level="warn" />
+	
+	<!-- Request/Response logging (set to info to activate) -->
+	<logger name="com.hybris.oms.rest.web" level="info"/>
+	
+	<!-- DB statements (set to debug to activate) -->
+	<logger name="com.hybris.kernel.engine.jdbc.JDBCPersistenceEngine" level="warn" />
+	<logger name="org.springframework.jdbc.core.JdbcTemplate" level="warn" />
+	<logger name="jdbc-aggregation" level="warn" />
+
+	<root level="warn">
+		<appender-ref ref="STDOUT" />
+	</root>
+</configuration>

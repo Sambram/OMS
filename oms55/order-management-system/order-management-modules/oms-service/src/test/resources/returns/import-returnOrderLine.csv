@@ -1,0 +1,11 @@
+id,orderLineId,myReturn,returnOrderLineId,quantity.value,returnOrderLineStatus,version
+ReturnOrderLineData|1,1,ReturnData|1,1,1,open,1
+ReturnOrderLineData|2,1,ReturnData|1,2,2,open,1
+ReturnOrderLineData|3,2,ReturnData|20,3,2,open,1
+ReturnOrderLineData|4,24,ReturnData|21,4,2,open,1
+ReturnOrderLineData|5,24,ReturnData|22,5,3,open,1
+ReturnOrderLineData|6,21,ReturnData|26,6,5,open,1
+ReturnOrderLineData|7,21,ReturnData|27,7,10,open,1
+ReturnOrderLineData|8,21,ReturnData|28,8,10,open,1
+ReturnOrderLineData|9,25,ReturnData|29,9,25,open,1
+ReturnOrderLineData|10,26,ReturnData|29,10,5,open,1

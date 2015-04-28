@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beansProjectDescription>
+	<version>1</version>
+	<pluginVersion><![CDATA[3.6.1.201408250730-RELEASE]]></pluginVersion>
+	<configSuffixes>
+		<configSuffix><![CDATA[xml]]></configSuffix>
+	</configSuffixes>
+	<enableImports><![CDATA[false]]></enableImports>
+	<configs>
+		<config>src/main/resources/META-INF/oms-service-spring.xml</config>
+		<config>src/test/resources/oms-service-spring-test.xml</config>
+		<config>src/main/resources/META-INF/cis-integration-spring.xml</config>
+		<config>src/main/resources/META-INF/oms-service-all-spring.xml</config>
+		<config>src/test/resources/oms-service-cis-spring-test.xml</config>
+		<config>src/main/resources/META-INF/oms-service-health-spring.xml</config>
+		<config>src/main/resources/META-INF/oms-service-jobs-spring.xml</config>
+		<config>src/test/resources/oms-service-spring-schemaless-test.xml</config>
+		<config>src/main/resources/META-INF/oms-service-workflow-spring.xml</config>
+		<config>src/test/resources/oms-service-health-spring-test.xml</config>
+	</configs>
+	<autoconfigs>
+	</autoconfigs>
+	<configSets>
+	</configSets>
+</beansProjectDescription>

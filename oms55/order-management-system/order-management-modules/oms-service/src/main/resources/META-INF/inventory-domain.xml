@@ -1,0 +1,213 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<types xmlns="http://www.hybris.com/schema/ondemand/domain"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.hybris.com/schema/onpremise/domain http://www.hybris.com/schema/onpremise/domain-5.3.xsd"
+	package="com.hybris.oms.service.managedobjects.inventory">
+	<enumerations>
+		<enumeration code="LocationRole">
+			<values>
+				<value code="PICKUP"/>
+				<value code="SHIPPING"/>
+			</values>
+		</enumeration>
+	</enumerations>
+	<managedobjects>
+	<!-- https://wiki.hybris.com/display/dra/inventory+tables -->
+		<managedobject code="ItemStatusData" properties="true">
+			<description>Contains description for inventory status</description>
+			<persistence name="itemStatuses" />
+			<versionattribute name="version" />
+			<attributes>
+				<attribute name="statusCode" type="String" >
+					<description>Inventory status code</description>
+					<modifiers unique="true" mandatory="true" final="true" />
+				</attribute>
+				<attribute name="description" type="String" >
+					<description>Inventory status description</description>
+					<modifiers mandatory="true" />
+				</attribute>
+			</attributes>
+		</managedobject>
+
+		<managedobject code="StockroomLocationData" properties="true">
+			<description>Contains data for locations</description>
+			<persistence name="stockroomlocations" />
+			<versionattribute name="version" />
+			<attributes>
+				<attribute name="locationId" type="String" >
+					<description>Location id</description>
+					<modifiers mandatory="true" unique="true" final="true" />
+				</attribute>
+				<attribute name="description" type="String">
+					<description>Location description</description>
+				</attribute>
+				<attribute name="storeName" type="String">
+					<description>Store name</description>
+				</attribute>
+				<attribute name="taxAreaId" type="String">
+					<description>Tax ID based on the area</description>
+				</attribute>
+				<attribute name="priority" type="int">
+					<description>Priority</description>
+					<modifiers indexed="true"/>
+				</attribute>
+				<attribute name="address" type="AddressVT">
+					<description>Location Address with location coordinate (lat/lng)</description>
+					<persistence name="addr"/>
+				</attribute>
+				<attribute name="active" type="boolean">
+					<defaultvalue>true</defaultvalue>
+					<description>Active status</description>
+				</attribute>
+				<attribute name="absoluteInventoryThreshold" type="int">
+					<description>Provides the absolute threshold for local ATS</description>
+				</attribute>
+				<attribute name="percentageInventoryThreshold" type="int">
+					<description>Provides the percentage threshold for local ATS.</description>
+					<constraints>
+						<constraint type="Min" values="0"/>
+						<constraint type="Max" values="100"/>
+					</constraints>
+				</attribute>
+				<attribute name="usePercentageThreshold" type="boolean">
+					<description>Enables percentage threshold for local ATS</description>
+				</attribute>
+				<attribute name="locationRoles" type="Set(String)">
+					<persistence name="stockroomlocations_locRoles"/>
+					<description>Location Roles (shipping, pickup)</description>
+					<modifiers mandatory="true"/>
+				</attribute>
+				<attribute name="baseStores" type="Set(BaseStoreData)">
+					<persistence name="stockroomlocations_baseStor"/>
+					<description>base stores</description>
+					<relation>
+						<many2many counterpart="stockroomLocations" />
+					</relation>
+				</attribute>
+				<attribute name="shipToCountries" type="Set(CountryData)">
+					<persistence name="stockroomlocations_shpCountry"/>
+					<description>Set of countries that a stockroomlocation ships to</description>
+				</attribute>
+			</attributes>
+		</managedobject>
+
+		<managedobject code="BinData" properties="true">
+			<description>Contains data for bins</description>
+			<persistence name="bins">
+				<index name="UQ_Bin_binCodeSkuLoc" unique="true">
+					<attribute name="binCode"/>
+					<attribute name="stockroomLocation"/>
+				</index>
+			</persistence>
+			<versionattribute name="version" />
+			<attributes>
+				<attribute type="String" name="binCode">
+					<description>Location id</description>
+					<modifiers mandatory="true" final="true" />
+				</attribute>
+				<attribute name="stockroomLocation" type="StockroomLocationData">
+					<description>The location that this bin is located in</description>
+					<modifiers mandatory="true"/>
+				</attribute>
+				<attribute name="priority" type="int">
+					<description>Priority</description>
+					<modifiers indexed="true"/>
+				</attribute>
+				<attribute name="description" type="String">
+					<description>Location description</description>
+				</attribute>
+			</attributes>
+		</managedobject>
+
+		<managedobject code="ItemLocationData" properties="true">
+			<description>Abstract class for inventory</description>
+			<persistence name="itemLocations">
+				<index name="UQ_ItemLoc_skuLocFut" unique="true">
+					<attribute name="itemId"/>
+					<attribute name="stockroomLocation"/>
+					<attribute name="bin"/>
+					<attribute name="future"/>
+				</index>
+			</persistence>
+			<versionattribute name="version" />
+			<attributes>
+				<attribute name="itemId" type="String">
+					<description>Inventory item sku id</description>
+					<modifiers mandatory="true" final="true" tracked="true" />
+				</attribute>
+
+				<attribute name="stockroomLocation" type="StockroomLocationData">
+					<description>Inventory location</description>
+					<modifiers mandatory="true" final="true" tracked="true" />
+				</attribute>
+
+				<attribute name="future" type="boolean">
+					<description>false means current item location</description>
+					<modifiers final="true" />
+				</attribute>
+
+				<attribute name="itemQuantities" type="List(ItemQuantityData)">
+					<description>quantities</description>
+					<relation>
+						<one2many mappedBy="owner" />
+					</relation>
+					<modifiers partof="true"/>
+				</attribute>
+
+				<attribute name="bin" type="BinData">
+					<description>Bin</description>
+					<modifiers mandatory="true" final="true"/>
+				</attribute>
+
+				<attribute name="banned" type="boolean">
+					<description>true means the location will not be used to source from</description>
+					<modifiers mandatory="true" />
+					<defaultvalue>false</defaultvalue>
+				</attribute>
+
+            </attributes>
+		</managedobject>
+
+		<managedobject code="ItemQuantityData" abstract="true" properties="true">
+			<description>Abstract class for inventory</description>
+			<persistence name="itemQuantities">
+				<index name="UQ_ItemQuantity_ownerStatusDelivery" unique="true">
+					<attribute name="owner"/>
+					<attribute name="statusCode"/>
+					<attribute name="expectedDeliveryDate"/>
+				</index>
+			</persistence>
+			<versionattribute name="version" />
+			<attributes>
+				<attribute name="owner" type="ItemLocationData">
+					<description>Item Location Reference</description>
+					<modifiers mandatory="true" final="true" tracked="true" />
+				</attribute>
+				<attribute name="statusCode" type="String">
+					<modifiers mandatory="true" final="true" tracked="true" />
+				</attribute>
+				<attribute name="expectedDeliveryDate" type="Date">
+					<modifiers final="true"/>
+					<defaultvalue>1900-01-01 00:00:00:000 Z</defaultvalue>
+				</attribute>
+				<attribute name="quantityUnitCode" type="String">
+					<description>Quantity</description>
+				</attribute>
+				<attribute name="quantityValue" type="int">
+					<description>Quantity</description>
+					<modifiers mandatory="true" tracked="true" />
+				</attribute>
+			</attributes>
+		</managedobject>
+
+		<managedobject code="CurrentItemQuantityData" extends="ItemQuantityData" properties="true">
+			<description>Contains data on the quantity </description>
+		</managedobject>
+
+		<managedobject code="FutureItemQuantityData" extends="ItemQuantityData" properties="true">
+			<description>Contains data on the futurequantity </description>
+		</managedobject>
+
+	</managedobjects>
+</types>

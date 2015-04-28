@@ -1,0 +1,11 @@
+id,quantityValue,quantityUnitCode,owner,statusCode,expectedDeliveryDate,version
+FutureItemQuantityData|1,78,U,ItemLocationData|62,ON_HAND,2012-01-01 0:00:00:000 -0000,1
+FutureItemQuantityData|2,12,U,ItemLocationData|63,NOT_AVAILABLE,2015-10-13 0:00:00:000 -0000,1
+FutureItemQuantityData|3,24,U,ItemLocationData|64,ON_HAND,2015-10-13 0:00:00:000 -0000,1
+FutureItemQuantityData|4,12,U,ItemLocationData|65,ON_HAND,2015-10-13 0:00:00:000 -0000,1
+FutureItemQuantityData|5,55,U,ItemLocationData|66,ON_HAND,2012-02-01 0:00:00:000 -0000,1
+FutureItemQuantityData|6,16,U,ItemLocationData|67,NOT_AVAILABLE,2015-10-13 0:00:00:000 -0000,1
+FutureItemQuantityData|7,62,U,ItemLocationData|68,ON_HAND,2015-10-13 0:00:00:000 -0000,1
+FutureItemQuantityData|8,71,U,ItemLocationData|69,ON_HAND,2015-10-13 0:00:00:000 -0000,1
+FutureItemQuantityData|9,32,U,ItemLocationData|70,ON_HAND,2012-03-01 0:00:00:000 -0000,1
+FutureItemQuantityData|102,5,U,ItemLocationData|102,ON_HAND,2050-03-01 0:00:00:000 -0000,1

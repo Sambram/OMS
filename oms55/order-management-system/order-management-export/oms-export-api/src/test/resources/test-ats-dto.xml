@@ -1,0 +1,5 @@
+<?xml version="1.0"?>
+<availabilityToSellDTO latestChange="1418825422343">
+	<quantity skuId="123456" locationId="location">5</quantity>
+	<quantity skuId="123456">88</quantity>
+</availabilityToSellDTO>

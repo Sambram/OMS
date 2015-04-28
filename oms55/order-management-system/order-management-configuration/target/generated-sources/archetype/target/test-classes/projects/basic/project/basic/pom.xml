@@ -1,0 +1,404 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	
+	<parent>
+		<artifactId>order-management-system</artifactId>
+		<groupId>com.hybris.oms</groupId>
+		<version>5.1.1.11</version>
+	</parent>
+
+	<artifactId>basic</artifactId>
+
+	<groupId>archetype.it</groupId>
+	<name>order-management-configuration</name>
+	<packaging>jar</packaging>
+	<version>0.1-SNAPSHOT</version>
+
+	<build>
+		<pluginManagement>
+			<plugins>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-jar-plugin</artifactId>
+					<executions>
+						<execution>
+							<goals>
+								<goal>test-jar</goal>
+							</goals>
+						</execution>
+					</executions>
+				</plugin>
+				
+				<!--skip deploy (this is just a deploy module) -->
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-deploy-plugin</artifactId>
+					<configuration>
+						<skip>true</skip>
+					</configuration>
+				</plugin>
+				
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-antrun-plugin</artifactId>
+					<executions>
+						<execution>
+							<id>copyProperties</id>
+							<phase>deploy</phase> <!-- install -->
+							<goals>
+								<goal>run</goal>
+							</goals>
+						</execution>
+					</executions>
+					<configuration>
+						<target>
+							<echo>Copying deploy folder</echo>
+							<scp todir="${ssh.username}:${ssh.password}@${deploy.host}:${ssh.folder}" trust="true" failonerror="true">
+								<fileset dir="${project.basedir}/deploy/${properties.folder}" />
+							</scp>
+							<echo>Finished copying</echo>
+						</target>
+					</configuration>
+				</plugin>
+				
+				<plugin>
+					<groupId>org.codehaus.cargo</groupId>
+					<artifactId>cargo-maven2-plugin</artifactId>
+					<executions>
+						<execution>
+							<id>undeployFromTomcat</id>
+							<phase>verify</phase>
+							<goals>
+								<goal>undeploy</goal>
+							</goals>
+						</execution>
+						<execution>
+							<id>deployToTomcat</id>
+							<phase>deploy</phase>
+							<goals>
+								<goal>deploy</goal>
+							</goals>
+						</execution>
+					</executions>
+					
+					<configuration>
+						<container>
+							<containerId>tomcat7x</containerId>
+							<type>remote</type>
+						</container>
+						<configuration>
+							<type>runtime</type>
+							<properties>
+								<cargo.hostname>${deploy.host}</cargo.hostname>
+								<cargo.servlet.port>${deploy.port}</cargo.servlet.port>
+								<cargo.remote.username>admin</cargo.remote.username>
+								<cargo.remote.password>nimda</cargo.remote.password>
+							</properties>
+						</configuration>
+						<deployer>
+							<type>remote</type>
+							<deployables>
+								<deployable>
+									<groupId>com.hybris.oms</groupId>
+									<artifactId>oms-rest-webapp</artifactId>
+									<type>war</type>
+									<pingURL>http://${deploy.host}:${deploy.port}/oms-rest-webapp/</pingURL>
+									<pingTimeout>120000</pingTimeout>
+									<properties>
+										<context>oms-rest-webapp</context>
+									</properties>
+								</deployable>
+							</deployables>
+						</deployer>
+					</configuration>
+				</plugin>
+			</plugins>
+		</pluginManagement>
+		
+	</build>
+
+
+	<profiles>
+		<profile>
+			<id>devflyingbeavers</id>
+
+			<properties>
+				<deploy.host>devflyingbeavers.fra.hybris.com</deploy.host>
+				<deploy.port>8080</deploy.port>
+				<ssh.username>hybris</ssh.username>
+				<ssh.password>6d5SnXZB</ssh.password>
+				<ssh.folder>/home/tomcat7/oms/lib</ssh.folder>
+				<properties.folder>devflyingbeavers</properties.folder>
+			</properties>
+
+			<dependencies>
+				<dependency>
+					<groupId>com.hybris.oms</groupId>
+					<artifactId>oms-rest-webapp</artifactId>
+					<version>${artifacts.version}</version>
+					<type>war</type>
+				</dependency>
+			</dependencies>
+
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-antrun-plugin</artifactId>
+					</plugin>
+					<plugin>
+						<groupId>org.codehaus.cargo</groupId>
+						<artifactId>cargo-maven2-plugin</artifactId>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+	
+		<profile>
+			<id>integrationflyingbeavers</id>
+
+			<properties>
+				<deploy.host>integrationflyingbeavers.fra.hybris.com</deploy.host>
+				<deploy.port>8080</deploy.port>
+				<ssh.username>eit</ssh.username>
+				<ssh.password>test4711</ssh.password>
+				<ssh.folder>/home/tomcat7/oms/lib</ssh.folder>
+				<properties.folder>integrationflyingbeavers</properties.folder>
+			</properties>
+
+			<dependencies>
+				<dependency>
+					<groupId>com.hybris.oms</groupId>
+					<artifactId>oms-rest-webapp</artifactId>
+					<version>${artifacts.version}</version>
+					<type>war</type>
+				</dependency>
+			</dependencies>
+
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-antrun-plugin</artifactId>
+					</plugin>
+					<plugin>
+						<groupId>org.codehaus.cargo</groupId>
+						<artifactId>cargo-maven2-plugin</artifactId>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+
+			<profile>
+			<id>int1-oms.yrdanura</id>
+
+			<properties>
+				<deploy.host>int1-oms.yrdanura.fra.hybris.com</deploy.host>
+				<deploy.port>8080</deploy.port>
+				<ssh.username>eit</ssh.username>
+				<ssh.password>test4711</ssh.password>
+				<ssh.folder>/usr/share/tomcat7/lib</ssh.folder>
+				<properties.folder>int1-oms.yrdanura</properties.folder>
+			</properties>
+
+			<dependencies>
+				<dependency>
+					<groupId>com.hybris.oms</groupId>
+					<artifactId>oms-rest-webapp</artifactId>
+					<version>${artifacts.version}</version>
+					<type>war</type>
+				</dependency>
+			</dependencies>
+
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-antrun-plugin</artifactId>
+					</plugin>
+					<plugin>
+						<groupId>org.codehaus.cargo</groupId>
+						<artifactId>cargo-maven2-plugin</artifactId>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+
+		<profile>
+			<id>int2-oms1.yrdanura</id>
+
+			<properties>
+				<deploy.host>int2-oms1.yrdanura.fra.hybris.com</deploy.host>
+				<deploy.port>8080</deploy.port>
+				<ssh.username>hybris</ssh.username>
+				<ssh.password>Perivu99</ssh.password>
+				<ssh.folder>/usr/share/tomcat7/lib</ssh.folder>
+				<properties.folder>int2-oms1.yrdanura</properties.folder>
+			</properties>
+
+			<dependencies>
+				<dependency>
+					<groupId>com.hybris.oms</groupId>
+					<artifactId>oms-rest-webapp</artifactId>
+					<version>${artifacts.version}</version>
+					<type>war</type>
+				</dependency>
+			</dependencies>
+
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-antrun-plugin</artifactId>
+					</plugin>
+					<plugin>
+						<groupId>org.codehaus.cargo</groupId>
+						<artifactId>cargo-maven2-plugin</artifactId>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+
+		<profile>
+			<id>intci-oms1.yrdanura</id>
+
+			<properties>
+				<deploy.host>intci-oms1.yrdanura.fra.hybris.com</deploy.host>
+				<deploy.port>8080</deploy.port>
+				<ssh.username>eit</ssh.username>
+				<ssh.password>test4711</ssh.password>
+				<ssh.folder>/usr/share/tomcat7/lib</ssh.folder>
+				<properties.folder>intci-oms1.yrdanura</properties.folder>
+			</properties>
+
+			<dependencies>
+				<dependency>
+					<groupId>com.hybris.oms</groupId>
+					<artifactId>oms-rest-webapp</artifactId>
+					<version>${artifacts.version}</version>
+					<type>war</type>
+				</dependency>
+			</dependencies>
+
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-antrun-plugin</artifactId>
+					</plugin>
+					<plugin>
+						<groupId>org.codehaus.cargo</groupId>
+						<artifactId>cargo-maven2-plugin</artifactId>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+		
+		<profile>
+			<id>ci-performance</id>
+
+			<properties>
+				<deploy.host>intci-pt-oms-1.yrdanura.fra.hybris.com</deploy.host>
+				<deploy.port>8080</deploy.port>
+				<ssh.username>hybris</ssh.username>
+				<ssh.password>Gehasu49</ssh.password>
+				<ssh.folder>/usr/share/tomcat7/lib</ssh.folder>
+				<properties.folder>ci-performance</properties.folder>
+			</properties>
+
+			<dependencies>
+				<dependency>
+					<groupId>com.hybris.oms</groupId>
+					<artifactId>oms-rest-webapp</artifactId>
+					<version>${artifacts.version}</version>
+					<type>war</type>
+				</dependency>
+			</dependencies>
+
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-antrun-plugin</artifactId>
+					</plugin>
+					<plugin>
+						<groupId>org.codehaus.cargo</groupId>
+						<artifactId>cargo-maven2-plugin</artifactId>
+					
+					<configuration>
+						<deployer>
+							<type>remote</type>
+							<deployables>
+								<deployable>
+									<groupId>com.hybris.oms</groupId>
+									<artifactId>oms-rest-webapp</artifactId>
+									<type>war</type>
+									<pingURL>http://${deploy.host}:${deploy.port}/oms-rest-webapp/</pingURL>
+									<pingTimeout>120000</pingTimeout>
+									<properties>
+										<context>oms-rest-webapp</context>
+									</properties>
+								</deployable>
+							</deployables>
+						</deployer>
+					</configuration>
+					</plugin>
+					
+				</plugins>
+			</build>
+		</profile>
+		
+		<profile>
+			<id>devgermcan</id>
+
+			<properties>
+				<deploy.host>devgermcan.fra.hybris.com</deploy.host>
+				<deploy.port>8080</deploy.port>
+				<ssh.username>hybris</ssh.username>
+				<ssh.password>dl0NfPlq</ssh.password>
+				<ssh.folder>/home/hybris/tomcat-germcan/lib</ssh.folder>
+				<properties.folder>devgermcan</properties.folder>
+			</properties>
+
+			<dependencies>
+				<dependency> <!-- needed for deployment -->
+					<groupId>com.hybris.oms</groupId>
+					<artifactId>oms-rest-webapp</artifactId>
+					<version>${artifacts.version}</version>
+					<type>war</type>
+				</dependency>
+			</dependencies>
+
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-antrun-plugin</artifactId>
+					</plugin>
+					<plugin>
+						<groupId>org.codehaus.cargo</groupId>
+						<artifactId>cargo-maven2-plugin</artifactId>
+						<configuration>
+							<deployer>
+							<type>remote</type>
+							<deployables>
+								<deployable>
+									<groupId>com.hybris.oms</groupId>
+									<artifactId>oms-rest-webapp</artifactId>
+									<type>war</type>
+									<pingURL>http://${deploy.host}:${deploy.port}/oms-rest-webapp</pingURL>
+									<pingTimeout>90000</pingTimeout>
+									<properties>
+										<context>oms-rest-webapp</context>
+									</properties>
+								</deployable>																
+							</deployables>
+						</deployer>
+						</configuration>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+	</profiles>
+</project>

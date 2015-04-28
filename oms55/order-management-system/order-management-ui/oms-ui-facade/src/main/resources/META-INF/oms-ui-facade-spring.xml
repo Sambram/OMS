@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
+		
+	<context:annotation-config />
+	<context:component-scan base-package="com.hybris.oms.ui.facade" />
+	
+	<alias name="defaultUiOrderFacade" alias="uIorderFacade" />
+	<bean id="defaultUiOrderFacade" class="com.hybris.oms.ui.facade.order.DefaultUiOrderFacade">
+		<property name="orderService" ref="orderService"/>
+		<property name="queryObjectValidator" ref="queryObjectValidator"/>
+        <property name="uIOrderConverter" ref="uIOrderConverter"/>
+        <property name="uIOrderDetailsConverter" ref="uIOrderDetailsConverter"/>
+		<property name="converters" ref="converters"/>
+		<property name="entityValidationHandler" ref="entityValidationHandler"/>
+	</bean>
+	
+	<alias name="defaultUiShipmentFacade" alias="uIshipmentServiceFacade" />
+	<bean primary="true" id="defaultUiShipmentFacade" class="com.hybris.oms.ui.facade.shipment.DefaultUiShipmentFacade">
+		<property name="atsService" ref="atsService"/>
+		<property name="converters" ref="converters"/>
+		<property name="inventoryService" ref="inventoryService"/>
+		<property name="locationConverter" ref="locationConverter"/>
+		<property name="orderService" ref="orderService"/>
+		<property name="shipmentConverter" ref="shipmentConverter"/>
+		<property name="shipmentService" ref="shipmentService"/>
+		<property name="queryObjectValidator" ref="queryObjectValidator"/>
+		<property name="orderLineQuantityConverter" ref="orderLineQuantityConverter"/>
+		<property name="orderLineConverter" ref="orderLineConverter"/>
+		<property name="orderConverter" ref="orderConverter"/>
+		<property name="atsLocalQuantitiesConverter" ref="atsLocalQuantitiesConverter"/>
+		<property name="uiShipmentConverter" ref="uiShipmentConverter"/>
+		<property name="binConverter" ref="binConverter"/>
+		<property name="entityValidationHandler" ref="entityValidationHandler"/>
+	</bean>
+	
+	<alias name="defaultUiPreferenceFacade" alias="uIpreferenceFacade" />
+	<bean id="defaultUiPreferenceFacade" class="com.hybris.oms.ui.facade.preference.DefaultUiPreferenceFacade">
+		<property name="tenantPreferenceConverter" ref="tenantPreferenceConverter"/>
+		<property name="tenantPreferenceService" ref="tenantPreferenceService"/>
+		<property name="localizationConverter" ref="localizationConverter"/>
+		<property name="sourcingService" ref="sourcingService"/>
+	</bean>
+	
+	<alias name="defaultReturnDetailFacade" alias="returnDetailFacade" />
+	<bean id="defaultReturnDetailFacade" class="com.hybris.oms.ui.facade.returns.DefaultReturnDetailFacade">
+		<property name="returnService" ref="returnService"/>
+		<property name="returnConverter" ref="returnConverter"/>
+		<property name="queryObjectValidator" ref="queryObjectValidator"/>
+		<property name="converters" ref="converters"/>
+		<property name="orderService" ref="orderService"/>
+		<property name="orderConverter" ref="orderConverter"/>
+		<property name="entityValidationHandler" ref="entityValidationHandler"/>
+	</bean>
+
+</beans>

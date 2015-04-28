@@ -1,0 +1,54 @@
+<configuration>
+
+	<appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+		<encoder>
+<!-- 			<Pattern>[%-5level][%c] %m%n</Pattern> -->
+			<Pattern>[%level] [%thread] [%logger] %msg%n</Pattern>
+		</encoder>
+	</appender>
+
+	<appender name="CISLogFile" class="ch.qos.logback.core.FileAppender">
+		<file>cisMonitoring.log</file>
+		<encoder>
+			<pattern>%d [%-5level] %method %m%n</pattern>
+		</encoder>
+	</appender>
+
+	<logger name="archetype.it.service.sourcing" level="error" />
+	<logger name="archetype.it.service.workflow" level="debug" />
+	<logger name="archetype.it.facade.validation" level="warn" />
+
+	<!-- Out of OMS scope should not log for tests -->
+	<logger name="org.springframework" level="error" />
+	<logger name="com.hybris.kernel" level="error" />
+	<logger name="com.hybris.commons" level="error" />
+	<logger name="org.apache" level="error" />
+	<logger name="org.springframework.aop.interceptor" level="trace" />
+	<logger name="org.activiti.engine.impl.bpmn" level="warn" />
+	<logger name="org.activiti.engine.impl.pvm" level="warn" />
+    <logger name="archetype.it.service.ats.impl.DefaultAtsServiceBenchmarkTest" level="debug"/>
+
+	<!-- Message "Using in memory export queue. This setup is not to be used
+		in production environments!" not wanted for tests -->
+	<logger name="archetype.it.export.service.queue.InMemoryQueueProvider"
+		level="error" />
+
+	<!-- Monitor Interceptor Logs -->
+	<!-- Logs the performance monitor into the CISLogfile -->
+	<logger
+		name="org.springframework.aop.interceptor.PerformanceMonitorInterceptor"
+		level="trace">
+		<appender-ref ref="CISLogFile" />
+	</logger>
+
+	<!-- Logs the performance monitor to the console -->
+	<logger
+		name="org.springframework.aop.interceptor.PerformanceMonitorInterceptor"
+		level="trace">
+		<appender-ref ref="CISLogFile" />
+	</logger>
+
+	<root level="warn">
+		<appender-ref ref="STDOUT" />
+	</root>
+</configuration>

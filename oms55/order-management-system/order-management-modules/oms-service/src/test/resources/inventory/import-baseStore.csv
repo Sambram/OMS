@@ -1,0 +1,5 @@
+id,name,description,workflowProcessName
+BaseStoreData|1,baseStore1,baseStore1,process1
+BaseStoreData|2,baseStore2,baseStore2,process2
+BaseStoreData|3,baseStore3,baseStore3,process3
+

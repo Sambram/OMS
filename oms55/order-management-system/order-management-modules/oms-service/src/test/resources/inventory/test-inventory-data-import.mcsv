@@ -1,0 +1,11 @@
+ItemLocationData,classpath:/inventory/import-itemLocation.csv
+CurrentItemQuantityData,classpath:/inventory/import-itemQuantityCurrent.csv
+FutureItemQuantityData,classpath:/inventory/import-itemQuantityFuture.csv
+StockroomLocationData,classpath:/inventory/import-location.csv
+StockroomLocationData.locationRoles,classpath:/inventory/import-location-locationRoles.csv
+StockroomLocationData.shipToCountries,classpath:/inventory/import-location-shipToCountries.csv
+CountryData,classpath:/META-INF/import-countries.csv
+ItemStatusData,classpath:/inventory/import-itemStatus.csv
+BinData,classpath:/inventory/import-bins.csv
+BaseStoreData,classpath:/inventory/import-baseStore.csv
+StockroomLocationData.baseStores,classpath:/inventory/import-locations-baseStores.csv

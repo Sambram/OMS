@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<beans xmlns="http://www.hybris.com/schema/onpremise/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.hybris.com/schema/onpremise/beans http://www.hybris.com/schema/onpremise/beans-5.3.xsd">
+
+	<package name="com.hybris.oms.ui.api.order">
+
+
+		<bean name="UIOrderDetails" extend="com.hybris.commons.dto.impl.PropertyAwareEntityDto">
+			<description>UIOrderDetails</description>
+
+			<annotations>
+				<value>@javax.xml.bind.annotation.XmlRootElement</value>
+				<value>@javax.xml.bind.annotation.XmlAccessorType(javax.xml.bind.annotation.XmlAccessType.FIELD)
+				</value>
+			</annotations>
+			
+			<property name="currencyCode" type="String" />
+
+			<property name="contact" type="com.hybris.oms.domain.types.Contact" />
+
+			<property name="customerLocale" type="String" />
+
+			<property name="emailid" type="String" />
+
+			<property name="firstName" type="String" />
+
+			<property name="issueDate" type="java.util.Date">
+				<annotations>
+					<value>@javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter(com.hybris.commons.dto.xml.bind.DateAdapter.class)
+					</value>
+				</annotations>
+			</property>
+
+			<property name="lastName" type="String" />
+
+			<property name="locationIds" type="java.util.List" generic="String">
+				<annotations>
+					<value>@javax.xml.bind.annotation.XmlElement</value>
+				</annotations>
+			</property>
+
+
+			<property name="orderId" type="String">
+				<annotations>
+					<value>@javax.xml.bind.annotation.XmlID</value>
+				</annotations>
+			</property>
+
+
+			<property name="priorityLevelCode" type="String" />
+
+			<property name="shippingFirstName" type="String" />
+
+			<property name="shippingLastName" type="String" />
+
+			<property name="shippingMethod" type="String" />
+
+			<property name="shippingTaxCategory" type="String" />
+
+
+			<property name="shippingAddress" type="com.hybris.oms.domain.address.Address" />
+
+			<property name="shippingAndHandling"
+				type="com.hybris.oms.domain.shipping.ShippingAndHandling" />
+
+			<property name="username" type="String" />
+
+			<property name="baseStoreName" type="String" />
+
+
+			<property name="cancellable" type="boolean" />
+
+
+			<property name="isPickUpOnlyOrder" type="boolean" />
+
+			<property name="paymentInfos" type="java.util.List" generic="com.hybris.oms.domain.order.PaymentInfo"
+				initValue="new java.util.ArrayList()">
+				<annotations>
+					<value>@javax.xml.bind.annotation.XmlElement</value>
+				</annotations>
+			</property>
+
+			<property name="scheduledShippingDate" type="java.util.Date" />
+			
+			<customCode>
+			<![CDATA[
+			
+				/**
+				 * For boolean attributes, the dto generator does not use the java convention isAttribute
+				 * Adding it for legacy purpose
+				 */
+				public boolean isPickUpOnlyOrder()
+				{
+					return isPickUpOnlyOrder;
+				}
+			
+				
+				public void setPickUpOnlyOrder(final boolean pickUpOnlyOrder)
+				{
+					isPickUpOnlyOrder = pickUpOnlyOrder;
+				}
+	
+					@Override
+				public String getId()
+				{
+					return orderId;
+				}
+				
+				/**
+				 * For boolean attributes, the dto generator does not use the java convention isAttribute
+				 * Adding it for legacy purpose
+				 */
+				public boolean isCancellable()
+				{
+					return cancellable;
+				}
+				
+			]]>
+    		</customCode>
+
+		</bean>
+		<bean name="UIOrder" extend="com.hybris.commons.dto.impl.PropertyAwareEntityDto">
+			<description>UIOrder</description>
+			<annotations>
+				<value>@javax.xml.bind.annotation.XmlRootElement</value>
+				<value>@javax.xml.bind.annotation.XmlAccessorType(javax.xml.bind.annotation.XmlAccessType.FIELD)
+				</value>
+			</annotations>
+			<property name="currencyCode" type="String" />
+			<property name="customerLocale" type="String" />
+			<property name="emailid" type="String" />
+			<property name="firstName" type="String" />
+			<property name="lastName" type="String" />
+			<property name="locationIds" type="java.util.List" generic="String">
+				<annotations>
+					<value>@javax.xml.bind.annotation.XmlElement</value>
+				</annotations>
+			</property>
+
+			<property name="scheduledShippingDate" type="java.util.Date" />
+
+			<property name="issueDate" type="java.util.Date">
+				<annotations>
+					<value>@javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter(com.hybris.commons.dto.xml.bind.DateAdapter.class)
+					</value>
+				</annotations>
+			</property>
+
+			<property name="orderId" type="String">
+				<annotations>
+					<value>@javax.xml.bind.annotation.XmlID</value>
+				</annotations>
+			</property>
+			<property name="priorityLevelCode" type="String" />
+			<property name="shippingFirstName" type="String" />
+			<property name="shippingLastName" type="String" />
+			<property name="shippingMethod" type="String" />
+			<property name="shippingTaxCategory" type="String" />
+
+			<property name="username" type="String" />
+			<property name="baseStoreName" type="String" />
+			
+			<customCode>
+			<![CDATA[
+				@Override
+				public String getId()
+				{
+					return orderId;
+				}
+			]]>
+    		</customCode>
+		</bean>
+
+	</package>
+</beans>

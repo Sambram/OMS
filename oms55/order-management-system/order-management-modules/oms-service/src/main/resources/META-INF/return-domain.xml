@@ -1,0 +1,216 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<types xmlns="http://www.hybris.com/schema/ondemand/domain"
+	   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	   xsi:schemaLocation="http://www.hybris.com/schema/onpremise/domain http://www.hybris.com/schema/onpremise/domain-5.3.xsd"
+	   package="com.hybris.oms.service.managedobjects.returns">
+
+	<managedobjects>
+
+		<managedobject code="ReturnData" properties="true">
+			<description>Contains data on the Return Object</description>
+			<persistence name="returns" />
+			<versionattribute name="version" />
+			<attributes>
+				<attribute name="returnId" type="long">
+					<description>the id of the return</description>
+					<modifiers generated="true" unique="true" mandatory="true" final="true" />
+				</attribute>
+				<attribute name="state" type="String">
+					<description>Current state of the return</description>
+				</attribute>
+				<attribute name="order" type="OrderData">
+					<description>order</description>
+					<modifiers indexed="true" />
+				</attribute>
+				<attribute name="returnLocation" type="StockroomLocationData">
+					<description>The stockoom location where the return is returned to</description>
+					<modifiers indexed="true" />
+				</attribute>
+				<attribute name="returnShipment" type="ReturnShipmentData">
+					<description>The shipment that contains the returned items</description>
+				</attribute>
+				<attribute name="customRefundAmount" type="AmountVT">
+					<persistence name="cramount" />
+					<description>total amount of the whole return(can be modified by UI user)</description>
+				</attribute>
+				<attribute name="calculatedRefundAmount" type="AmountVT">
+					<persistence name="oramount" />
+					<description>total amount of the whole return calculated by OMS</description>
+				</attribute>
+				<attribute name="returnReasonCode" type="String">
+					<modifiers mandatory="true" />
+					<description>code of the return reason</description>
+				</attribute>
+				<attribute name="returnOrderLines" type="List(ReturnOrderLineData)">
+					<constraints>
+						<constraint package="org.apache.bval.constraints" type="NotEmpty" />
+					</constraints>
+					<modifiers mandatory="true" />
+					<description>list of returned items</description>
+					<relation>
+						<one2many mappedBy="myReturn" />
+					</relation>
+				</attribute>
+				<attribute name="returnPaymentInfos" type="ReturnPaymentInfoData">
+					<description>return contains return payment information</description>
+				</attribute>
+				<attribute type="boolean" name="shippingRefunded">
+					<description>true if shipping is refunded</description>
+					<modifiers mandatory="true" />
+				</attribute>
+			</attributes>
+		</managedobject>
+		
+		<managedobject code="ReturnShipmentData" properties="true">
+			<description>Contains data about the return shipment</description>
+			<persistence name="returnShipments" />
+			<versionattribute name="version" />
+			<attributes>
+				<attribute name="returnShipmentId" type="long">
+					<description>Return shipment id</description>
+					<modifiers generated="true" unique="true" mandatory="true" final="true" />
+				</attribute>
+				<attribute type="ReturnData" name="myReturn">
+					<modifiers final="true" />
+					<description>A handle to the parent return</description>
+				</attribute>
+				<attribute name="shippingMethod" type="String">
+					<description>Shipping Method</description>
+				</attribute>
+				<attribute type="String" name="labelUrl">
+					<description>URL to the shipping label</description>
+				</attribute>
+				<attribute type="String" name="trackingId">
+					<description>Tracking id of the shipment with the carrier</description>
+				</attribute>
+				<attribute type="String" name="trackingUrl">
+					<description>Tracking URL for the shipment's carrier</description>
+				</attribute>
+				<attribute name="packageDescription" type="String">
+					<description>Package description</description>
+				</attribute>
+				<attribute name="note" type="String">
+					<description>Notes</description>
+				</attribute>
+				<attribute name="insuranceValueAmountCurrencyCode" type="String">
+					<description>Shipping Insurance Value Amount</description>
+					<persistence name="insValAmtCrCd"/>
+				</attribute>
+				<attribute name="insuranceValueAmountValue" type="double">
+					<description>Shipping Insurance Value Amount</description>
+				</attribute>
+				<attribute name="heightUnitCode" type="String">
+					<description>Package height</description>
+				</attribute>
+				<attribute name="heightValue" type="float">
+					<description>Package height</description>
+				</attribute>
+				<attribute name="lengthUnitCode" type="String">
+					<description>Package length</description>
+				</attribute>
+				<attribute name="lengthValue" type="float">
+					<description>Package length</description>
+				</attribute>
+				<attribute name="widthValue" type="float">
+					<description>Package width</description>
+				</attribute>
+				<attribute name="widthUnitCode" type="String">
+					<description>Package width</description>
+				</attribute>
+				<attribute name="grossWeightUnitCode" type="String">
+					<description>Shipping Gross Weight</description>
+				</attribute>
+				<attribute name="grossWeightValue" type="float">
+					<description>Shipping Gross Weight</description>
+				</attribute>
+			</attributes>
+		</managedobject>
+		
+		<managedobject code="ReturnOrderLineData" properties="true">
+			<description>Contains data on the return order line</description>
+			<persistence name="returnOrderLines" />
+			<versionattribute name="version" />
+			<attributes>
+				<attribute type="ReturnData" name="myReturn">
+					<modifiers mandatory="true" final="true" />
+					<description>A handle to the parent return</description>
+				</attribute>
+				<attribute name="returnOrderLineId" type="long">
+					<description>Return order line id</description>
+					<modifiers generated="true" unique="true" mandatory="true" final="true" />
+				</attribute>
+				<attribute name="returnOrderLineStatus" type="String">
+					<description>status of the item being returned</description>
+				</attribute>
+				<attribute name="orderLineId" type="String">
+					<modifiers mandatory="true" />
+					<description>linked order line</description>
+				</attribute>
+				<attribute name="quantity" type="QuantityVT">
+					<modifiers mandatory="true" />
+					<description>quantity of the item that is requested to be returned</description>
+				</attribute>
+                <attribute name="returnLineRejections" type="List(ReturnLineRejectionData)">
+                    <modifiers mandatory="false" />
+                    <description>list of return line rejections</description>
+                    <relation>
+                        <one2many mappedBy="myReturnOrderLine" />
+                    </relation>
+                </attribute>
+			</attributes>
+		</managedobject>
+
+		<managedobject code="ReturnPaymentInfoData" properties="true">
+			<description>Contains return payment information</description>
+			<persistence name="returnPaymentInfo" />
+			<versionattribute name="version" />
+			<attributes>
+				<attribute name="returnPaymentInfoId" type="long">
+					<description>Unique return paymentInfo identifier</description>
+					<modifiers generated="true" mandatory="true" final="true" unique="true" />
+				</attribute>
+				<attribute name="returnPaymentType" type="String">
+					<description>Return Payment Type</description>
+				</attribute>
+				<attribute name="returnPaymentAmount" type="AmountVT">
+					<persistence name="rpamount" />
+					<description>Return Payment Amount</description>
+				</attribute>
+				<attribute type="ReturnData" name="myReturn">
+					<modifiers final="true" />
+					<description>A handle to the parent return</description>
+				</attribute>
+				<attribute name="taxReversed" type="AmountVT">
+					<description>the amount of tax that has been reversed</description>
+				</attribute>
+			</attributes>
+		</managedobject>
+
+        <managedobject code="ReturnLineRejectionData" properties="true">
+            <description>Contains return rejections history</description>
+            <persistence name="returnLineRejection" />
+            <attributes>
+                <attribute name="rejectionId" type="long">
+                    <description>Unique return rejection identifier</description>
+                    <modifiers generated="true" mandatory="true" final="true" unique="true" />
+                </attribute>
+                <attribute name="quantity" type="int">
+                    <modifiers mandatory="true"/>
+                    <description>Quantity rejected</description>
+                </attribute>
+                <attribute name="responsible" type="String">
+                    <description>Who rejected the return</description>
+                </attribute>
+                <attribute name="reason" type="String">
+                    <description>Reason if it's necessary</description>
+                </attribute>
+                <attribute type="ReturnOrderLineData" name="myReturnOrderLine">
+                    <modifiers final="true" />
+                    <description>A handle to the parent return order line</description>
+                </attribute>
+            </attributes>
+        </managedobject>
+
+	</managedobjects>
+</types>

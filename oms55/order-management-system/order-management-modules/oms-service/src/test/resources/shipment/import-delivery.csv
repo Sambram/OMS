@@ -1,0 +1,3 @@
+id,deliveryId,trackingID,labelUrl,deliveryAddress.addressLine1,deliveryAddress.cityName,deliveryAddress.countryIso3166Alpha2Code,deliveryAddress.latitudeValue,deliveryAddress.longitudeValue,version
+DeliveryData|1,1000,111111,label1,123 Fake Street,Pindamonhangaba,FK,0.1,0.1,1
+DeliveryData|2,1001,222221,label2,124 Fake Street,Xique-xique,BF,0.1,0.1,1

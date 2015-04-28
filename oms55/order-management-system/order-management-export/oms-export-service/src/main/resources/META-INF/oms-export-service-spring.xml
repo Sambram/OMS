@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:util="http://www.springframework.org/schema/util"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd
+		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
+
+    <import resource="classpath:/META-INF/persistence-events.xml"/>
+
+	<!-- Base ATS change listener framework beans -->
+	<bean id="atsChangeListener" class="com.hybris.oms.export.service.ats.listener.AtsChangeListener">
+		<property name="transactionManager" ref="transactionManager" />
+		<property name="atsExportTriggerService" ref="atsExportTriggerService" />
+	</bean>
+	<bean id="abstractAtsChangeTypecodeHandler" class="com.hybris.oms.export.service.ats.listener.AtsChangeTypecodeHandler" abstract="true">
+		<property name="persistenceManager" ref="persistenceManager" />
+		<property name="creationAtsExportFilter" ref="alwaysExportAtsExportFilter" />
+		<property name="updateAtsExportFilter" ref="alwaysExportAtsExportFilter" />
+		<property name="deletionAtsExportFilter" ref="alwaysExportAtsExportFilter" />
+	</bean>
+	<bean id="alwaysExportAtsExportFilter" class="com.hybris.oms.export.service.ats.listener.filter.impl.AlwaysExportAtsExportFilter" />
+	<bean id="neverExportAtsExportFilter" class="com.hybris.oms.export.service.ats.listener.filter.impl.NeverExportAtsExportFilter" />
+	
+	<!-- Extension beans for ats change listener -->
+	<bean id="itemLocationAtsChangeListener" class="com.hybris.oms.export.service.ats.listener.impl.ItemLocationAtsChangeTypecodeHandler" parent="abstractAtsChangeTypecodeHandler">
+		<property name="creationAtsExportFilter" ref="neverExportAtsExportFilter" />
+		<property name="updateAtsExportFilter" ref="neverExportAtsExportFilter" />
+	</bean>
+	<bean id="currentInventoryAtsChangeListener" class="com.hybris.oms.export.service.ats.listener.impl.CurrentInventoryAtsChangeTypecodeHandler" parent="abstractAtsChangeTypecodeHandler"/>
+	<bean id="futureInventoryAtsChangeListener" class="com.hybris.oms.export.service.ats.listener.impl.FutureInventoryAtsChangeTypecodeHandler" parent="abstractAtsChangeTypecodeHandler"/>
+	<bean id="olqAtsChangeListener" class="com.hybris.oms.export.service.ats.listener.impl.OrderLineQuantityAtsChangeTypecodeHandler" parent="abstractAtsChangeTypecodeHandler">
+		<property name="updateAtsExportFilter">
+			<bean class="com.hybris.oms.export.service.ats.listener.filter.impl.OrderLineQuantityFieldChangeAtsExportFilter" />
+		</property>
+	</bean>
+	<bean id="orderLineAtsChangeListener" class="com.hybris.oms.export.service.ats.listener.impl.OrderLineAtsChangeTypecodeHandler" parent="abstractAtsChangeTypecodeHandler">
+		<property name="updateAtsExportFilter">
+			<bean class="com.hybris.oms.export.service.ats.listener.filter.impl.OrderLineFieldChangeAtsExportFilter" />
+		</property>
+	</bean>
+	
+
+    <alias name="defaultATSExportPollService" alias="atsExportPollService"/>
+    <bean id="defaultATSExportPollService" class="com.hybris.oms.export.service.ats.impl.DefaultATSExportPollService">
+    	<property name="atsService" ref="atsService"/>
+    	<property name="exportManager" ref="atsExportManager"/>
+    	<property name="transactionManager" ref="transactionManager" />
+    </bean>
+
+	<alias name="defaultATSExportTriggerService" alias="atsExportTriggerService"/>
+    <bean id="defaultATSExportTriggerService" class="com.hybris.oms.export.service.ats.impl.DefaultATSExportTriggerService">
+    	<property name="exportManager" ref="atsExportManager"/>
+    	<property name="persistenceManager" ref="persistenceManager"/>
+    </bean>
+   
+    <alias name="jdbcAtsExportManager" alias="atsExportManager"/>
+    <bean id="jdbcAtsExportManager" class="com.hybris.oms.export.service.manager.impl.JdbcExportManager">
+    	<property name="defaultLimit" value="${oms.export.ats.poll.limit}"/>
+    	<property name="maxLimit" value="${oms.export.ats.poll.maxlimit}"/>
+    	<property name="persistenceManager" ref="persistenceManager" />
+    </bean>
+</beans>

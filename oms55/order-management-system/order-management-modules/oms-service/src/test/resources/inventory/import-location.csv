@@ -1,0 +1,192 @@
+id,locationId,description,storeName,priority,address.latitudeValue,address.longitudeValue,address.cityName,address.countryIso3166Alpha2Code,address.countrySubentity,address.postalZone,version
+StockroomLocationData|1,1,Warehouse 1,store1,1,45.42349,-75.69793,Ottawa,CA,ON,K1A 0B1,1
+StockroomLocationData|2,2,Warehouse 2,store2,3,43.652527,-79.381961,Toronto,CA,ON,M5H 1A1,1
+StockroomLocationData|3,3,Warehouse 3,store3,3,50.292,18.66719,Gliwice,PL,,55-040,1
+StockroomLocationData|4,4,Store 100,shop4,2,,,Montreal,CA,QC,H1N 3S1,1
+StockroomLocationData|5,5,Store 101,shop5,3,,,Montreal,CA,QC,H1N 3S1,1
+StockroomLocationData|6,6,Store 102,,3,,,Andorra la Vella,AD,,,1
+StockroomLocationData|7,7,Store 103,,1,,,Luanda,AO,,,1
+StockroomLocationData|8,8,Store 104,,2,,,St. John's,AG,,,1
+StockroomLocationData|9,9,Store 105,,3,,,Buenos Aires,AR,,,1
+StockroomLocationData|10,10,Store 106,,1,,,Yerevan,AM,,,1
+StockroomLocationData|11,11,Store 107,,2,,,Canberra,AU,,,1
+StockroomLocationData|12,12,Store 108,,3,,,Vienna,AT,,,1
+StockroomLocationData|13,13,Store 109,,1,,,Baku,AZ,,,1
+StockroomLocationData|14,14,Store 110,,2,,,Nassau,BS,,,1
+StockroomLocationData|15,15,Store 111,,3,,,Manama,SH,,,1
+StockroomLocationData|16,16,Store 112,,1,,,Dhaka,BD,,,1
+StockroomLocationData|17,17,Store 113,,2,,,Bridgetown,BB,,,1
+StockroomLocationData|18,18,Store 114,,3,,,Minsk,BY,,,1
+StockroomLocationData|19,19,Store 115,,1,,,Brussels,BE,,,1
+StockroomLocationData|20,20,Store 116,,2,,,Belmopan,BZ,,,1
+StockroomLocationData|21,21,Store 117,,3,,,Porto-Novo,BJ,,,1
+StockroomLocationData|22,23,Store 119,,2,,,Sucre,BO,,,1
+StockroomLocationData|23,24,Store 120,,3,,,Sarajevo,BA,,,1
+StockroomLocationData|24,25,Store 121,,1,,,Gaborone,BW,,,1
+StockroomLocationData|25,26,Store 122,,1,,,Brasilia,BR,,,1
+StockroomLocationData|26,27,Store 123,,2,,,Darussalam Bandar Seri Begawan,BN,,,1
+StockroomLocationData|27,28,Store 124,,3,,,Sofia,BG,,,1
+StockroomLocationData|28,29,Store 125,,1,,,Ouagadougou,BF,,,1
+StockroomLocationData|29,30,Store 126,,2,,,Bujumbura,BI,,,1
+StockroomLocationData|30,31,Store 127,,3,,,Phnom Penh,KH,,,1
+StockroomLocationData|31,32,Store 128,,1,,,Yaounde,CM,,,1
+StockroomLocationData|32,33,Store 129,,2,48.136415,11.577531,Munich,DE,,,1
+StockroomLocationData|33,34,Store 130,,3,,,Praia,CV,,,1
+StockroomLocationData|34,35,Store 131,,1,,,Bangui,CF,,,1
+StockroomLocationData|35,36,Store 132,,2,,,N'Djamena,TD,,,1
+StockroomLocationData|36,37,Store 133,,3,,,Santiago,CL,,,1
+StockroomLocationData|37,38,Store 134,,1,,,Beijing,CN,,,1
+StockroomLocationData|38,39,Store 135,,2,,,Bogota,CO,,,1
+StockroomLocationData|39,40,Store 136,,3,,,Moroni,KM,,,1
+StockroomLocationData|40,41,Store 137,,1,,,Brazzaville,CG,,,1
+StockroomLocationData|41,42,Store 138,,2,,,San Jose,CR,,,1
+StockroomLocationData|42,43,Store 139,,3,,,Yamoussoukro,CI,,,1
+StockroomLocationData|43,44,Store 140,,1,,,Zagreb,HR,,,1
+StockroomLocationData|44,45,Store 141,,2,,,Havana,CU,,,1
+StockroomLocationData|45,46,Store 142,,3,,,Nicosia,CY,,,1
+StockroomLocationData|46,47,Store 143,,1,,,Prague,CZ,,,1
+StockroomLocationData|47,48,Store 144,,2,,,Copenhagen,DK,,,1
+StockroomLocationData|48,49,Store 145,,3,,,Djibouti,DJ,,,1
+StockroomLocationData|49,50,Store 146,,1,,,Roseau,DM,,,1
+StockroomLocationData|50,51,Store 147,,1,,,Santo Domingo,DO,,,1
+StockroomLocationData|51,52,Store 148,,2,,,Quito,EC,,,1
+StockroomLocationData|52,53,Store 149,,3,,,Cairo,EG,,,1
+StockroomLocationData|53,54,Store 150,,1,,,San Salvador,SV,,,1
+StockroomLocationData|54,55,Store 151,,2,,,Malabo,GQ,,,1
+StockroomLocationData|55,56,Store 152,,3,,,Asmara,ER,,,1
+StockroomLocationData|56,57,Store 153,,1,,,Tallinn,EE,,,1
+StockroomLocationData|57,58,Store 154,,2,,,Addis Ababa,ET,,,1
+StockroomLocationData|58,59,Store 155,,3,,,Suva,FJ,,,1
+StockroomLocationData|59,60,Store 156,,1,,,Helsinki,FI,,,1
+StockroomLocationData|60,61,Store 157,,2,,,Paris,FR,,,1
+StockroomLocationData|61,62,Store 158,,3,,,Libreville,GA,,,1
+StockroomLocationData|62,63,Store 159,,1,,,Banjul,GM,,,1
+StockroomLocationData|63,64,Store 160,,2,,,Tbilisi,GE,,,1
+StockroomLocationData|64,65,Store 161,,3,,,Berlin,DE,,,1
+StockroomLocationData|65,66,Store 162,,1,,,Accra,GH,,,1
+StockroomLocationData|66,67,Store 163,,2,,,Athens,GR,,,1
+StockroomLocationData|67,68,Store 164,,3,,,St. George's,GD,,,1
+StockroomLocationData|68,69,Store 165,,1,,,Guatemala City,GT,,,1
+StockroomLocationData|69,70,Store 166,,2,,,Conakry,GN,,,1
+StockroomLocationData|70,71,Store 167,,3,,,Bissau,GW,,,1
+StockroomLocationData|71,72,Store 168,,1,,,Georgetown,GY,,,1
+StockroomLocationData|72,73,Store 169,,2,,,Port-au-Prince,HT,,,1
+StockroomLocationData|73,74,Store 170,,3,,,Tegucigalpa,HN,,,1
+StockroomLocationData|74,75,Store 171,,1,,,Budapest,HU,,,1
+StockroomLocationData|75,76,Store 172,,1,,,Reykjavik,IS,,,1
+StockroomLocationData|76,77,Store 173,,2,,,New Delhi,IN,,,1
+StockroomLocationData|77,78,Store 174,,3,,,Jakarta,ID,,,1
+StockroomLocationData|78,79,Store 175,,1,,,Teheran,IR,,,1
+StockroomLocationData|79,80,Store 176,,2,,,Baghdad,IQ,,,1
+StockroomLocationData|80,81,Store 177,,3,,,Dublin,IE,,,1
+StockroomLocationData|81,82,Store 178,,1,,,Jerusalem,IL,,,1
+StockroomLocationData|82,83,Store 179,,2,,,Rome,IT,,,1
+StockroomLocationData|83,84,Store 180,,3,,,Kingston,JM,,,1
+StockroomLocationData|84,85,Store 181,,1,,,Tokyo,JP,,,1
+StockroomLocationData|85,86,Store 182,,2,,,Amman,JO,,,1
+StockroomLocationData|86,87,Store 183,,3,,,Astana,KZ,,,1
+StockroomLocationData|87,88,Store 184,,1,,,Nairobi,KE,,,1
+StockroomLocationData|88,89,Store 185,,2,,,South Tarawa,KI,,,1
+StockroomLocationData|89,90,Store 186,,3,,,Kuwait City,KW,,,1
+StockroomLocationData|90,91,Store 187,,1,,,Bishkek,KG,,,1
+StockroomLocationData|91,92,Store 188,,2,,,Vientiane,LA,,,1
+StockroomLocationData|92,93,Store 189,,3,,,Riga,LV,,,1
+StockroomLocationData|93,94,Store 190,,1,,,Beirut,LB,,,1
+StockroomLocationData|94,95,Store 191,,2,,,Maseru,LS,,,1
+StockroomLocationData|95,96,Store 192,,3,,,Monrovia,LR,,,1
+StockroomLocationData|96,97,Store 193,,1,,,Tripoli,LY,,,1
+StockroomLocationData|97,98,Store 194,,2,,,Vaduz,LI,,,1
+StockroomLocationData|98,99,Store 195,,3,,,Vilnius,LT,,,1
+StockroomLocationData|99,100,Store 196,,1,,,Luxembourg,LU,,,1
+StockroomLocationData|100,101,Store 197,,1,,,Skopje,MK,,,1
+StockroomLocationData|101,102,Store 198,,2,,,Antananarivo,MG,,,1
+StockroomLocationData|102,103,Store 199,,3,,,Lilongwe,MW,,,1
+StockroomLocationData|103,104,Store 200,,1,,,Kuala Lumpur,MY,,,1
+StockroomLocationData|104,105,Store 201,,2,,,Male,MV,,,1
+StockroomLocationData|105,106,Store 202,,3,,,Bamako,ML,,,1
+StockroomLocationData|106,107,Store 203,,1,,,Valletta,MT,,,1
+StockroomLocationData|107,108,Store 204,,2,,,Majuro,MH,,,1
+StockroomLocationData|108,109,Store 205,,3,,,Nouakchott,MR,,,1
+StockroomLocationData|109,110,Store 206,,1,,,Port Louis,MU,,,1
+StockroomLocationData|110,111,Store 207,,2,,,Mexico City,MX,,,1
+StockroomLocationData|111,112,Store 208,,3,,,Palikir,FM,,,1
+StockroomLocationData|112,113,Store 209,,1,,,Chisinau,MD,,,1
+StockroomLocationData|113,114,Store 210,,2,,,Monaco,MC,,,1
+StockroomLocationData|114,115,Store 211,,3,,,Ulan Bator,MN,,,1
+StockroomLocationData|115,116,Store 212,,1,,,Rabat,MA,,,1
+StockroomLocationData|116,117,Store 213,,2,,,Maputo,MZ,,,1
+StockroomLocationData|117,118,Store 214,,3,,,Nay Pyi Taw,MM,,,1
+StockroomLocationData|118,119,Store 215,,1,,,Windhoek,NA,,,1
+StockroomLocationData|119,120,Store 216,,2,,,Yaren,NR,,,1
+StockroomLocationData|120,121,Store 217,,3,,,Kathmandu,NP,,,1
+StockroomLocationData|121,122,Store 218,,1,,,Amsterdam,NL,,,1
+StockroomLocationData|122,123,Store 219,,2,,,Wellington,NZ,,,1
+StockroomLocationData|123,124,Store 220,,3,,,Managua,NI,,,1
+StockroomLocationData|124,125,Store 221,,1,,,Niamey,NE,,,1
+StockroomLocationData|125,126,Store 222,,1,,,Abuja,NG,,,1
+StockroomLocationData|126,127,Store 223,,1,,,Oslo,NO,,,1
+StockroomLocationData|127,128,Store 224,,1,,,Muscat,OM,,,1
+StockroomLocationData|128,129,Store 225,,1,,,Islamabad,PK,,,1
+StockroomLocationData|129,130,Store 226,,1,,,Koror,PW,,,1
+StockroomLocationData|130,131,Store 227,,1,,,Panama City,PA,,,1
+StockroomLocationData|131,132,Store 228,,1,,,Port Moresby,PG,,,1
+StockroomLocationData|132,133,Store 229,,1,,,Asuncion,PY,,,1
+StockroomLocationData|133,134,Store 230,,1,,,Lima,PE,,,1
+StockroomLocationData|134,135,Store 231,,1,,,Manila,PH,,,1
+StockroomLocationData|135,136,Store 232,,1,,,Warsaw,PL,,,1
+StockroomLocationData|136,137,Store 233,,1,,,Lisbon,PT,,,1
+StockroomLocationData|137,138,Store 234,,1,,,Doha,QA,,,1
+StockroomLocationData|138,139,Store 235,,1,,,Bucharest,RO,,,1
+StockroomLocationData|139,140,Store 236,,1,,,Moscow,RU,,,1
+StockroomLocationData|140,141,Store 237,,1,,,Kigali,RW,,,1
+StockroomLocationData|141,142,Store 238,,1,,,Basseterre,KN,,,1
+StockroomLocationData|142,143,Store 239,,1,,,Castries,LC,,,1
+StockroomLocationData|143,144,Store 240,,1,,,Kingstown,VC,,,1
+StockroomLocationData|144,145,Store 241,,1,,,Apia,WS,,,1
+StockroomLocationData|145,146,Store 242,,1,,,San Marino,SM,,,1
+StockroomLocationData|146,147,Store 243,,1,,,Sao Tome,ST,,,1
+StockroomLocationData|147,148,Store 244,,1,,,Riyadh,SA,,,1
+StockroomLocationData|148,149,Store 245,,1,,,Dakar,SN,,,1
+StockroomLocationData|149,150,Store 246,,1,,,Victoria,SC,,,1
+StockroomLocationData|150,151,Store 247,,1,,,Freetown,SL,,,1
+StockroomLocationData|151,152,Store 248,,1,,,Singapore,SG,,,1
+StockroomLocationData|152,153,Store 249,,1,,,Bratislava,SK,,,1
+StockroomLocationData|153,154,Store 250,,1,,,Ljubljana,SI,,,1
+StockroomLocationData|154,155,Store 251,,1,,,Honiara,SB,,,1
+StockroomLocationData|155,156,Store 252,,1,,,Mogadishu,SO,,,1
+StockroomLocationData|156,157,Store 253,,1,,,Pretoria,ZA,,,1
+StockroomLocationData|157,158,Store 254,,1,,,Madrid,ES,,,1
+StockroomLocationData|158,159,Store 255,,1,,,Colombo,LK,,,1
+StockroomLocationData|159,160,Store 256,,1,,,Khartoum,SD,,,1
+StockroomLocationData|160,161,Store 257,,1,,,Paramaribo,SR,,,1
+StockroomLocationData|161,162,Store 258,,1,,,Mbabane,SZ,,,1
+StockroomLocationData|162,163,Store 259,,1,,,Stockholm,SE,,,1
+StockroomLocationData|163,164,Store 260,,1,,,Bern,CH,,,1
+StockroomLocationData|164,165,Store 261,,1,,,Damascus,SY,,,1
+StockroomLocationData|165,166,Store 262,,1,,,Taipei,TW,,,1
+StockroomLocationData|166,167,Store 263,,1,,,Dushanbe,TJ,,,1
+StockroomLocationData|167,168,Store 264,,1,,,Dar es Salaam,TZ,,,1
+StockroomLocationData|168,169,Store 265,,1,,,Bangkok,TH,,,1
+StockroomLocationData|169,170,Store 266,,1,,,Lome,TG,,,1
+StockroomLocationData|170,171,Store 267,,1,,,Nuku'alofa,TO,,,1
+StockroomLocationData|171,172,Store 268,,1,,,Port-of-Spain,TT,,,1
+StockroomLocationData|172,173,Store 269,,1,,,Tunis,TN,,,1
+StockroomLocationData|173,174,Store 270,,1,,,Ankara,TR,,,1
+StockroomLocationData|174,175,Store 271,,1,,,Ashgabat,TM,,,1
+StockroomLocationData|175,176,Store 272,,1,,,Funafuti,TV,,,1
+StockroomLocationData|176,177,Store 273,,1,,,Kampala,UG,,,1
+StockroomLocationData|177,178,Store 274,,1,,,Kiev,UA,,,1
+StockroomLocationData|178,179,Store 275,,1,,,Abu Dhabi,AE,,,1
+StockroomLocationData|179,180,Store 276,,1,,,London,GB,,,1
+StockroomLocationData|180,181,Store 277,,1,,,Washington,US,,,1
+StockroomLocationData|181,182,Store 278,,1,,,Montevideo,UY,,,1
+StockroomLocationData|182,183,Store 279,,1,,,Tashkent,UZ,,,1
+StockroomLocationData|183,184,Store 280,,1,,,Port Vila,VU,,,1
+StockroomLocationData|184,185,Store 281,,1,,,Caracas,VE,,,1
+StockroomLocationData|185,186,Store 282,,1,,,Hanoi,VN,,,1
+StockroomLocationData|186,187,Store 283,,1,,,El Aaiun,EH,,,1
+StockroomLocationData|187,188,Store 284,,1,,,Sana,YE,,,1
+StockroomLocationData|188,189,Store 285,,1,,,Lusaka,ZM,,,1
+StockroomLocationData|189,190,Store 286,,1,,,Harare,ZW,,,1
+StockroomLocationData|201,OMS97_location1,Store 286,,1,,,Montreal,CA,QC,H3B 3B0,1
+StockroomLocationData|202,OMS97_location2,Store 287,,2,,,Toronto,CA,ON,M5G 2C2,1

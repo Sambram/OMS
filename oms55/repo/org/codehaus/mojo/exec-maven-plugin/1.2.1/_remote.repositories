@@ -1,0 +1,4 @@
+#NOTE: This is an Aether internal implementation file, its format can be changed without prior notice.
+#Mon Mar 09 18:03:17 CET 2015
+exec-maven-plugin-1.2.1.pom>hybris-repository=
+exec-maven-plugin-1.2.1.jar>hybris-repository=

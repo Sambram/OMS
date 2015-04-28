@@ -1,0 +1,26 @@
+#
+# Import for oms project data:
+#
+# The project data is needed to create a "Test Account" needed for the Accelerator.
+# This is done using the "createTestAccount" method from Subscription which creates an "account" and, 
+# besides loading essential data, also triggers loading of sample data for each "remote" service.
+# 
+# Test account creation needs to be done automatically with a single user action (ant target) thus 
+# each service must provide it's own project data (in kernel format) and it must be placed in 
+# classpath ('classpath:/META-INF/project-data-*.mcsv'). 
+# Loading will be done using the InitApp:
+#	initApp.loadProjectData()
+
+# entities: 
+BaseStoreData,classpath:/META-INF/partner-sample-data/entity-BaseStoreData.csv
+StockroomLocationData,classpath:/META-INF/partner-sample-data/entity-StockroomLocationData.csv
+ItemLocationData,classpath:/META-INF/partner-sample-data/entity-ItemLocationData.csv
+CurrentItemQuantityData,classpath:/META-INF/partner-sample-data/entity-CurrentItemQuantityData.csv
+BinData,classpath:/META-INF/partner-sample-data/entity-BinData.csv
+# relations: 
+# maps: 
+# collections:
+BaseStoreData.stockroomLocations,classpath:/META-INF/partner-sample-data/collection-BaseStoreData-stockroomLocations.csv
+StockroomLocationData.baseStores,classpath:/META-INF/partner-sample-data/collection-StockroomLocationData-baseStores.csv
+StockroomLocationData.locationRoles,classpath:/META-INF/partner-sample-data/collection-StockroomLocationData-locationRoles.csv
+StockroomLocationData.shipToCountries,classpath:/META-INF/partner-sample-data/collection-StockroomLocationData-shipToCountries.csv

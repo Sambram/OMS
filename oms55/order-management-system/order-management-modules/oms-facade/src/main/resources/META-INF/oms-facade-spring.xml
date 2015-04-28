@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd">
+
+	<context:component-scan base-package="com.hybris.oms.facade" />
+
+    <import resource="classpath:/META-INF/oms-service-all-spring.xml" />
+	<import resource="classpath:/META-INF/kernel-scheduler-spring.xml" />
+	<import resource="classpath:/META-INF/oms-facade-validation-spring.xml" />
+
+	<bean id="performanceMonitor"
+		class="org.springframework.aop.interceptor.PerformanceMonitorInterceptor">
+	</bean>
+
+	<aop:config>
+		<aop:advisor pointcut="execution(* com.hybris.cis.**.*(..))"
+			advice-ref="performanceMonitor" />
+	</aop:config>
+
+	<alias name="defaultAtsFacade" alias="atsFacade" />
+	<bean id="defaultAtsFacade"  class="com.hybris.oms.facade.ats.DefaultAtsFacade">
+		<property name="atsService" ref="atsService"/>
+		<property name="atsFormulaConverter" ref="atsFormulaConverter"/>
+		<property name="atsLocalQuantitiesConverter" ref="atsLocalQuantitiesConverter"/>
+		<property name="atsQuantityConverter" ref="atsQuantityConverter"/>
+		<property name="converters" ref="converters"/>
+		<property name="atsRequestValidator" ref="atsRequestValidator"/>
+		<property name="atsFormulaValidator" ref="atsFormulaValidator"/>
+		<property name="entityValidationHandler" ref="entityValidationHandler"/>
+		<property name="inventoryFacade" ref="inventoryServiceFacade"/>
+	</bean>
+
+	<alias name="defaultBaseStoreFacade" alias="baseStoreFacade" />
+	<bean id="defaultBaseStoreFacade"  class="com.hybris.oms.facade.basestore.DefaultBaseStoreFacade">
+		<property name="baseStoreService" ref="baseStoreService"/>
+		<property name="queryObjectValidator" ref="queryObjectValidator"/>
+		<property name="baseStoreReversePopulator" ref="baseStoreReversePopulator"/>
+		<property name="baseStoreConverter" ref="baseStoreConverter"/>
+		<property name="baseStoreReverseConverter" ref="baseStoreReverseConverter"/>
+		<property name="converters" ref="converters"/>
+		<property name="baseStoreValidator" ref="baseStoreValidator"/>
+		<property name="entityValidationHandler" ref="entityValidationHandler"/>
+	</bean>
+
+	<alias name="defaultFailureHandler" alias="entityValidationHandler" />
+	<bean id="defaultFailureHandler" class="com.hybris.oms.facade.validation.handler.impl.DefaultFailureHandler">
+		<property name="renderer" ref="failureJSONRenderer" />
+	</bean>
+
+	<alias name="defaultSourcingSimulationFacade" alias="sourcingSimulationFacade" />
+	<bean id="defaultSourcingSimulationFacade" class="com.hybris.oms.facade.fulfillment.DefaultSourcingSimulationFacade">
+		<property name="cisService" ref="cisService"/>
+		<property name="sourcingService" ref="sourcingService"/>
+		<property name="locationConverter" ref="locationConverter"/>
+		<property name="addressReverseConverter" ref="addressReverseConverter"/>
+	</bean>
+
+	<alias name="defaultInventoryFacade" alias="inventoryServiceFacade" />
+	<bean id="defaultInventoryFacade" class="com.hybris.oms.facade.inventory.DefaultInventoryFacade">
+		<property name="cisService" ref="cisService"/>
+		<property name="inventoryRolloverWorker" ref="inventoryRolloverWorker"/>
+		<property name="inventoryService" ref="inventoryService"/>
+		<property name="jobSchedulerService" ref="jobScheduler"/>
+		<property name="itemStatusConverter" ref="itemStatusConverter"/>
+		<property name="itemStatusReverseConverter" ref="itemStatusReverseConverter"/>
+		<property name="locationConverter" ref="locationConverter"/>
+		<property name="locationReverseConverter" ref="locationReverseConverter"/>
+		<property name="locationReversePopulator" ref="locationReversePopulator"/>
+		<property name="itemLocationCurrentConverter" ref="itemLocationCurrentConverter"/>
+		<property name="itemLocationFutureConverter" ref="itemLocationFutureConverter"/>
+		<property name="binConverter" ref="binConverter"/>
+		<property name="omsInventoryConverter" ref="omsInventoryConverter"/>
+		<property name="binReverseConverter" ref="binReverseConverter"/>
+		<property name="binReversePopulator" ref="binReversePopulator"/>
+		<property name="converters" ref="converters"/>
+		<property name="queryObjectValidator" ref="queryObjectValidator"/>
+		<property name="itemStatusValidator" ref="itemStatusValidator"/>
+		<property name="omsInventoryValidator" ref="omsInventoryValidator"/>
+		<property name="locationValidator" ref="locationValidator"/>
+		<property name="binValidator" ref="binValidator"/>
+		<property name="entityValidationHandler" ref="entityValidationHandler"/>
+	</bean>
+
+	<alias name="defaultOrderFacade" alias="orderServicesFacade" />
+	<bean id="defaultOrderFacade" class="com.hybris.oms.facade.order.DefaultOrderFacade">
+		<property name="orderService" ref="orderService"/>
+		<property name="queryObjectValidator" ref="queryObjectValidator"/>
+		<property name="sourcingService" ref="sourcingService"/>
+		<property name="orderLineQuantityStatusConverter" ref="orderLineQuantityStatusConverter"/>
+		<property name="orderLineQuantityStatusReverseConverter" ref="orderLineQuantityStatusReverseConverter"/>
+		<property name="orderLineQuantityStatusReversePopulator" ref="orderLineQuantityStatusReversePopulator"/>
+		<property name="orderConverter" ref="orderConverter"/>
+		<property name="orderReverseConverter" ref="orderReverseConverter"/>
+		<property name="orderLineConverter" ref="orderLineConverter"/>
+		<property name="converters" ref="converters"/>
+		<property name="orderValidator" ref="orderValidator"/>
+		<property name="orderLineQuantityStatusValidator" ref="orderLineQuantityStatusValidator"/>
+		<property name="entityValidationHandler" ref="entityValidationHandler"/>
+		<property name="orderWorkflowExecutor" ref="orderWorkflowExecutor" />
+        <property name="shipmentService" ref="shipmentService"/>
+	</bean>
+
+	<alias name="defaultRuleFacade" alias="rulesFacade" />
+	<bean id="defaultRuleFacade" class="com.hybris.oms.facade.rule.DefaultRuleFacade">
+		<property name="ruleService" ref="ruleService"/>
+		<property name="ruleConverter" ref="ruleConverter"/>
+		<property name="converters" ref="converters"/>
+		<property name="ruleValidator" ref="ruleShortValidator"/>
+		<property name="entityValidationHandler" ref="entityValidationHandler"/>
+		<property name="inventoryUpdateStrategyFactory" ref="inventoryUpdateStrategyFactory"/>
+	</bean>
+
+	<alias name="defaultShipmentFacade" alias="shipmentServiceFacade" />
+	<bean primary="true" id="defaultShipmentFacade" class="com.hybris.oms.facade.shipment.DefaultShipmentFacade">
+		<property name="converters" ref="converters"/>
+		<property name="shipmentWorkflowExecutor" ref="shipmentWorkflowExecutor"/>
+		<property name="inventoryService" ref="inventoryService"/>
+		<property name="orderService" ref="orderService"/>
+		<property name="shipmentConverter" ref="shipmentConverter"/>
+		<property name="shipmentDetailsReversePopulator" ref="shipmentDetailsReversePopulator"/>
+		<property name="shipmentService" ref="shipmentService"/>
+		<property name="queryObjectValidator" ref="queryObjectValidator"/>
+		<property name="orderLineQuantityStatusCodeValidator" ref="orderLineQuantityStatusCodeValidator" />
+		<property name="shipmentOlqValidator" ref="shipmentOlqValidator" />
+		<property name="locationIdValidator" ref="locationIdValidator" />
+		<property name="entityValidationHandler" ref="entityValidationHandler"/>
+	</bean>
+
+	<alias name="defaultReturnFacade" alias="returnFacade"/>
+	<bean id="defaultReturnFacade" class="com.hybris.oms.facade.returns.DefaultReturnFacade">
+        <property name="returnService" ref="returnService"/>
+        <property name="queryObjectValidator" ref="queryObjectValidator"/>
+        <property name="returnReversePopulator" ref="returnReversePopulator"/>
+        <property name="returnConverter" ref="returnConverter"/>
+        <property name="returnReverseConverter" ref="returnReverseConverter"/>
+        <property name="returnOrderLineConverter" ref="returnOrderLineConverter"/>
+        <property name="returnOrderLineReversePopulator" ref="returnOrderLineReversePopulator"/>
+        <property name="converters" ref="converters"/>
+        <property name="returnValidator" ref="returnValidator"/>
+        <property name="returnOrderLineValidator" ref="returnOrderLineValidator"/>
+        <property name="entityValidationHandler" ref="entityValidationHandler"/>
+        <property name="returnWorkflowExecutor" ref="returnWorkflowExecutor" />
+        <property name="returnReviewValidator" ref="returnReviewValidator" />
+        <property name="returnLineRejectionReverseConverter" ref="returnLineRejectionReverseConverter" />
+        <property name="returnLineRejectionConverter" ref="returnLineRejectionConverter" />
+	</bean>
+</beans>

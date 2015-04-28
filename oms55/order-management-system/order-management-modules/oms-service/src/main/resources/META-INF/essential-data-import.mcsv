@@ -1,0 +1,8 @@
+ItemStatusData,classpath:/META-INF/import-itemStatus.csv
+OrderLineQuantityStatusData,classpath:/META-INF/import-orderLineQuantityStatus.csv
+TenantPreferenceData,classpath:/META-INF/import-tenantPreference.csv
+AtsFormulaData,classpath:/META-INF/import-atsFormula.csv
+RuleData,classpath:/META-INF/import-rule.csv
+RuleActionData,classpath:/META-INF/import-ruleaction.csv
+RuleConditionsData,classpath:/META-INF/import-rulecondition.csv
+RuleParameterData,classpath:/META-INF/import-ruleparameter.csv

@@ -1,0 +1,210 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<beans xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns="http://www.hybris.com/schema/onpremise/beans"
+	xsi:schemaLocation="http://www.hybris.com/schema/onpremise/beans http://www.hybris.com/schema/onpremise/beans-5.3.xsd">
+
+	<package name="com.hybris.oms.ui.api.shipment">
+
+
+		<bean name="UIShipment" extend="com.hybris.commons.dto.impl.PropertyAwareEntityDto">
+			<description>UIShipment</description>
+
+			<implements>
+				<value>com.hybris.oms.domain.ActionableDto</value>
+			</implements>
+
+			<annotations>
+				<value>@javax.xml.bind.annotation.XmlRootElement</value>
+				<value>@javax.xml.bind.annotation.XmlAccessorType(javax.xml.bind.annotation.XmlAccessType.FIELD)
+				</value>
+			</annotations>
+
+
+			<property name="orderId" type="String" />
+			<property name="shipmentId" type="Long" />
+			<property name="firstName" type="String" />
+			<property name="lastName" type="String" />
+			<property name="orderDate" type="java.util.Date">
+				<annotations>
+					<value>@javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter(com.hybris.commons.dto.xml.bind.DateAdapter.class)
+					</value>
+				</annotations>
+			</property>
+
+			<property name="shippingMethod" type="String" />
+
+			<property name="locationName" type="String" />
+
+			<property name="status" type="String" />
+
+
+			<property name="actions" type="java.util.Set" generic="String">
+				<annotations>
+					<value>@javax.xml.bind.annotation.XmlElement</value>
+				</annotations>
+			</property>
+
+			<property name="scheduledShippingDate" type="java.util.Date" />
+
+			<customCode>
+			<![CDATA[
+				@Override
+				public String getId()
+				{
+					return String.valueOf(getShipmentId());
+				}
+			]]>
+			</customCode>
+		</bean>
+
+		<bean name="ShipmentDetail">
+			<description>ShipmentDetail</description>
+
+			<implements>
+				<value>com.hybris.commons.dto.Dto</value>
+			</implements>
+
+			<annotations>
+				<value>@javax.xml.bind.annotation.XmlRootElement</value>
+			</annotations>
+
+			<property name="location" type="com.hybris.oms.domain.inventory.Location" />
+			<property name="order" type="com.hybris.oms.domain.order.Order" />
+			<property name="shipment" type="com.hybris.oms.domain.shipping.Shipment" />
+
+			<customCode>
+			<![CDATA[
+				@Override
+				public boolean equals(final Object otherObject)
+				{
+					if (this == otherObject)
+					{
+						return true;
+					}
+					if (otherObject == null || this.getClass() != otherObject.getClass())
+					{
+						return false;
+					}
+					return java.util.Objects.equals(shipment, ((ShipmentDetail) otherObject).shipment);
+				}
+				
+				@Override
+				public int hashCode()
+				{
+					return java.util.Objects.hash(shipment);
+				}
+			]]>
+			</customCode>
+		</bean>
+
+		<bean name="PickSlipBinInfo">
+			<description>PickSlipBinInfo</description>
+
+			<implements>
+				<value>com.hybris.commons.dto.Dto</value>
+			</implements>
+
+			<annotations>
+				<value>@javax.xml.bind.annotation.XmlRootElement</value>
+			</annotations>
+
+			<property name="shipmentId" type="String" />
+			<property name="orderLineBins" type="java.util.List"
+				generic="com.hybris.oms.ui.api.shipment.OrderLineShipmentPickSlipBinInfo" />
+
+		</bean>
+
+		<bean name="OrderShipmentList">
+			<description>OrderShipmentList</description>
+
+			<annotations>
+				<value>@javax.xml.bind.annotation.XmlRootElement</value>
+			</annotations>
+
+
+			<property name="orderShipmentDetails" type="java.util.List"
+			          generic="com.hybris.oms.ui.api.shipment.OrderShipmentDetail" initValue="new java.util.ArrayList()"/>
+
+			<customCode>
+			<![CDATA[
+	
+	public void addOrderShipment(final OrderShipmentDetail orderShipmentVO)
+	{
+		if (this.orderShipmentDetails == null)
+		{
+			this.orderShipmentDetails = new java.util.ArrayList<>();
+		}
+		this.orderShipmentDetails.add(orderShipmentVO);
+	}
+
+	public List<OrderShipmentDetail> getList()
+	{
+		return java.util.Collections.unmodifiableList(this.orderShipmentDetails);
+	}
+
+	@javax.xml.bind.annotation.XmlElement(name = "orderShipments")
+	public List<OrderShipmentDetail> getOrderShipmentDetailForJaxb()
+	{
+		return this.orderShipmentDetails;
+	}
+
+	public void initializeOrders(final List<OrderShipmentDetail> orderShipmentsVOs)
+	{
+		assert this.orderShipmentDetails.isEmpty();
+		for (final OrderShipmentDetail orderShipmentVO : orderShipmentsVOs)
+		{
+			this.addOrderShipment(orderShipmentVO);
+		}
+	}
+
+	public void setOrderShipmentDetailForJaxb(final List<OrderShipmentDetail> orderShipmentDetail)
+	{
+		this.orderShipmentDetails = orderShipmentDetail;
+	}
+			]]>
+			</customCode>
+		</bean>
+
+
+		<bean name="OrderShipmentDetail">
+			<description>OrderShipmentDetail</description>
+
+			<property name="orderLine" type="com.hybris.oms.domain.order.OrderLine" />
+			<property name="orderLineQuantity"
+				type="com.hybris.oms.domain.order.OrderLineQuantity" />
+
+
+			<property name="locationATS" type="java.util.Map"
+				generic="com.hybris.oms.domain.ats.AtsLocalQuantities, String" />
+
+			<property name="bins" type="java.util.List"
+				generic="com.hybris.oms.domain.inventory.Bin" />
+		</bean>
+
+
+		<bean name="OrderLineShipmentPickSlipBinInfo">
+			<description>OrderLineShipmentPickSlipBinInfo</description>
+
+			<implements>
+				<value>com.hybris.commons.dto.Dto</value>
+			</implements>
+			
+			<annotations>
+				<value>@javax.xml.bind.annotation.XmlRootElement</value>
+			</annotations>
+
+
+			<property name="orderLineSkuId" type="String" />
+
+			<property name="orderLineNote" type="String" />
+						
+			<property name="orderLineQuantity" type="com.hybris.oms.domain.types.Quantity" />
+
+			<property name="bins" type="java.util.List"
+				generic="com.hybris.oms.domain.inventory.Bin" />
+		</bean>
+
+
+	</package>
+
+</beans>

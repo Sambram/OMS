@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<types xmlns="http://www.hybris.com/schema/ondemand/domain"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.hybris.com/schema/onpremise/domain http://www.hybris.com/schema/onpremise/domain-5.3.xsd"
+	   package="com.hybris.oms.service.managedobjects.rule">
+
+	<enumerations>
+
+		<enumeration code="Operator">
+			<values>
+				<value code="AND"/>
+				<value code="OR"/>
+			</values>
+		</enumeration>
+
+		<enumeration code="RuleParameterKey">
+			<values>
+				<value code="CONDITION_ORDERLINE_PREVIOUS_STATUS"/>
+				<value code="CONDITION_ORDERLINE_CURRENT_STATUS"/>
+				<value code="ACTION_INVENTORY_STATUS"/>
+				<value code="ACTION_INVENTORY_POSITIVE"/>
+				<value code="ACTION_INVENTORY_STRATEGY"/>
+			</values>
+		</enumeration>
+
+		<enumeration code="RuleScenarios">
+			<values>
+				<value code="SHOPPING_CART"/>
+				<value code="CATALOG_BROWSE"/>
+			</values>
+		</enumeration>
+	</enumerations>
+
+	<managedobjects>
+	<!-- https://wiki.hybris.com/display/dra/rule+tables -->
+		<managedobject code="RuleData" properties="true">
+			<description>Contains data for each rule</description>
+			<persistence name="rules"/>
+			<versionattribute name="version" />
+			<attributes>
+				<attribute type="String" name="ruleId">
+					<description>Rule id</description>
+					<modifiers mandatory="true" unique="true" final="true"/>
+				</attribute>
+				<attribute type="String" name="name">
+					<description>Rule name</description>
+					<modifiers mandatory="true"/>
+				</attribute>
+				<attribute type="String" name="description" localized="true">
+					<description>Rule description</description>
+				</attribute>
+				<attribute type="Operator" name="eligibilityOperator">
+					<description>Operator (AND/OR)</description>
+					<modifiers mandatory="true"/>
+				</attribute>
+				<attribute type="Operator" name="conditionOperator">
+					<description>Operator (AND/OR)</description>
+					<modifiers mandatory="true"/>
+				</attribute>
+				<attribute type="boolean" name="enabled">
+					<description>Rule is enabled</description>
+					<modifiers mandatory="true"/>
+				</attribute>
+				<attribute type="Date" name="startDate">
+					<description>Start date</description>
+				</attribute>
+				<attribute type="Date" name="endDate">
+					<description>End date</description>
+				</attribute>
+				<attribute type="List(RuleActionData)" name="ruleActions">
+					<description>Rule contains rule actions</description>
+					<relation>
+						<one2many mappedBy="rule"/>
+					</relation>
+				</attribute>
+   				<attribute type="List(RuleConditionsData)" name="ruleConditions">
+					<description>Rule contains rule conditions</description>
+					<relation>
+						<one2many mappedBy="rule"/>
+					</relation>
+				</attribute>
+			</attributes>
+		</managedobject>
+
+		<managedobject code="RuleElementData" abstract="true" properties="true">
+			<description>Contains rule elements</description>
+			<persistence name="ruleElements"/>
+			<versionattribute name="version" />
+			<attributes>
+				<attribute type="int" name="sequenceNr">
+					<description>Sequence number</description>
+					<modifiers mandatory="true"/>
+				</attribute>
+				<attribute type="RuleData" name="rule">
+					<description>Rule this element belongs to</description>
+					<modifiers mandatory="true"/>
+				</attribute>
+				<attribute type="List(RuleParameterData)" name="parameters">
+					<description>Element contains parameters</description>
+					<relation>
+						<one2many mappedBy="ruleElement"/>
+					</relation>
+				</attribute>
+			</attributes>
+		</managedobject>
+
+		<managedobject code="RuleConditionsData" extends="RuleElementData" properties="true">
+			<description>Contains rule elements - conditions</description>
+		</managedobject>
+
+		<managedobject code="RuleActionData" extends="RuleElementData" >
+			<description>Contains rule elements - actions</description>
+
+			<attributes>
+				<attribute type="int" name="salience">
+					<description>Rule action salience</description>
+					<!-- <modifiers mandatory="true"/> -->
+				</attribute>
+			</attributes>
+		</managedobject>
+
+		<managedobject code="RuleParameterData" properties="true">
+			<description>Contains rule parameters</description>
+			<persistence name="ruleParameters"/>
+			<versionattribute name="version" />
+			<attributes>
+				<attribute type="String" name="displayText">
+					<description>Text</description>
+				</attribute>
+				<attribute type="RuleParameterKey" name="key">
+					<description>Parameter key</description>
+					<modifiers mandatory="true"/>
+				</attribute>
+				<attribute type="String" name="value">
+					<description>Parameter value</description>
+					<modifiers mandatory="true"/>
+				</attribute>
+				<attribute type="RuleElementData" name="ruleElement">
+					<description>Rule element this parameter belongs to</description>
+					<modifiers mandatory="true"/>
+				</attribute>
+			</attributes>
+		</managedobject>
+
+	</managedobjects>
+</types>

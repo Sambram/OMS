@@ -1,0 +1,40 @@
+<configuration>
+	<jmxConfigurator/>
+	<appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+		<encoder>
+			<Pattern>%d [%-5level][%t][%c][%X{tenant}][%X{requestId}] %m%n</Pattern>
+		</encoder>
+	</appender>
+
+	<appender name="CISLogFile" class="ch.qos.logback.core.FileAppender">
+    	<file>cisMonitoring.log</file>
+   	 	<encoder>
+      		<pattern>%d [%-5level] %method %m%n</pattern>
+    	</encoder>
+  </appender>
+
+	<logger name="javax.validation" level="info" />
+	
+	<logger name="org.springframework.beans.factory" level="warn"/>
+	<logger name="org.springframework.transaction" level="info" />
+	<logger name="org.springframework.validation" level="info" />
+
+	<logger name="archetype.it" level="info" />
+	<logger name="com.hybris.kernel" level="info" />
+	<logger name="com.hybris.kernel.services.aggregation" level="debug" />
+	<logger name="archetype.it.service.workflow" level="debug" />
+	<logger name="archetype.it.service.sourcing" level="debug"/>
+	<logger name="archetype.it.rest.web.log" level="info"/>
+	
+	<logger name="archetype.it.service.remote.business.cis" level="debug">
+    <appender-ref ref="CISLogFile" />
+  </logger>
+	
+	<root level="info">
+		<appender-ref ref="STDOUT"/>
+	</root>
+	
+	<contextListener class="ch.qos.logback.classic.jul.LevelChangePropagator">
+    	<resetJUL>true</resetJUL>
+  	</contextListener>
+</configuration>

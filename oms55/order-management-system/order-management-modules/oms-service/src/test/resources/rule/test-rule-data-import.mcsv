@@ -1,0 +1,4 @@
+RuleData,classpath:/rule/import-rule.csv
+RuleActionData,classpath:/rule/import-ruleaction.csv
+RuleConditionsData,classpath:/rule/import-rulecondition.csv
+RuleParameterData,classpath:/rule/import-ruleparameter.csv

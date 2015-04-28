@@ -1,0 +1,272 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:activiti="http://activiti.org/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" typeLanguage="http://www.w3.org/2001/XMLSchema" expressionLanguage="http://www.w3.org/1999/XPath" targetNamespace="orders">
+  <signal id="shipmentDone" name="shipmentDone"></signal>
+  <process id="OrderProcess" name="Order Process" isExecutable="true">
+    <extensionElements>
+      <activiti:executionListener event="start" expression="${jmxOrderStartListener.notify(execution)}"></activiti:executionListener>
+      <activiti:executionListener event="end" expression="${jmxOrderEndListener.notify(execution)}"></activiti:executionListener>
+    </extensionElements>
+    <startEvent id="StartOrderProcess">
+      <extensionElements>
+        <activiti:formProperty id="orderId" name="Order ID" type="string" variable="orderId" required="true"></activiti:formProperty>
+        <activiti:formProperty id="fulfillment" name="Execute or skip workflow task 'Fulfillment'" type="boolean" variable="fulfillment" default="true" required="true"></activiti:formProperty>
+        <activiti:formProperty id="tenantId" name="Tenant ID" type="string" variable="tenantContext" required="true"></activiti:formProperty>
+        <activiti:formProperty id="result" name="Result" type="boolean" variable="result" default="true"></activiti:formProperty>
+        <activiti:formProperty id="errorMessage" name="Error Message" type="string" variable="message"></activiti:formProperty>
+        <activiti:formProperty id="refulfill" name="refulfill" type="boolean" variable="refulfill" default="false"></activiti:formProperty>
+      </extensionElements>
+    </startEvent>
+    <endEvent id="EndOrderProcess_SkippedFulfillment" name="Skipped Fulfillment End Event"></endEvent>
+    <sequenceFlow id="GoToGeocoding" sourceRef="StartOrderProcess" targetRef="Geocoding"></sequenceFlow>
+    <exclusiveGateway id="GatewayGeo"></exclusiveGateway>
+    <sequenceFlow id="GoToGatewayGeo" sourceRef="Geocoding" targetRef="GatewayGeo"></sequenceFlow>
+    <sequenceFlow id="GoToFulfillment_FromGatewayGeo" sourceRef="GatewayGeo" targetRef="Fulfillment">
+      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${fulfillment}]]></conditionExpression>
+    </sequenceFlow>
+    <serviceTask id="Geocoding" name="Geocoding" activiti:async="true" activiti:expression="#{activitiDelegate.execute(execution, 'WFE_GEOCODING')}"></serviceTask>
+    <serviceTask id="Fulfillment" name="Fulfillment" activiti:expression="#{activitiDelegate.execute(execution, 'WFE_FULFILLMENT')}"></serviceTask>
+    <serviceTask id="ShipmentsDoneCheck" name="Shipments all done" activiti:async="true" activiti:expression="#{activitiDelegate.execute(execution, 'WFE_SHIPMENTS_COMPLETION')}"></serviceTask>
+    <exclusiveGateway id="GatewayQtyUnassigned"></exclusiveGateway>
+    <sequenceFlow id="GoToShipmentsDoneCheck_FromGatewayQtyUnassigned" name="No" sourceRef="GatewayQtyUnassigned" targetRef="ShipmentsDoneCheck">
+      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${!result}]]></conditionExpression>
+    </sequenceFlow>
+    <sequenceFlow id="GoToEnd_SkipFulfillment" name="skip fulfillment" sourceRef="GatewayGeo" targetRef="EndOrderProcess_SkippedFulfillment">
+      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${!fulfillment}]]></conditionExpression>
+    </sequenceFlow>
+    <serviceTask id="QtyUnassignedCheck" name="Unasigned qty Remaining" activiti:async="true" activiti:expression="#{activitiDelegate.execute(execution, 'WFE_FULFILLMENT_COMPLETION')}"></serviceTask>
+    <exclusiveGateway id="GatewayShipmentsDone" name="Exclusive Gateway"></exclusiveGateway>
+    <sequenceFlow id="GoToGatewayShipmentsDone" sourceRef="ShipmentsDoneCheck" targetRef="GatewayShipmentsDone"></sequenceFlow>
+    <sequenceFlow id="GoToGatewayQtyUnassigned" sourceRef="QtyUnassignedCheck" targetRef="GatewayQtyUnassigned"></sequenceFlow>
+    <sequenceFlow id="GoToFulfillment_FromGatewayQtyUnassigned" name="Yes" sourceRef="GatewayQtyUnassigned" targetRef="Fulfillment">
+      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${result}]]></conditionExpression>
+    </sequenceFlow>
+    <exclusiveGateway id="GatewayFulfillment" name="Exclusive Gateway"></exclusiveGateway>
+    <userTask id="FulfillIncomplete_UserTask" name="Order Action">
+      <extensionElements>
+        <activiti:formProperty id="action" name="Order Action" type="enum" variable="action" required="true">
+          <activiti:value id="CANCEL_UNFULFILLED" name="oms.order.cancel.unfulfilled"></activiti:value>
+          <activiti:value id="FULFILL" name="oms.order.fulfill"></activiti:value>
+        </activiti:formProperty>
+      </extensionElements>
+    </userTask>
+    <exclusiveGateway id="GatewayOrderAction" name="Exclusive Gateway"></exclusiveGateway>
+    <sequenceFlow id="GoToGatewayOrderAction" sourceRef="FulfillIncomplete_UserTask" targetRef="GatewayOrderAction"></sequenceFlow>
+    <sequenceFlow id="GoToFulfillment_FromGatewayOrderAction" name="retry fulfillment" sourceRef="GatewayOrderAction" targetRef="Fulfillment">
+      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${action.equals("FULFILL")}]]></conditionExpression>
+    </sequenceFlow>
+    <boundaryEvent id="orderActionTimer" name="Order Action Timer" attachedToRef="FulfillIncomplete_UserTask" cancelActivity="true">
+      <timerEventDefinition>
+        <timeDuration>${fulfillmentRetryTimeout}</timeDuration>
+      </timerEventDefinition>
+    </boundaryEvent>
+    <sequenceFlow id="GoToFulfillment_FromTimeout" sourceRef="orderActionTimer" targetRef="Fulfillment"></sequenceFlow>
+    <serviceTask id="CancelUnfulfilled" name="Cancel Unfulfilled" activiti:expression="#{activitiDelegate.execute(execution, 'WFE_CANCEL_UNFULFILLED')}"></serviceTask>
+    <sequenceFlow id="GoToCancelUnfulfilled" sourceRef="GatewayOrderAction" targetRef="CancelUnfulfilled">
+      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${action.equals("CANCEL_UNFULFILLED")}]]></conditionExpression>
+    </sequenceFlow>
+    <endEvent id="EndOrderProcess_Done" name="Final End Event"></endEvent>
+    <sequenceFlow id="GoToShipmentsDoneCheck_FromCancelUnfulfilled" sourceRef="CancelUnfulfilled" targetRef="ShipmentsDoneCheck"></sequenceFlow>
+    <sequenceFlow id="GoToEnd_Done" name="Yes" sourceRef="GatewayShipmentsDone" targetRef="EndOrderProcess_Done">
+      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${result}]]></conditionExpression>
+    </sequenceFlow>
+    <sequenceFlow id="GoToOrderAction" name="incomplete" sourceRef="GatewayFulfillment" targetRef="FulfillIncomplete_UserTask">
+      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${!result}]]></conditionExpression>
+    </sequenceFlow>
+    <sequenceFlow id="GoToShipmentsDoneCheck_FromGatewayFulfillment" name="complete" sourceRef="GatewayFulfillment" targetRef="ShipmentsDoneCheck">
+      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${result}]]></conditionExpression>
+    </sequenceFlow>
+    <sequenceFlow id="GoToGatewayWaitForShipmentSignal" sourceRef="GatewayShipmentsDone" targetRef="WaitForShipment_UserTask"></sequenceFlow>
+    <sequenceFlow id="GoToQtyUnassignedCheck_FromWaitForShipment" sourceRef="WaitForShipment_UserTask" targetRef="QtyUnassignedCheck"></sequenceFlow>
+    <userTask id="WaitForShipment_UserTask" name="Wait For Shipment">
+      <extensionElements>
+        <activiti:formProperty id="action" name="Action" expression="enum" variable="action" required="true">
+          <activiti:value id="CONTINUE" name="oms.order.continue"></activiti:value>
+        </activiti:formProperty>
+      </extensionElements>
+    </userTask>
+    <intermediateCatchEvent id="TimerWaitForShipment" name="TimerCatchEvent">
+      <timerEventDefinition>
+        <timeDuration>${waitShipmentTimeout}</timeDuration>
+      </timerEventDefinition>
+    </intermediateCatchEvent>
+    <sequenceFlow id="GoToQtyUnassignedCheck_FromTimerWaitForShipment" sourceRef="TimerWaitForShipment" targetRef="QtyUnassignedCheck"></sequenceFlow>
+    <sequenceFlow id="flow1" sourceRef="Fulfillment" targetRef="GatewayFulfillment"></sequenceFlow>
+    <sequenceFlow id="flow2" sourceRef="GatewayShipmentsDone" targetRef="Fulfillment">
+      <conditionExpression xsi:type="tFormalExpression"><![CDATA[{refulfill}]]></conditionExpression>
+    </sequenceFlow>
+  </process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_OrderProcess">
+    <bpmndi:BPMNPlane bpmnElement="OrderProcess" id="BPMNPlane_OrderProcess">
+      <bpmndi:BPMNShape bpmnElement="StartOrderProcess" id="BPMNShape_StartOrderProcess">
+        <omgdc:Bounds height="35.0" width="35.0" x="72.0" y="22.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="EndOrderProcess_SkippedFulfillment" id="BPMNShape_EndOrderProcess_SkippedFulfillment">
+        <omgdc:Bounds height="35.0" width="35.0" x="72.0" y="312.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="GatewayGeo" id="BPMNShape_GatewayGeo">
+        <omgdc:Bounds height="40.0" width="40.0" x="69.0" y="213.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="Geocoding" id="BPMNShape_Geocoding">
+        <omgdc:Bounds height="60.0" width="100.0" x="40.0" y="120.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="Fulfillment" id="BPMNShape_Fulfillment">
+        <omgdc:Bounds height="60.0" width="100.0" x="190.0" y="204.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="ShipmentsDoneCheck" id="BPMNShape_ShipmentsDoneCheck">
+        <omgdc:Bounds height="60.0" width="100.0" x="728.0" y="204.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="GatewayQtyUnassigned" id="BPMNShape_GatewayQtyUnassigned">
+        <omgdc:Bounds height="40.0" width="40.0" x="537.0" y="97.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="QtyUnassignedCheck" id="BPMNShape_QtyUnassignedCheck">
+        <omgdc:Bounds height="60.0" width="100.0" x="604.0" y="88.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="GatewayShipmentsDone" id="BPMNShape_GatewayShipmentsDone">
+        <omgdc:Bounds height="40.0" width="40.0" x="960.0" y="213.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="GatewayFulfillment" id="BPMNShape_GatewayFulfillment">
+        <omgdc:Bounds height="40.0" width="40.0" x="431.0" y="213.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="FulfillIncomplete_UserTask" id="BPMNShape_FulfillIncomplete_UserTask">
+        <omgdc:Bounds height="55.0" width="105.0" x="399.0" y="314.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="GatewayOrderAction" id="BPMNShape_GatewayOrderAction">
+        <omgdc:Bounds height="40.0" width="40.0" x="604.0" y="323.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="orderActionTimer" id="BPMNShape_orderActionTimer">
+        <omgdc:Bounds height="30.0" width="30.0" x="399.0" y="358.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="CancelUnfulfilled" id="BPMNShape_CancelUnfulfilled">
+        <omgdc:Bounds height="55.0" width="105.0" x="725.0" y="314.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="EndOrderProcess_Done" id="BPMNShape_EndOrderProcess_Done">
+        <omgdc:Bounds height="35.0" width="35.0" x="963.0" y="324.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="WaitForShipment_UserTask" id="BPMNShape_WaitForShipment_UserTask">
+        <omgdc:Bounds height="55.0" width="105.0" x="928.0" y="90.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="TimerWaitForShipment" id="BPMNShape_TimerWaitForShipment">
+        <omgdc:Bounds height="35.0" width="35.0" x="940.0" y="132.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge bpmnElement="GoToGeocoding" id="BPMNEdge_GoToGeocoding">
+        <omgdi:waypoint x="89.0" y="57.0"></omgdi:waypoint>
+        <omgdi:waypoint x="90.0" y="120.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="GoToGatewayGeo" id="BPMNEdge_GoToGatewayGeo">
+        <omgdi:waypoint x="90.0" y="180.0"></omgdi:waypoint>
+        <omgdi:waypoint x="89.0" y="213.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="GoToFulfillment_FromGatewayGeo" id="BPMNEdge_GoToFulfillment_FromGatewayGeo">
+        <omgdi:waypoint x="109.0" y="233.0"></omgdi:waypoint>
+        <omgdi:waypoint x="190.0" y="234.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="GoToShipmentsDoneCheck_FromGatewayQtyUnassigned" id="BPMNEdge_GoToShipmentsDoneCheck_FromGatewayQtyUnassigned">
+        <omgdi:waypoint x="557.0" y="137.0"></omgdi:waypoint>
+        <omgdi:waypoint x="556.0" y="233.0"></omgdi:waypoint>
+        <omgdi:waypoint x="728.0" y="234.0"></omgdi:waypoint>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="14.0" width="13.0" x="527.0" y="47.0"></omgdc:Bounds>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="GoToEnd_SkipFulfillment" id="BPMNEdge_GoToEnd_SkipFulfillment">
+        <omgdi:waypoint x="89.0" y="253.0"></omgdi:waypoint>
+        <omgdi:waypoint x="89.0" y="312.0"></omgdi:waypoint>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="14.0" width="67.0" x="92.0" y="251.0"></omgdc:Bounds>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="GoToGatewayShipmentsDone" id="BPMNEdge_GoToGatewayShipmentsDone">
+        <omgdi:waypoint x="828.0" y="234.0"></omgdi:waypoint>
+        <omgdi:waypoint x="960.0" y="233.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="GoToGatewayQtyUnassigned" id="BPMNEdge_GoToGatewayQtyUnassigned">
+        <omgdi:waypoint x="604.0" y="118.0"></omgdi:waypoint>
+        <omgdi:waypoint x="577.0" y="117.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="GoToFulfillment_FromGatewayQtyUnassigned" id="BPMNEdge_GoToFulfillment_FromGatewayQtyUnassigned">
+        <omgdi:waypoint x="537.0" y="117.0"></omgdi:waypoint>
+        <omgdi:waypoint x="240.0" y="116.0"></omgdi:waypoint>
+        <omgdi:waypoint x="240.0" y="204.0"></omgdi:waypoint>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="14.0" width="20.0" x="166.0" y="-19.0"></omgdc:Bounds>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="GoToGatewayOrderAction" id="BPMNEdge_GoToGatewayOrderAction">
+        <omgdi:waypoint x="504.0" y="341.0"></omgdi:waypoint>
+        <omgdi:waypoint x="604.0" y="343.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="GoToFulfillment_FromGatewayOrderAction" id="BPMNEdge_GoToFulfillment_FromGatewayOrderAction">
+        <omgdi:waypoint x="624.0" y="363.0"></omgdi:waypoint>
+        <omgdi:waypoint x="623.0" y="455.0"></omgdi:waypoint>
+        <omgdi:waypoint x="239.0" y="455.0"></omgdi:waypoint>
+        <omgdi:waypoint x="240.0" y="264.0"></omgdi:waypoint>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="14.0" width="71.0" x="527.0" y="348.0"></omgdc:Bounds>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="GoToFulfillment_FromTimeout" id="BPMNEdge_GoToFulfillment_FromTimeout">
+        <omgdi:waypoint x="399.0" y="373.0"></omgdi:waypoint>
+        <omgdi:waypoint x="240.0" y="372.0"></omgdi:waypoint>
+        <omgdi:waypoint x="240.0" y="264.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="GoToCancelUnfulfilled" id="BPMNEdge_GoToCancelUnfulfilled">
+        <omgdi:waypoint x="644.0" y="343.0"></omgdi:waypoint>
+        <omgdi:waypoint x="725.0" y="341.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="GoToShipmentsDoneCheck_FromCancelUnfulfilled" id="BPMNEdge_GoToShipmentsDoneCheck_FromCancelUnfulfilled">
+        <omgdi:waypoint x="777.0" y="314.0"></omgdi:waypoint>
+        <omgdi:waypoint x="778.0" y="264.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="GoToEnd_Done" id="BPMNEdge_GoToEnd_Done">
+        <omgdi:waypoint x="980.0" y="253.0"></omgdi:waypoint>
+        <omgdi:waypoint x="980.0" y="324.0"></omgdi:waypoint>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="14.0" width="20.0" x="990.0" y="234.0"></omgdc:Bounds>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="GoToOrderAction" id="BPMNEdge_GoToOrderAction">
+        <omgdi:waypoint x="451.0" y="253.0"></omgdi:waypoint>
+        <omgdi:waypoint x="451.0" y="314.0"></omgdi:waypoint>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="14.0" width="100.0" x="461.0" y="253.0"></omgdc:Bounds>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="GoToShipmentsDoneCheck_FromGatewayFulfillment" id="BPMNEdge_GoToShipmentsDoneCheck_FromGatewayFulfillment">
+        <omgdi:waypoint x="471.0" y="233.0"></omgdi:waypoint>
+        <omgdi:waypoint x="728.0" y="234.0"></omgdi:waypoint>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="14.0" width="43.0" x="472.0" y="213.0"></omgdc:Bounds>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="GoToGatewayWaitForShipmentSignal" id="BPMNEdge_GoToGatewayWaitForShipmentSignal">
+        <omgdi:waypoint x="1000.0" y="233.0"></omgdi:waypoint>
+        <omgdi:waypoint x="1052.0" y="232.0"></omgdi:waypoint>
+        <omgdi:waypoint x="1052.0" y="117.0"></omgdi:waypoint>
+        <omgdi:waypoint x="1033.0" y="117.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="GoToQtyUnassignedCheck_FromWaitForShipment" id="BPMNEdge_GoToQtyUnassignedCheck_FromWaitForShipment">
+        <omgdi:waypoint x="928.0" y="117.0"></omgdi:waypoint>
+        <omgdi:waypoint x="704.0" y="118.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="GoToQtyUnassignedCheck_FromTimerWaitForShipment" id="BPMNEdge_GoToQtyUnassignedCheck_FromTimerWaitForShipment">
+        <omgdi:waypoint x="957.0" y="167.0"></omgdi:waypoint>
+        <omgdi:waypoint x="957.0" y="177.0"></omgdi:waypoint>
+        <omgdi:waypoint x="653.0" y="177.0"></omgdi:waypoint>
+        <omgdi:waypoint x="654.0" y="148.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow1" id="BPMNEdge_flow1">
+        <omgdi:waypoint x="290.0" y="234.0"></omgdi:waypoint>
+        <omgdi:waypoint x="431.0" y="233.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow2" id="BPMNEdge_flow2">
+        <omgdi:waypoint x="1000.0" y="233.0"></omgdi:waypoint>
+        <omgdi:waypoint x="1051.0" y="233.0"></omgdi:waypoint>
+        <omgdi:waypoint x="1051.0" y="426.0"></omgdi:waypoint>
+        <omgdi:waypoint x="1051.0" y="571.0"></omgdi:waypoint>
+        <omgdi:waypoint x="636.0" y="571.0"></omgdi:waypoint>
+        <omgdi:waypoint x="241.0" y="571.0"></omgdi:waypoint>
+        <omgdi:waypoint x="240.0" y="264.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</definitions>

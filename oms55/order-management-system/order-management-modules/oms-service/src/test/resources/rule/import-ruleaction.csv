@@ -1,0 +1,4 @@
+id,sequenceNr,salience,rule,version
+RuleActionData|1,99,5,RuleData|1,1
+RuleActionData|2,100,5,RuleData|2,1
+RuleActionData|3,101,5,RuleData|3,1

@@ -1,0 +1,3 @@
+id,description,statusCode,version
+ItemStatusData|1,ON HAND,ON_HAND,1
+ItemStatusData|2,NOT AVAILABLE,NOT_AVAILABLE,1
